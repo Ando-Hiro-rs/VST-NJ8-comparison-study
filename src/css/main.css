@@ -567,3 +567,64 @@ footer {
 
 footer a { color: var(--color-info); text-decoration: none; }
 footer a:hover { text-decoration: underline; }
+.instruction-card {
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  width: 100%;
+  max-width: 560px;
+  text-align: left;
+}
+
+.inst-section-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text);
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.inst-section-title:first-child {
+  margin-top: 0;
+}
+
+.inst-text {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+  margin-bottom: 0.5rem;
+}
+
+.inst-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.inst-list li {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  padding: 4px 0;
+  padding-left: 16px;
+  position: relative;
+  line-height: 1.7;
+}
+
+.inst-list li::before {
+  content: "•";
+  position: absolute;
+  left: 4px;
+  color: var(--color-info);
+  font-weight: 500;
+}
+
+.inst-key {
+  display: inline-block;
+  font-family: monospace;
+  font-size: 12px;
+  background: var(--color-bg);
+  border: 0.5px solid var(--color-border-secondary);
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin: 0 2px;
+}
