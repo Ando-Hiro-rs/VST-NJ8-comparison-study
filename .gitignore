@@ -1,0 +1,15 @@
+.DS_Store
+Thumbs.db
+*.log
+node_modules/
+.vscode/
+.idea/
+*.swp
+*~
+.env
+.env.local
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+analysis/data/raw/
+analysis/data/private/
