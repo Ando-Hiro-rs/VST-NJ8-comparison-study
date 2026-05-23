@@ -10,8 +10,55 @@
 
 <div class="container">
 
+<section id="s-consent" class="screen active">
+  <span class="title-badge">研究目的での利用同意</span>
+  <h1>テスト受験前の確認</h1>
+  <p class="sub">このテストの受験を開始する前に、以下の事項について確認・同意をお願いします。</p>
+
+  <div class="instruction-card">
+    <h3 class="inst-section-title">このテストについて</h3>
+    <p class="inst-text">本システムは日本人英語学習者の語彙力を測定する<b>研究目的のWebアプリケーション</b>です。受験データは研究・教育の改善のために使用されます。</p>
+
+    <h3 class="inst-section-title">収集するデータ</h3>
+    <ul class="inst-list">
+      <li>受験者ID (任意の識別子)・年齢・性別・母語・英語学習歴</li>
+      <li>各問題への回答・反応時間 (ミリ秒単位)</li>
+      <li>テスト実施日時・使用したテストモード</li>
+    </ul>
+    <p class="inst-text" style="margin-top:8px"><b>氏名・メールアドレス・電話番号など個人を直接特定できる情報は収集しません。</b></p>
+
+    <h3 class="inst-section-title">データの取り扱い</h3>
+    <ul class="inst-list">
+      <li>取得したデータは研究・教育の目的のみに使用されます</li>
+      <li>結果はあなたのブラウザ上でCSVファイルとしてダウンロードできます</li>
+      <li>サーバーへの自動送信は行いません (受験データはあなたのブラウザ内のみで処理されます)</li>
+      <li>研究発表時は個人が特定できない形に匿名化して使用します</li>
+    </ul>
+
+    <h3 class="inst-section-title">受験の任意性</h3>
+    <p class="inst-text">受験はいつでも中断できます。中断した場合、これまでの回答データは保存されません。</p>
+  </div>
+
+  <div class="consent-checks">
+    <label class="consent-row">
+      <input type="checkbox" id="consent-1" onchange="checkConsentForm()">
+      <span>上記の内容を確認し、理解しました</span>
+    </label>
+    <label class="consent-row">
+      <input type="checkbox" id="consent-2" onchange="checkConsentForm()">
+      <span>研究目的でのデータ利用に同意します</span>
+    </label>
+    <label class="consent-row">
+      <input type="checkbox" id="consent-3" onchange="checkConsentForm()">
+      <span>静かな環境で集中して受験できる状態です</span>
+    </label>
+  </div>
+
+  <button class="btn" id="consent-btn" onclick="submitConsent()" disabled>同意してテストを開始 →</button>
+</section>
+
 <section id="s-mode" class="screen">
-  <span class="title-badge">NeoCELP & NeoVST-NJ8 v1.1</span>
+  <span class="title-badge">NeoCELP & NeoVST-NJ8 v1.2</span>
   <h1>総合的語彙力測定システム</h1>
   <p class="sub">日本人英語学習者向けの語彙力測定ツール。<br>新JACET8000ベース・3PL IRTスコアリング対応。</p>
 
@@ -59,6 +106,7 @@
     <div class="form-row full">
       <label class="form-label" for="f-id">受験者ID <span class="req">*</span></label>
       <input type="text" id="f-id" placeholder="例: P001" oninput="checkInfoForm()">
+      <div id="id-warning" style="display:none; font-size:11px; color:var(--color-danger); padding:6px 8px; background:var(--color-danger-bg); border-radius:6px; margin-top:4px"></div>
     </div>
     <div class="form-row">
       <label class="form-label" for="f-age">年齢</label>
@@ -298,7 +346,7 @@
 </section>
 
 <footer>
-  <p>NeoCELP & NeoVST-NJ8 v1.1 — 新JACET8000 + 3PL IRT</p>
+  <p>NeoCELP & NeoVST-NJ8 v1.2 — 新JACET8000 + 3PL IRT</p>
   <p><a href="https://github.com/Ando-Hiro-rs/NeoCELP-VST-NJ8">GitHub リポジトリ</a></p>
 </footer>
 
