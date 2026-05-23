@@ -1,0 +1,79 @@
+{
+  "A1-A2": {
+    "label": "基礎 (1000語レベル)",
+    "synonym": [
+      ["home", "house"], ["work", "job"], ["road", "path"], ["shop", "store"],
+      ["boat", "ship"], ["film", "movie"], ["make", "create"], ["look", "watch"],
+      ["give", "offer"], ["keep", "hold"], ["good", "fine"], ["fast", "quick"],
+      ["cold", "cool"], ["sick", "ill"], ["big", "large"], ["small", "little"],
+      ["begin", "start"], ["end", "finish"], ["help", "aid"], ["talk", "speak"]
+    ],
+    "nonsynonym": [
+      ["time", "green"], ["year", "round"], ["world", "sharp"], ["life", "quiet"],
+      ["think", "cloth"], ["write", "floor"], ["break", "storm"], ["sleep", "nurse"],
+      ["tall", "bridge"], ["wide", "bucket"], ["deep", "corner"], ["soft", "candle"],
+      ["swim", "pencil"], ["climb", "orange"], ["smile", "finger"], ["build", "circle"],
+      ["carry", "desert"], ["water", "table"], ["book", "tree"], ["music", "window"]
+    ]
+  },
+  "B1": {
+    "label": "初中級 (2000語レベル)",
+    "synonym": [
+      ["diary", "journal"], ["custom", "habit"], ["danger", "risk"], ["mistake", "error"],
+      ["region", "area"], ["remain", "stay"], ["include", "contain"], ["hurry", "rush"],
+      ["unite", "join"], ["polite", "kind"], ["modern", "current"], ["normal", "usual"],
+      ["final", "last"], ["central", "main"], ["public", "open"], ["vacation", "holiday"],
+      ["gift", "present"], ["rich", "wealthy"], ["silent", "quiet"], ["choose", "select"]
+    ],
+    "nonsynonym": [
+      ["fever", "reduce"], ["praise", "corner"], ["runner", "jacket"], ["pencil", "volcano"],
+      ["uniform", "suggest"], ["sandwich", "harvest"], ["lion", "debate"], ["borrow", "jungle"],
+      ["lend", "balloon"], ["hurry", "thunder"], ["final", "engine"], ["modern", "spider"],
+      ["normal", "ribbon"], ["custom", "mirror"], ["folded", "blanket"], ["danger", "curtain"],
+      ["region", "feather"], ["polite", "volcano"], ["public", "helmet"], ["vacation", "marble"]
+    ]
+  },
+  "B2": {
+    "label": "中上級 (4000語レベル)",
+    "synonym": [
+      ["shelter", "refuge"], ["debate", "argument"], ["author", "writer"], ["budget", "funds"],
+      ["signal", "sign"], ["arrange", "organize"], ["predict", "forecast"], ["reject", "refuse"],
+      ["oppose", "resist"], ["generate", "produce"], ["precious", "valuable"], ["absent", "missing"],
+      ["calm", "quiet"], ["noisy", "loud"], ["rude", "harsh"], ["victim", "target"],
+      ["resolve", "settle"], ["enormous", "huge"], ["conceal", "hide"], ["gather", "collect"]
+    ],
+    "nonsynonym": [
+      ["oxygen", "rescue"], ["chart", "frozen"], ["shade", "engine"], ["onion", "lecture"],
+      ["mouse", "combine"], ["slide", "mystery"], ["skirt", "nervous"], ["signal", "protein"],
+      ["predict", "cobweb"], ["reject", "lantern"], ["precious", "bottle"], ["absent", "pebble"],
+      ["tropical", "symbol"], ["calm", "fracture"], ["rude", "crystal"], ["budget", "feather"],
+      ["author", "railway"], ["shelter", "jacket"], ["debate", "sandbox"], ["enormous", "rainfall"]
+    ]
+  },
+  "C1": {
+    "label": "上級 (6000語レベル)",
+    "synonym": [
+      ["charm", "appeal"], ["grief", "sorrow"], ["virtue", "merit"], ["cease", "halt"],
+      ["revive", "restore"], ["descend", "drop"], ["regain", "recover"], ["carve", "shape"],
+      ["cheat", "deceive"], ["naive", "simple"], ["definite", "certain"], ["lively", "active"],
+      ["indirect", "subtle"], ["circular", "round"], ["unaware", "ignorant"], ["turmoil", "chaos"],
+      ["blast", "burst"], ["flaw", "defect"], ["abrupt", "sudden"], ["vivid", "bright"]
+    ],
+    "nonsynonym": [
+      ["elbow", "illusion"], ["romance", "fighter"], ["harbor", "pilgrim"], ["sleeve", "phantom"],
+      ["packet", "lantern"], ["probe", "devout"], ["lump", "dormant"], ["cease", "margin"],
+      ["regain", "swampy"], ["carve", "pilgrim"], ["definite", "erosion"], ["lively", "fossil"],
+      ["indirect", "harbor"], ["circular", "faction"], ["unaware", "marble"], ["turmoil", "sandal"],
+      ["virtue", "pebble"], ["naive", "railway"], ["blast", "curtain"], ["vivid", "meadow"]
+    ]
+  },
+  "practice": {
+    "label": "練習用",
+    "synonym": [
+      ["issue", "problem"], ["begin", "start"], ["person", "man"], ["discover", "find"]
+    ],
+    "nonsynonym": [
+      ["camera", "house"], ["learn", "table"], ["output", "garden"], ["duty", "window"]
+    ]
+  }
+}

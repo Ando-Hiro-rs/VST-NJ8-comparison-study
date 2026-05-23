@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NeoCELP & NeoVST-NJ8 — 総合的語彙力測定システム</title>
+<link rel="stylesheet" href="./src/css/main.css">
+</head>
+<body>
+
+<div class="container">
+
+<section id="s-mode" class="screen">
+  <span class="title-badge">NeoCELP & NeoVST-NJ8 v1.0</span>
+  <h1>総合的語彙力測定システム</h1>
+  <p class="sub">日本人英語学習者向けの語彙力測定ツール。<br>新JACET8000ベース・3PL IRTスコアリング対応。</p>
+
+  <div class="mode-grid">
+    <div class="mode-card" onclick="selectMode('celp_only')">
+      <div class="mode-icon">⚡</div>
+      <div class="mode-title">NeoCELP のみ</div>
+      <div class="mode-desc">語彙処理速度・自動化の測定</div>
+      <div class="mode-meta">
+        <div>所要時間: 約 5 分</div>
+        <div>40 問 + 練習 8 問</div>
+        <div>ACRRT・CV・プライミング効果</div>
+      </div>
+    </div>
+
+    <div class="mode-card recommended" onclick="selectMode('combined')">
+      <span class="mode-badge">推奨</span>
+      <div class="mode-icon">⊞</div>
+      <div class="mode-title">複合型テスト</div>
+      <div class="mode-desc">処理速度と語彙サイズを両方測定</div>
+      <div class="mode-meta">
+        <div>所要時間: 約 12 分</div>
+        <div>NeoCELP 40 問 → VST 160 問</div>
+        <div>速度 × サイズの統合分析</div>
+      </div>
+    </div>
+
+    <div class="mode-card" onclick="selectMode('vst_only')">
+      <div class="mode-icon">📚</div>
+      <div class="mode-title">NeoVST-NJ8 のみ</div>
+      <div class="mode-desc">語彙サイズ (0〜8000語) の測定</div>
+      <div class="mode-meta">
+        <div>所要時間: 約 7 分</div>
+        <div>160 問 (各レベル 20 問 × 8)</div>
+        <div>3PL IRT θ + 推定語彙サイズ</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="s-info" class="screen">
+  <span class="title-badge">受験者情報</span>
+  <h2>基本情報を入力してください</h2>
+  <div class="form-grid">
+    <div class="form-row full">
+      <label class="form-label" for="f-id">受験者ID <span class="req">*</span></label>
+      <input type="text" id="f-id" placeholder="例: P001" oninput="checkInfoForm()">
+    </div>
+    <div class="form-row">
+      <label class="form-label" for="f-age">年齢</label>
+      <input type="text" id="f-age" placeholder="例: 20">
+    </div>
+    <div class="form-row">
+      <label class="form-label" for="f-gender">性別</label>
+      <select id="f-gender">
+        <option value="">選択してください</option>
+        <option value="female">女性</option>
+        <option value="male">男性</option>
+        <option value="other">その他</option>
+        <option value="na">回答しない</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label class="form-label" for="f-l1">母語</label>
+      <select id="f-l1">
+        <option value="japanese">日本語</option>
+        <option value="other">その他</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label class="form-label" for="f-years">英語学習歴 (年)</label>
+      <input type="text" id="f-years" placeholder="例: 10">
+    </div>
+  </div>
+  <button class="btn" id="info-btn" onclick="submitInfo()" disabled>次へ →</button>
+</section>
+
+<section id="s-level" class="screen">
+  <span class="title-badge">レベル選択 (NeoCELP)</span>
+  <h2>出題語彙レベルを選んでください</h2>
+  <p class="sub">受験者の英語力に合ったレベルを選択してください。</p>
+  <div class="level-grid">
+    <div class="level-opt" onclick="selectLevel('A1-A2', this)">
+      <div class="level-opt-title">基礎 (1000語レベル)</div>
+      <div class="level-opt-sub">CEFR A1–A2 / 中学卒業相当</div>
+    </div>
+    <div class="level-opt" onclick="selectLevel('B1', this)">
+      <div class="level-opt-title">初中級 (2000語レベル)</div>
+      <div class="level-opt-sub">CEFR B1 / 英検3–準2級</div>
+    </div>
+    <div class="level-opt" onclick="selectLevel('B2', this)">
+      <div class="level-opt-title">中上級 (4000語レベル)</div>
+      <div class="level-opt-sub">CEFR B2 / 英検2級・TOEIC 600+</div>
+    </div>
+    <div class="level-opt" onclick="selectLevel('C1', this)">
+      <div class="level-opt-title">上級 (6000語レベル)</div>
+      <div class="level-opt-sub">CEFR C1 / 英検準1級+</div>
+    </div>
+  </div>
+  <button class="btn" id="level-btn" onclick="startCelp()" disabled>NeoCELPを開始 →</button>
+</section>
+
+<section id="s-celp" class="screen">
+  <div style="display:flex;align-items:center;gap:8px">
+    <span class="phase-label" id="celp-phase">練習</span>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="celp-prog-fill" style="width:0%"></div></div>
+    <span class="progress-label" id="celp-prog-label">0 / 8</span>
+  </div>
+  <div class="fixation" id="celp-fix">+</div>
+  <div class="prime-word" id="celp-prime" style="display:none"></div>
+  <div class="blank-area" id="celp-blank" style="display:none"></div>
+  <div class="target-word" id="celp-target" style="display:none"></div>
+  <p class="feedback-msg" id="celp-feedback"></p>
+  <div class="big-btn-row" id="celp-btn-row" style="display:none">
+    <button class="big-btn big-no" onclick="celpRespond(false)">
+      <span>意味が違う</span>
+      <span class="kbd-hint">← キー</span>
+    </button>
+    <button class="big-btn big-yes" onclick="celpRespond(true)">
+      <span>意味が近い</span>
+      <span class="kbd-hint">→ キー</span>
+    </button>
+  </div>
+</section>
+
+<section id="s-celp-end" class="screen">
+  <span class="title-badge">NeoCELP 完了</span>
+  <h2>続けて NeoVST-NJ8 を実施します</h2>
+  <p class="sub">日本語の意味に対応する英単語を4択から選んでください (160問)。<br>解答時間は記録されますが、評価には影響しません。</p>
+  <button class="btn" onclick="continueToVst()">NeoVST-NJ8 を開始 →</button>
+</section>
+
+<section id="s-vst" class="screen">
+  <div style="display:flex;align-items:center;gap:8px">
+    <span class="phase-label">NeoVST-NJ8</span>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="vst-prog-fill" style="width:0%"></div></div>
+    <span class="progress-label" id="vst-prog-label">0 / 160</span>
+  </div>
+  <p class="vst-prompt">この日本語の意味の英単語は?</p>
+  <div class="vst-meaning" id="vst-meaning">—</div>
+  <p class="vst-pos-lbl" id="vst-pos">noun</p>
+  <div class="vst-options" id="vst-options"></div>
+</section>
+
+<section id="s-result" class="screen">
+  <span class="title-badge">テスト結果</span>
+  <h2>受験お疲れ様でした</h2>
+
+  <div id="result-celp-section" class="screen" style="width:100%;align-items:center;gap:16px">
+    <h3>NeoCELP — 語彙処理速度</h3>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-val" id="r-acrrt">—</div><div class="stat-lbl">ACRRT (ms)</div><div class="stat-sub">正答平均反応時間</div></div>
+      <div class="stat-card"><div class="stat-val" id="r-cv">—</div><div class="stat-lbl">CV (%)</div><div class="stat-sub">変動係数 = 安定性</div></div>
+      <div class="stat-card"><div class="stat-val" id="r-priming">—</div><div class="stat-lbl">プライミング効果 (ms)</div><div class="stat-sub">非同義 − 同義</div></div>
+      <div class="stat-card"><div class="stat-val" id="r-valid">—</div><div class="stat-lbl">有効データ</div><div class="stat-sub">最終 / 総試行</div></div>
+    </div>
+    <div class="exclude-card">
+      <div class="exclude-title">自動データクリーニング</div>
+      <div class="exclude-row"><span>不正解の除外</span><span id="ex-wrong">— 問</span></div>
+      <div class="exclude-row"><span>100ms以下のフライング除外</span><span id="ex-fast">— 問</span></div>
+      <div class="exclude-row"><span>平均±3SD範囲外の異常値除外</span><span id="ex-outlier">— 問</span></div>
+      <div class="exclude-row total"><span>最終有効データ</span><span id="ex-valid">— 問</span></div>
+    </div>
+  </div>
+
+  <div id="result-vst-section" class="screen" style="width:100%;align-items:center;gap:16px">
+    <h3>NeoVST-NJ8 — 語彙サイズ</h3>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-val" id="r-vocab">—</div><div class="stat-lbl">推定語彙サイズ</div><div class="stat-sub">3PL IRT モデル</div></div>
+      <div class="stat-card"><div class="stat-val" id="r-theta">—</div><div class="stat-lbl">IRT θ</div><div class="stat-sub" id="r-se">SE: —</div></div>
+      <div class="stat-card"><div class="stat-val" id="r-vst-acc">—</div><div class="stat-lbl">正答率</div><div class="stat-sub" id="r-raw">— / —</div></div>
+      <div class="stat-card"><div class="stat-val">8</div><div class="stat-lbl">頻度レベル</div><div class="stat-sub">JACET 8000</div></div>
+    </div>
+    <div class="exclude-card">
+      <div class="exclude-title">レベル別 推定語彙数</div>
+      <div id="level-bars"></div>
+    </div>
+  </div>
+
+  <div class="eval-card">
+    <div class="eval-title">あなたへのメッセージ</div>
+    <p class="eval-msg" id="r-message">—</p>
+  </div>
+
+  <div class="export-card">
+    <div class="export-title">📥 データエクスポート</div>
+    <div class="export-btn-row">
+      <button class="btn-csv" id="exp-celp" onclick="exportCelpTrials()">CELP 試行データ</button>
+      <button class="btn-csv" id="exp-vst" onclick="exportVstTrials()">VST 試行データ</button>
+      <button class="btn-csv" onclick="exportSummary()">集計サマリー</button>
+    </div>
+  </div>
+
+  <button class="btn-outline" onclick="restart()">最初の画面に戻る</button>
+</section>
+
+<footer>
+  <p>NeoCELP & NeoVST-NJ8 v1.0 — 新JACET8000 + 3PL IRT</p>
+  <p><a href="https://github.com/YOUR-USERNAME/NeoCELP-VST-NJ8">GitHub リポジトリ</a></p>
+</footer>
+
+</div>
+
+<div id="toast" class="toast">保存しました</div>
+
+<script type="module" src="./src/js/app.js"></script>
+</body>
+</html>

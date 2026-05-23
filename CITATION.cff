@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: "If you use this software in your research, please cite it as below."
+title: "NeoCELP & NeoVST-NJ8: An Integrated Vocabulary Assessment System for Japanese EFL Learners"
+authors:
+  - family-names: "[Ando]"
+    given-names: "[Hiro]"
+    affiliation: "[Hokkaido University of Education]"
+version: 1.0.0
+date-released: 2025-05-23
+url: "https://github.com/Ando-Hiro-rs/NeoCELP-VST-NJ8"
+license: MIT
+keywords:
+  - vocabulary assessment
+  - lexical processing
+  - 3PL IRT
+  - JACET8000
+  - English language testing
+  - psycholinguistics
+references:
+  - type: article
+    authors:
+      - family-names: "Hamada"
+        given-names: "Akira"
+    title: "Development of a Vocabulary Size Test for Japanese EFL Learners Using the New JACET List of 8,000 Basic Words"
+    journal: "JACET Journal"
+    volume: 65
+    start: 23
+    end: 45
+    year: 2021

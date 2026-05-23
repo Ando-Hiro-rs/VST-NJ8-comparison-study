@@ -1,0 +1,2402 @@
+[
+  {
+    "id": 1,
+    "level": 1,
+    "meaning_ja": "売り場",
+    "pos": "noun",
+    "correct": "department",
+    "distractors": [
+      "boy",
+      "meeting",
+      "town"
+    ],
+    "a": 1.981565,
+    "b": -2.384982,
+    "c": 0.130828
+  },
+  {
+    "id": 2,
+    "level": 1,
+    "meaning_ja": "願う",
+    "pos": "verb",
+    "correct": "wish",
+    "distractors": [
+      "return",
+      "take",
+      "feel"
+    ],
+    "a": 4.148472,
+    "b": -1.853067,
+    "c": 0.057624
+  },
+  {
+    "id": 3,
+    "level": 1,
+    "meaning_ja": "許可する",
+    "pos": "verb",
+    "correct": "let",
+    "distractors": [
+      "try",
+      "buy",
+      "spend"
+    ],
+    "a": 1.651489,
+    "b": -1.184719,
+    "c": 0.016093
+  },
+  {
+    "id": 4,
+    "level": 1,
+    "meaning_ja": "丸い",
+    "pos": "adjective",
+    "correct": "round",
+    "distractors": [
+      "ready",
+      "simple",
+      "easy"
+    ],
+    "a": 2.175011,
+    "b": -2.40345,
+    "c": 0.046566
+  },
+  {
+    "id": 5,
+    "level": 1,
+    "meaning_ja": "全体の",
+    "pos": "adjective",
+    "correct": "whole",
+    "distractors": [
+      "important",
+      "other",
+      "large"
+    ],
+    "a": 3.83352,
+    "b": -0.946814,
+    "c": 0.252715
+  },
+  {
+    "id": 6,
+    "level": 1,
+    "meaning_ja": "普通は",
+    "pos": "adverb",
+    "correct": "usually",
+    "distractors": [
+      "never",
+      "always",
+      "finally"
+    ],
+    "a": 0.85575,
+    "b": -3.071544,
+    "c": 0.059526
+  },
+  {
+    "id": 7,
+    "level": 1,
+    "meaning_ja": "地域",
+    "pos": "noun",
+    "correct": "area",
+    "distractors": [
+      "style",
+      "art",
+      "record"
+    ],
+    "a": 3.329156,
+    "b": -2.471671,
+    "c": 0.023862
+  },
+  {
+    "id": 8,
+    "level": 1,
+    "meaning_ja": "銀行",
+    "pos": "noun",
+    "correct": "bank",
+    "distractors": [
+      "subject",
+      "age",
+      "century"
+    ],
+    "a": 0.86697,
+    "b": -3.54173,
+    "c": 0.062735
+  },
+  {
+    "id": 9,
+    "level": 1,
+    "meaning_ja": "実行",
+    "pos": "noun",
+    "correct": "performance",
+    "distractors": [
+      "project",
+      "mind",
+      "president"
+    ],
+    "a": 1.398609,
+    "b": 1.001993,
+    "c": 0.151418
+  },
+  {
+    "id": 10,
+    "level": 1,
+    "meaning_ja": "１年",
+    "pos": "noun",
+    "correct": "year",
+    "distractors": [
+      "state",
+      "power",
+      "father"
+    ],
+    "a": 0.917449,
+    "b": -3.988628,
+    "c": 0.068779
+  },
+  {
+    "id": 11,
+    "level": 1,
+    "meaning_ja": "特別の",
+    "pos": "adjective",
+    "correct": "special",
+    "distractors": [
+      "western",
+      "key",
+      "old"
+    ],
+    "a": 6.786545,
+    "b": -2.254069,
+    "c": 0.019405
+  },
+  {
+    "id": 12,
+    "level": 1,
+    "meaning_ja": "それから",
+    "pos": "adverb",
+    "correct": "then",
+    "distractors": [
+      "alone",
+      "else",
+      "far"
+    ],
+    "a": 0.858434,
+    "b": -2.184761,
+    "c": 0.049001
+  },
+  {
+    "id": 13,
+    "level": 1,
+    "meaning_ja": "押すこと",
+    "pos": "noun",
+    "correct": "pressure",
+    "distractors": [
+      "field",
+      "support",
+      "question"
+    ],
+    "a": 1.35384,
+    "b": -2.043125,
+    "c": 0.101239
+  },
+  {
+    "id": 14,
+    "level": 1,
+    "meaning_ja": "始める",
+    "pos": "verb",
+    "correct": "begin",
+    "distractors": [
+      "stand",
+      "do",
+      "want"
+    ],
+    "a": 1.530944,
+    "b": -2.973751,
+    "c": 0.048961
+  },
+  {
+    "id": 15,
+    "level": 1,
+    "meaning_ja": "過去の",
+    "pos": "adjective",
+    "correct": "past",
+    "distractors": [
+      "major",
+      "each",
+      "red"
+    ],
+    "a": 5.3352,
+    "b": -2.119937,
+    "c": 0.019815
+  },
+  {
+    "id": 16,
+    "level": 1,
+    "meaning_ja": "部屋",
+    "pos": "noun",
+    "correct": "room",
+    "distractors": [
+      "daughter",
+      "increase",
+      "front"
+    ],
+    "a": 1.299669,
+    "b": -2.866639,
+    "c": 0.062965
+  },
+  {
+    "id": 17,
+    "level": 1,
+    "meaning_ja": "進路",
+    "pos": "noun",
+    "correct": "course",
+    "distractors": [
+      "group",
+      "music",
+      "order"
+    ],
+    "a": 1.615283,
+    "b": -2.284277,
+    "c": 0.090677
+  },
+  {
+    "id": 18,
+    "level": 1,
+    "meaning_ja": "玄関",
+    "pos": "noun",
+    "correct": "hall",
+    "distractors": [
+      "size",
+      "place",
+      "member"
+    ],
+    "a": 1.376053,
+    "b": -1.697172,
+    "c": 0.08134
+  },
+  {
+    "id": 19,
+    "level": 1,
+    "meaning_ja": "小休止",
+    "pos": "noun",
+    "correct": "break",
+    "distractors": [
+      "heart",
+      "hour",
+      "bed"
+    ],
+    "a": 1.398976,
+    "b": -1.638347,
+    "c": 0.065068
+  },
+  {
+    "id": 20,
+    "level": 1,
+    "meaning_ja": "持つ",
+    "pos": "verb",
+    "correct": "hold",
+    "distractors": [
+      "call",
+      "remember",
+      "bring"
+    ],
+    "a": 1.467493,
+    "b": -3.213118,
+    "c": 0.076228
+  },
+  {
+    "id": 21,
+    "level": 2,
+    "meaning_ja": "…だと思う",
+    "pos": "verb",
+    "correct": "suppose",
+    "distractors": [
+      "lay",
+      "succeed",
+      "gain"
+    ],
+    "a": 2.131114,
+    "b": -1.194383,
+    "c": 0.157695
+  },
+  {
+    "id": 22,
+    "level": 2,
+    "meaning_ja": "たぶん",
+    "pos": "adverb",
+    "correct": "perhaps",
+    "distractors": [
+      "quite",
+      "similarly",
+      "effectively"
+    ],
+    "a": 1.619052,
+    "b": -1.12574,
+    "c": 0.043366
+  },
+  {
+    "id": 23,
+    "level": 2,
+    "meaning_ja": "請求書",
+    "pos": "noun",
+    "correct": "bill",
+    "distractors": [
+      "society",
+      "scene",
+      "measure"
+    ],
+    "a": 2.474702,
+    "b": -1.098954,
+    "c": 0.004956
+  },
+  {
+    "id": 24,
+    "level": 2,
+    "meaning_ja": "範囲",
+    "pos": "noun",
+    "correct": "range",
+    "distractors": [
+      "plenty",
+      "instrument",
+      "surface"
+    ],
+    "a": 2.029765,
+    "b": -1.755844,
+    "c": 0.028343
+  },
+  {
+    "id": 25,
+    "level": 2,
+    "meaning_ja": "一般的な",
+    "pos": "adjective",
+    "correct": "general",
+    "distractors": [
+      "recent",
+      "empty",
+      "illegal"
+    ],
+    "a": 2.030101,
+    "b": -1.732087,
+    "c": 0.049379
+  },
+  {
+    "id": 26,
+    "level": 2,
+    "meaning_ja": "地域",
+    "pos": "noun",
+    "correct": "region",
+    "distractors": [
+      "silver",
+      "content",
+      "customer"
+    ],
+    "a": 2.77862,
+    "b": -1.146572,
+    "c": 0.222232
+  },
+  {
+    "id": 27,
+    "level": 2,
+    "meaning_ja": "構造",
+    "pos": "noun",
+    "correct": "structure",
+    "distractors": [
+      "neighborhood",
+      "lack",
+      "application"
+    ],
+    "a": 3.500196,
+    "b": -1.245124,
+    "c": 0.147123
+  },
+  {
+    "id": 28,
+    "level": 2,
+    "meaning_ja": "制御",
+    "pos": "noun",
+    "correct": "control",
+    "distractors": [
+      "benefit",
+      "stomach",
+      "supply"
+    ],
+    "a": 2.797224,
+    "b": -1.935005,
+    "c": 0.018541
+  },
+  {
+    "id": 29,
+    "level": 2,
+    "meaning_ja": "型",
+    "pos": "noun",
+    "correct": "type",
+    "distractors": [
+      "discussion",
+      "string",
+      "gas"
+    ],
+    "a": 6.449316,
+    "b": -2.1854,
+    "c": 0.021169
+  },
+  {
+    "id": 30,
+    "level": 2,
+    "meaning_ja": "患者",
+    "pos": "noun",
+    "correct": "patient",
+    "distractors": [
+      "technique",
+      "user",
+      "aid"
+    ],
+    "a": 1.972992,
+    "b": -1.672988,
+    "c": 0.053758
+  },
+  {
+    "id": 31,
+    "level": 2,
+    "meaning_ja": "苦痛",
+    "pos": "noun",
+    "correct": "pain",
+    "distractors": [
+      "website",
+      "appeal",
+      "solution"
+    ],
+    "a": 3.021019,
+    "b": -1.211016,
+    "c": 0.250805
+  },
+  {
+    "id": 32,
+    "level": 2,
+    "meaning_ja": "よく考える",
+    "pos": "verb",
+    "correct": "consider",
+    "distractors": [
+      "overcome",
+      "preserve",
+      "approve"
+    ],
+    "a": 2.39925,
+    "b": -0.923586,
+    "c": 0.08584
+  },
+  {
+    "id": 33,
+    "level": 2,
+    "meaning_ja": "利用可能な",
+    "pos": "adjective",
+    "correct": "available",
+    "distractors": [
+      "central",
+      "everyday",
+      "huge"
+    ],
+    "a": 3.734631,
+    "b": -1.62172,
+    "c": 0.083468
+  },
+  {
+    "id": 34,
+    "level": 2,
+    "meaning_ja": "最近",
+    "pos": "adverb",
+    "correct": "recently",
+    "distractors": [
+      "somewhere",
+      "newly",
+      "heavily"
+    ],
+    "a": 2.139284,
+    "b": -1.052584,
+    "c": 0.014603
+  },
+  {
+    "id": 35,
+    "level": 2,
+    "meaning_ja": "問題",
+    "pos": "noun",
+    "correct": "issue",
+    "distractors": [
+      "pattern",
+      "device",
+      "award"
+    ],
+    "a": 4.180121,
+    "b": -1.205361,
+    "c": 0.113997
+  },
+  {
+    "id": 36,
+    "level": 2,
+    "meaning_ja": "期間",
+    "pos": "noun",
+    "correct": "term",
+    "distractors": [
+      "kid",
+      "platform",
+      "contrast"
+    ],
+    "a": 2.436372,
+    "b": -1.062728,
+    "c": 0.146862
+  },
+  {
+    "id": 37,
+    "level": 2,
+    "meaning_ja": "経済",
+    "pos": "noun",
+    "correct": "economy",
+    "distractors": [
+      "impression",
+      "duty",
+      "cross"
+    ],
+    "a": 2.576505,
+    "b": -2.088067,
+    "c": 0.014599
+  },
+  {
+    "id": 38,
+    "level": 2,
+    "meaning_ja": "政治の",
+    "pos": "adjective",
+    "correct": "political",
+    "distractors": [
+      "complete",
+      "senior",
+      "sharp"
+    ],
+    "a": 2.671228,
+    "b": -1.769439,
+    "c": 0.018703
+  },
+  {
+    "id": 39,
+    "level": 2,
+    "meaning_ja": "過程",
+    "pos": "noun",
+    "correct": "process",
+    "distractors": [
+      "sugar",
+      "trick",
+      "channel"
+    ],
+    "a": 1.844403,
+    "b": -1.923955,
+    "c": 0.063211
+  },
+  {
+    "id": 40,
+    "level": 2,
+    "meaning_ja": "盗む",
+    "pos": "verb",
+    "correct": "steal",
+    "distractors": [
+      "create",
+      "push",
+      "destroy"
+    ],
+    "a": 4.668431,
+    "b": -2.288986,
+    "c": 0.062487
+  },
+  {
+    "id": 41,
+    "level": 3,
+    "meaning_ja": "種類",
+    "pos": "noun",
+    "correct": "sort",
+    "distractors": [
+      "complaint",
+      "client",
+      "youth"
+    ],
+    "a": 1.313661,
+    "b": -0.947358,
+    "c": 0.013373
+  },
+  {
+    "id": 42,
+    "level": 3,
+    "meaning_ja": "評議会",
+    "pos": "noun",
+    "correct": "council",
+    "distractors": [
+      "soil",
+      "producer",
+      "strategy"
+    ],
+    "a": 1.748145,
+    "b": -0.755653,
+    "c": 0.141782
+  },
+  {
+    "id": 43,
+    "level": 3,
+    "meaning_ja": "分析",
+    "pos": "noun",
+    "correct": "analysis",
+    "distractors": [
+      "stream",
+      "presence",
+      "monitor"
+    ],
+    "a": 1.889748,
+    "b": -0.569835,
+    "c": 0.156475
+  },
+  {
+    "id": 44,
+    "level": 3,
+    "meaning_ja": "反対",
+    "pos": "noun",
+    "correct": "opposition",
+    "distractors": [
+      "failure",
+      "arrival",
+      "awareness"
+    ],
+    "a": 1.962905,
+    "b": -0.944309,
+    "c": 0.192074
+  },
+  {
+    "id": 45,
+    "level": 3,
+    "meaning_ja": "追う",
+    "pos": "verb",
+    "correct": "pursue",
+    "distractors": [
+      "calculate",
+      "negotiate",
+      "deserve"
+    ],
+    "a": 2.182223,
+    "b": -0.799116,
+    "c": 0.226647
+  },
+  {
+    "id": 46,
+    "level": 3,
+    "meaning_ja": "重要な",
+    "pos": "adjective",
+    "correct": "significant",
+    "distractors": [
+      "immediate",
+      "multiple",
+      "flexible"
+    ],
+    "a": 1.685814,
+    "b": -0.481845,
+    "c": 0.004946
+  },
+  {
+    "id": 47,
+    "level": 3,
+    "meaning_ja": "明らかに",
+    "pos": "adverb",
+    "correct": "obviously",
+    "distractors": [
+      "fairly",
+      "somewhat",
+      "additionally"
+    ],
+    "a": 1.930265,
+    "b": -1.12768,
+    "c": 0.185178
+  },
+  {
+    "id": 48,
+    "level": 3,
+    "meaning_ja": "革",
+    "pos": "noun",
+    "correct": "leather",
+    "distractors": [
+      "participant",
+      "reputation",
+      "crack"
+    ],
+    "a": 1.291258,
+    "b": -0.727258,
+    "c": 0.0093
+  },
+  {
+    "id": 49,
+    "level": 3,
+    "meaning_ja": "比較",
+    "pos": "noun",
+    "correct": "comparison",
+    "distractors": [
+      "quarter",
+      "expertise",
+      "introduction"
+    ],
+    "a": 2.165832,
+    "b": -1.070759,
+    "c": 0.225466
+  },
+  {
+    "id": 50,
+    "level": 3,
+    "meaning_ja": "出会い",
+    "pos": "noun",
+    "correct": "encounter",
+    "distractors": [
+      "stock",
+      "tension",
+      "register"
+    ],
+    "a": 2.398188,
+    "b": -0.656041,
+    "c": 0.152926
+  },
+  {
+    "id": 51,
+    "level": 3,
+    "meaning_ja": "おおよそ",
+    "pos": "adverb",
+    "correct": "approximately",
+    "distractors": [
+      "precisely",
+      "possibly",
+      "slightly"
+    ],
+    "a": 2.033707,
+    "b": -0.135121,
+    "c": 0.21277
+  },
+  {
+    "id": 52,
+    "level": 3,
+    "meaning_ja": "もの（物質）",
+    "pos": "noun",
+    "correct": "stuff",
+    "distractors": [
+      "statistic",
+      "contract",
+      "characteristic"
+    ],
+    "a": 1.784467,
+    "b": -0.130775,
+    "c": 0.056414
+  },
+  {
+    "id": 53,
+    "level": 3,
+    "meaning_ja": "求める",
+    "pos": "verb",
+    "correct": "seek",
+    "distractors": [
+      "launch",
+      "deny",
+      "abandon"
+    ],
+    "a": 2.291959,
+    "b": -0.230601,
+    "c": 0.163544
+  },
+  {
+    "id": 54,
+    "level": 3,
+    "meaning_ja": "学問の",
+    "pos": "adjective",
+    "correct": "academic",
+    "distractors": [
+      "unlikely",
+      "extraordinary",
+      "mass"
+    ],
+    "a": 3.581342,
+    "b": -0.31466,
+    "c": 0.222871
+  },
+  {
+    "id": 55,
+    "level": 3,
+    "meaning_ja": "視力",
+    "pos": "noun",
+    "correct": "vision",
+    "distractors": [
+      "preparation",
+      "boss",
+      "administration"
+    ],
+    "a": 1.861586,
+    "b": -0.829583,
+    "c": 0.031749
+  },
+  {
+    "id": 56,
+    "level": 3,
+    "meaning_ja": "欠点",
+    "pos": "noun",
+    "correct": "fault",
+    "distractors": [
+      "reduction",
+      "existence",
+      "description"
+    ],
+    "a": 1.486838,
+    "b": -0.946058,
+    "c": 0.04614
+  },
+  {
+    "id": 57,
+    "level": 3,
+    "meaning_ja": "身元",
+    "pos": "noun",
+    "correct": "identity",
+    "distractors": [
+      "editor",
+      "wealth",
+      "ancestor"
+    ],
+    "a": 1.748648,
+    "b": -0.995661,
+    "c": 0.126605
+  },
+  {
+    "id": 58,
+    "level": 3,
+    "meaning_ja": "提出する",
+    "pos": "verb",
+    "correct": "submit",
+    "distractors": [
+      "convince",
+      "enable",
+      "satisfy"
+    ],
+    "a": 1.992772,
+    "b": -0.554103,
+    "c": 0.085306
+  },
+  {
+    "id": 59,
+    "level": 3,
+    "meaning_ja": "批判的な",
+    "pos": "adjective",
+    "correct": "critical",
+    "distractors": [
+      "raw",
+      "brief",
+      "unnecessary"
+    ],
+    "a": 3.344881,
+    "b": -0.85571,
+    "c": 0.139688
+  },
+  {
+    "id": 60,
+    "level": 3,
+    "meaning_ja": "国内の",
+    "pos": "adjective",
+    "correct": "domestic",
+    "distractors": [
+      "permanent",
+      "constant",
+      "enthusiastic"
+    ],
+    "a": 1.411354,
+    "b": -0.950494,
+    "c": 0.010335
+  },
+  {
+    "id": 61,
+    "level": 4,
+    "meaning_ja": "信念",
+    "pos": "noun",
+    "correct": "faith",
+    "distractors": [
+      "disposal",
+      "density",
+      "staple"
+    ],
+    "a": 1.190427,
+    "b": -0.116593,
+    "c": 0.031308
+  },
+  {
+    "id": 62,
+    "level": 4,
+    "meaning_ja": "文字通りに",
+    "pos": "adverb",
+    "correct": "literally",
+    "distractors": [
+      "publicly",
+      "presumably",
+      "formally"
+    ],
+    "a": 1.566635,
+    "b": -0.183128,
+    "c": 0.044761
+  },
+  {
+    "id": 63,
+    "level": 4,
+    "meaning_ja": "権利を与える",
+    "pos": "verb",
+    "correct": "entitle",
+    "distractors": [
+      "assess",
+      "cultivate",
+      "seize"
+    ],
+    "a": 4.000381,
+    "b": 0.133196,
+    "c": 0.214697
+  },
+  {
+    "id": 64,
+    "level": 4,
+    "meaning_ja": "先の",
+    "pos": "adjective",
+    "correct": "prior",
+    "distractors": [
+      "snowy",
+      "causal",
+      "stressful"
+    ],
+    "a": 2.259762,
+    "b": -0.98284,
+    "c": 0.151378
+  },
+  {
+    "id": 65,
+    "level": 4,
+    "meaning_ja": "大量の",
+    "pos": "adjective",
+    "correct": "massive",
+    "distractors": [
+      "harsh",
+      "primitive",
+      "gradual"
+    ],
+    "a": 2.250753,
+    "b": -0.219098,
+    "c": 0.1891
+  },
+  {
+    "id": 66,
+    "level": 4,
+    "meaning_ja": "角（度）",
+    "pos": "noun",
+    "correct": "angle",
+    "distractors": [
+      "herb",
+      "stove",
+      "manual"
+    ],
+    "a": 1.409767,
+    "b": -0.933485,
+    "c": 0.011252
+  },
+  {
+    "id": 67,
+    "level": 4,
+    "meaning_ja": "歳入",
+    "pos": "noun",
+    "correct": "revenue",
+    "distractors": [
+      "ambition",
+      "coral",
+      "ballet"
+    ],
+    "a": 4.801316,
+    "b": 0.010642,
+    "c": 0.111191
+  },
+  {
+    "id": 68,
+    "level": 4,
+    "meaning_ja": "金融",
+    "pos": "noun",
+    "correct": "finance",
+    "distractors": [
+      "tablet",
+      "farmland",
+      "exploration"
+    ],
+    "a": 1.909474,
+    "b": -0.226717,
+    "c": 0.206829
+  },
+  {
+    "id": 69,
+    "level": 4,
+    "meaning_ja": "知覚する",
+    "pos": "verb",
+    "correct": "perceive",
+    "distractors": [
+      "qualify",
+      "frustrate",
+      "renew"
+    ],
+    "a": 2.896273,
+    "b": -0.26732,
+    "c": 0.284423
+  },
+  {
+    "id": 70,
+    "level": 4,
+    "meaning_ja": "法人の",
+    "pos": "adjective",
+    "correct": "corporate",
+    "distractors": [
+      "occasional",
+      "noticeable",
+      "unavoidable"
+    ],
+    "a": 1.360764,
+    "b": 0.817218,
+    "c": 0.006817
+  },
+  {
+    "id": 71,
+    "level": 4,
+    "meaning_ja": "統合",
+    "pos": "noun",
+    "correct": "integration",
+    "distractors": [
+      "defeat",
+      "artifact",
+      "wallet"
+    ],
+    "a": 10.624793,
+    "b": -0.165232,
+    "c": 0.127124
+  },
+  {
+    "id": 72,
+    "level": 4,
+    "meaning_ja": "計画",
+    "pos": "noun",
+    "correct": "scheme",
+    "distractors": [
+      "ant",
+      "pamphlet",
+      "merit"
+    ],
+    "a": 1.745093,
+    "b": 0.094669,
+    "c": 0.221682
+  },
+  {
+    "id": 73,
+    "level": 4,
+    "meaning_ja": "収容設備",
+    "pos": "noun",
+    "correct": "accommodation",
+    "distractors": [
+      "miracle",
+      "grace",
+      "conservation"
+    ],
+    "a": 2.111132,
+    "b": -0.08033,
+    "c": 0.166036
+  },
+  {
+    "id": 74,
+    "level": 4,
+    "meaning_ja": "制限する",
+    "pos": "verb",
+    "correct": "restrict",
+    "distractors": [
+      "depict",
+      "dedicate",
+      "abolish"
+    ],
+    "a": 5.07143,
+    "b": -0.286748,
+    "c": 0.25197
+  },
+  {
+    "id": 75,
+    "level": 4,
+    "meaning_ja": "所有（物）",
+    "pos": "noun",
+    "correct": "possession",
+    "distractors": [
+      "chemist",
+      "personnel",
+      "chamber"
+    ],
+    "a": 1.209651,
+    "b": -0.063881,
+    "c": 0.128498
+  },
+  {
+    "id": 76,
+    "level": 4,
+    "meaning_ja": "不安",
+    "pos": "noun",
+    "correct": "anxiety",
+    "distractors": [
+      "habitat",
+      "dialect",
+      "convention"
+    ],
+    "a": 1.641845,
+    "b": 0.496381,
+    "c": 0.041526
+  },
+  {
+    "id": 77,
+    "level": 4,
+    "meaning_ja": "横顔",
+    "pos": "noun",
+    "correct": "profile",
+    "distractors": [
+      "refund",
+      "bloom",
+      "penalty"
+    ],
+    "a": 1.23771,
+    "b": 0.614648,
+    "c": 0.14233
+  },
+  {
+    "id": 78,
+    "level": 4,
+    "meaning_ja": "目に見える",
+    "pos": "adjective",
+    "correct": "visible",
+    "distractors": [
+      "vivid",
+      "pleasant",
+      "stylish"
+    ],
+    "a": 1.826623,
+    "b": -0.508923,
+    "c": 0.009258
+  },
+  {
+    "id": 79,
+    "level": 4,
+    "meaning_ja": "不動産",
+    "pos": "noun",
+    "correct": "estate",
+    "distractors": [
+      "summit",
+      "mud",
+      "neglect"
+    ],
+    "a": 3.757806,
+    "b": -0.100544,
+    "c": 0.122787
+  },
+  {
+    "id": 80,
+    "level": 4,
+    "meaning_ja": "政治制度",
+    "pos": "noun",
+    "correct": "regime",
+    "distractors": [
+      "voyage",
+      "investigator",
+      "punch"
+    ],
+    "a": 1.525704,
+    "b": 0.467438,
+    "c": 0.141313
+  },
+  {
+    "id": 81,
+    "level": 5,
+    "meaning_ja": "安定",
+    "pos": "noun",
+    "correct": "stability",
+    "distractors": [
+      "astronomer",
+      "relaxation",
+      "dilemma"
+    ],
+    "a": 1.569857,
+    "b": 0.914302,
+    "c": 0.026226
+  },
+  {
+    "id": 82,
+    "level": 5,
+    "meaning_ja": "選ぶ",
+    "pos": "verb",
+    "correct": "opt",
+    "distractors": [
+      "orient",
+      "deteriorate",
+      "execute"
+    ],
+    "a": 0.850911,
+    "b": 0.139334,
+    "c": 0.00571
+  },
+  {
+    "id": 83,
+    "level": 5,
+    "meaning_ja": "（〜する）資格のある",
+    "pos": "adjective",
+    "correct": "eligible",
+    "distractors": [
+      "partial",
+      "optimistic",
+      "operational"
+    ],
+    "a": 2.522165,
+    "b": 1.090033,
+    "c": 0.167775
+  },
+  {
+    "id": 84,
+    "level": 5,
+    "meaning_ja": "潜在的に",
+    "pos": "adverb",
+    "correct": "potentially",
+    "distractors": [
+      "scientifically",
+      "remarkably",
+      "adequately"
+    ],
+    "a": 6.130606,
+    "b": 0.958275,
+    "c": 0.145827
+  },
+  {
+    "id": 85,
+    "level": 5,
+    "meaning_ja": "格付け",
+    "pos": "noun",
+    "correct": "rating",
+    "distractors": [
+      "homeland",
+      "discomfort",
+      "logo"
+    ],
+    "a": 1.261756,
+    "b": 1.181695,
+    "c": 0.01183
+  },
+  {
+    "id": 86,
+    "level": 5,
+    "meaning_ja": "敵意のある",
+    "pos": "adjective",
+    "correct": "hostile",
+    "distractors": [
+      "advisory",
+      "mandatory",
+      "magnetic"
+    ],
+    "a": 2.083438,
+    "b": 0.122256,
+    "c": 0.004516
+  },
+  {
+    "id": 87,
+    "level": 5,
+    "meaning_ja": "残酷な",
+    "pos": "adjective",
+    "correct": "cruel",
+    "distractors": [
+      "serial",
+      "exotic",
+      "unrelated"
+    ],
+    "a": 1.964163,
+    "b": 1.338632,
+    "c": 0.117735
+  },
+  {
+    "id": 88,
+    "level": 5,
+    "meaning_ja": "身をさらすこと",
+    "pos": "noun",
+    "correct": "exposure",
+    "distractors": [
+      "supplement",
+      "hydrogen",
+      "detention"
+    ],
+    "a": 2.212985,
+    "b": 0.598272,
+    "c": 0.184459
+  },
+  {
+    "id": 89,
+    "level": 5,
+    "meaning_ja": "降下",
+    "pos": "noun",
+    "correct": "descent",
+    "distractors": [
+      "frontier",
+      "peer",
+      "diesel"
+    ],
+    "a": 4.265288,
+    "b": -0.052374,
+    "c": 0.169948
+  },
+  {
+    "id": 90,
+    "level": 5,
+    "meaning_ja": "一覧表への記入",
+    "pos": "noun",
+    "correct": "listing",
+    "distractors": [
+      "tolerance",
+      "protocol",
+      "ramp"
+    ],
+    "a": 0.998496,
+    "b": 0.66639,
+    "c": 0.01275
+  },
+  {
+    "id": 91,
+    "level": 5,
+    "meaning_ja": "協力",
+    "pos": "noun",
+    "correct": "collaboration",
+    "distractors": [
+      "ambassador",
+      "creativity",
+      "lawsuit"
+    ],
+    "a": 2.015479,
+    "b": 0.090148,
+    "c": 0.086679
+  },
+  {
+    "id": 92,
+    "level": 5,
+    "meaning_ja": "業績",
+    "pos": "noun",
+    "correct": "accomplishment",
+    "distractors": [
+      "constraint",
+      "resignation",
+      "inventory"
+    ],
+    "a": 1.979447,
+    "b": -0.319508,
+    "c": 0.204542
+  },
+  {
+    "id": 93,
+    "level": 5,
+    "meaning_ja": "使用料",
+    "pos": "noun",
+    "correct": "toll",
+    "distractors": [
+      "sickness",
+      "pharmacy",
+      "patch"
+    ],
+    "a": 1.742764,
+    "b": 1.120896,
+    "c": 0.146035
+  },
+  {
+    "id": 94,
+    "level": 5,
+    "meaning_ja": "枠組み",
+    "pos": "noun",
+    "correct": "framework",
+    "distractors": [
+      "penny",
+      "revision",
+      "rejection"
+    ],
+    "a": 1.4321,
+    "b": 1.498147,
+    "c": 0.010331
+  },
+  {
+    "id": 95,
+    "level": 5,
+    "meaning_ja": "墓",
+    "pos": "noun",
+    "correct": "tomb",
+    "distractors": [
+      "inclusion",
+      "separation",
+      "surplus"
+    ],
+    "a": 1.63358,
+    "b": 1.529611,
+    "c": 0.038277
+  },
+  {
+    "id": 96,
+    "level": 5,
+    "meaning_ja": "祈り",
+    "pos": "noun",
+    "correct": "prayer",
+    "distractors": [
+      "globe",
+      "nitrogen",
+      "ram"
+    ],
+    "a": 1.763445,
+    "b": 0.86711,
+    "c": 0.146761
+  },
+  {
+    "id": 97,
+    "level": 5,
+    "meaning_ja": "一致",
+    "pos": "noun",
+    "correct": "correspondence",
+    "distractors": [
+      "worship",
+      "transplant",
+      "combat"
+    ],
+    "a": 2.101752,
+    "b": 0.470788,
+    "c": 0.228311
+  },
+  {
+    "id": 98,
+    "level": 5,
+    "meaning_ja": "直立した",
+    "pos": "verb",
+    "correct": "erect",
+    "distractors": [
+      "tremble",
+      "deprive",
+      "renovate"
+    ],
+    "a": 0.897422,
+    "b": 0.73214,
+    "c": 0.023606
+  },
+  {
+    "id": 99,
+    "level": 5,
+    "meaning_ja": "完全な",
+    "pos": "adjective",
+    "correct": "integral",
+    "distractors": [
+      "offshore",
+      "legislative",
+      "triple"
+    ],
+    "a": 4.664518,
+    "b": 1.149204,
+    "c": 0.189475
+  },
+  {
+    "id": 100,
+    "level": 5,
+    "meaning_ja": "抽象的な",
+    "pos": "adjective",
+    "correct": "abstract",
+    "distractors": [
+      "inherent",
+      "naive",
+      "archaeological"
+    ],
+    "a": 1.580515,
+    "b": 0.872775,
+    "c": 0.01536
+  },
+  {
+    "id": 101,
+    "level": 6,
+    "meaning_ja": "とても天気の良い",
+    "pos": "adjective",
+    "correct": "gorgeous",
+    "distractors": [
+      "lightweight",
+      "inferior",
+      "promotional"
+    ],
+    "a": 1.025096,
+    "b": 1.749771,
+    "c": 0.107175
+  },
+  {
+    "id": 102,
+    "level": 6,
+    "meaning_ja": "それゆえ",
+    "pos": "adverb",
+    "correct": "hence",
+    "distractors": [
+      "urgently",
+      "ecologically",
+      "nicely"
+    ],
+    "a": 3.266566,
+    "b": 0.139063,
+    "c": 0.140773
+  },
+  {
+    "id": 103,
+    "level": 6,
+    "meaning_ja": "概要",
+    "pos": "noun",
+    "correct": "overview",
+    "distractors": [
+      "spacecraft",
+      "alteration",
+      "mound"
+    ],
+    "a": 1.171568,
+    "b": 0.385242,
+    "c": 0.014512
+  },
+  {
+    "id": 104,
+    "level": 6,
+    "meaning_ja": "祖先",
+    "pos": "noun",
+    "correct": "ancestry",
+    "distractors": [
+      "coordination",
+      "liability",
+      "mathematician"
+    ],
+    "a": 5.406076,
+    "b": 1.849345,
+    "c": 0.223867
+  },
+  {
+    "id": 105,
+    "level": 6,
+    "meaning_ja": "子孫",
+    "pos": "noun",
+    "correct": "descendant",
+    "distractors": [
+      "capitalism",
+      "acquaintance",
+      "ankle"
+    ],
+    "a": 2.186652,
+    "b": 1.476356,
+    "c": 0.21712
+  },
+  {
+    "id": 106,
+    "level": 6,
+    "meaning_ja": "実験",
+    "pos": "noun",
+    "correct": "experimentation",
+    "distractors": [
+      "sunglass",
+      "courtesy",
+      "pathogen"
+    ],
+    "a": 1.950884,
+    "b": 0.099572,
+    "c": 0.009999
+  },
+  {
+    "id": 107,
+    "level": 6,
+    "meaning_ja": "原子",
+    "pos": "noun",
+    "correct": "atom",
+    "distractors": [
+      "fungus",
+      "rust",
+      "fist"
+    ],
+    "a": 2.142669,
+    "b": 1.918686,
+    "c": 0.010799
+  },
+  {
+    "id": 108,
+    "level": 6,
+    "meaning_ja": "傾向",
+    "pos": "noun",
+    "correct": "inclination",
+    "distractors": [
+      "projector",
+      "resin",
+      "infancy"
+    ],
+    "a": 1.188224,
+    "b": 1.153502,
+    "c": 0.012485
+  },
+  {
+    "id": 109,
+    "level": 6,
+    "meaning_ja": "自由にする",
+    "pos": "verb",
+    "correct": "liberate",
+    "distractors": [
+      "encompass",
+      "alleviate",
+      "circulate"
+    ],
+    "a": 2.241439,
+    "b": 1.572866,
+    "c": 0.140981
+  },
+  {
+    "id": 110,
+    "level": 6,
+    "meaning_ja": "誠実な",
+    "pos": "adjective",
+    "correct": "sincere",
+    "distractors": [
+      "parliamentary",
+      "linear",
+      "inward"
+    ],
+    "a": 2.260213,
+    "b": 0.231383,
+    "c": 0.237015
+  },
+  {
+    "id": 111,
+    "level": 6,
+    "meaning_ja": "市民の",
+    "pos": "adjective",
+    "correct": "civilian",
+    "distractors": [
+      "oval",
+      "simultaneous",
+      "damp"
+    ],
+    "a": 2.459543,
+    "b": 2.104027,
+    "c": 0.023075
+  },
+  {
+    "id": 112,
+    "level": 6,
+    "meaning_ja": "統計の",
+    "pos": "adjective",
+    "correct": "statistical",
+    "distractors": [
+      "radioactive",
+      "unpopular",
+      "jumbo"
+    ],
+    "a": 1.328502,
+    "b": 1.519881,
+    "c": 0.030521
+  },
+  {
+    "id": 113,
+    "level": 6,
+    "meaning_ja": "居住",
+    "pos": "noun",
+    "correct": "residency",
+    "distractors": [
+      "commander",
+      "aerial",
+      "lieutenant"
+    ],
+    "a": 1.604057,
+    "b": 0.625818,
+    "c": 0.009785
+  },
+  {
+    "id": 114,
+    "level": 6,
+    "meaning_ja": "不一致",
+    "pos": "noun",
+    "correct": "discrepancy",
+    "distractors": [
+      "incorporation",
+      "patron",
+      "breadth"
+    ],
+    "a": 1.768951,
+    "b": 1.259637,
+    "c": 0.016288
+  },
+  {
+    "id": 115,
+    "level": 6,
+    "meaning_ja": "加入する",
+    "pos": "verb",
+    "correct": "subscribe",
+    "distractors": [
+      "withhold",
+      "differentiate",
+      "murmur"
+    ],
+    "a": 1.504625,
+    "b": 1.05192,
+    "c": 0.183358
+  },
+  {
+    "id": 116,
+    "level": 6,
+    "meaning_ja": "抑制する",
+    "pos": "verb",
+    "correct": "restrain",
+    "distractors": [
+      "initiate",
+      "comprehend",
+      "intrigue"
+    ],
+    "a": 1.718922,
+    "b": 1.508925,
+    "c": 0.066375
+  },
+  {
+    "id": 117,
+    "level": 6,
+    "meaning_ja": "従う",
+    "pos": "verb",
+    "correct": "conform",
+    "distractors": [
+      "recite",
+      "evacuate",
+      "compel"
+    ],
+    "a": 1.499168,
+    "b": 1.70422,
+    "c": 0.045024
+  },
+  {
+    "id": 118,
+    "level": 6,
+    "meaning_ja": "嘆き",
+    "pos": "noun",
+    "correct": "grief",
+    "distractors": [
+      "rifle",
+      "miner",
+      "naturalist"
+    ],
+    "a": 1.190654,
+    "b": 1.465688,
+    "c": 0.067464
+  },
+  {
+    "id": 119,
+    "level": 6,
+    "meaning_ja": "確認",
+    "pos": "noun",
+    "correct": "verification",
+    "distractors": [
+      "stagnation",
+      "deduction",
+      "herd"
+    ],
+    "a": 1.357077,
+    "b": 0.063285,
+    "c": 0.027668
+  },
+  {
+    "id": 120,
+    "level": 6,
+    "meaning_ja": "分割",
+    "pos": "noun",
+    "correct": "partition",
+    "distractors": [
+      "motto",
+      "pickle",
+      "novelty"
+    ],
+    "a": 1.436548,
+    "b": 1.156805,
+    "c": 0.075388
+  },
+  {
+    "id": 121,
+    "level": 7,
+    "meaning_ja": "誓い",
+    "pos": "noun",
+    "correct": "oath",
+    "distractors": [
+      "repertoire",
+      "payroll",
+      "ensemble"
+    ],
+    "a": 2.607418,
+    "b": 1.253991,
+    "c": 0.152953
+  },
+  {
+    "id": 122,
+    "level": 7,
+    "meaning_ja": "保証書",
+    "pos": "noun",
+    "correct": "warrant",
+    "distractors": [
+      "unison",
+      "aerospace",
+      "gospel"
+    ],
+    "a": 1.178284,
+    "b": 1.079497,
+    "c": 0.144936
+  },
+  {
+    "id": 123,
+    "level": 7,
+    "meaning_ja": "貨物",
+    "pos": "noun",
+    "correct": "freight",
+    "distractors": [
+      "ignorance",
+      "mucosa",
+      "mainland"
+    ],
+    "a": 1.582694,
+    "b": 2.493927,
+    "c": 0.125434
+  },
+  {
+    "id": 124,
+    "level": 7,
+    "meaning_ja": "主張",
+    "pos": "noun",
+    "correct": "assertion",
+    "distractors": [
+      "inquest",
+      "biopsy",
+      "disclosure"
+    ],
+    "a": 1.526385,
+    "b": 1.128085,
+    "c": 0.179224
+  },
+  {
+    "id": 125,
+    "level": 7,
+    "meaning_ja": "固定観念",
+    "pos": "noun",
+    "correct": "stereotype",
+    "distractors": [
+      "precedent",
+      "module",
+      "dismay"
+    ],
+    "a": 1.81549,
+    "b": 0.7165,
+    "c": 0.173796
+  },
+  {
+    "id": 126,
+    "level": 7,
+    "meaning_ja": "補足の ",
+    "pos": "adjective",
+    "correct": "complementary",
+    "distractors": [
+      "imminent",
+      "tricky",
+      "eternal"
+    ],
+    "a": 1.953395,
+    "b": 1.330814,
+    "c": 0.230538
+  },
+  {
+    "id": 127,
+    "level": 7,
+    "meaning_ja": "運転する人",
+    "pos": "noun",
+    "correct": "motorist",
+    "distractors": [
+      "secrecy",
+      "curator",
+      "analogy"
+    ],
+    "a": 1.009882,
+    "b": 0.359536,
+    "c": 0.017611
+  },
+  {
+    "id": 128,
+    "level": 7,
+    "meaning_ja": "ちらりと見えること",
+    "pos": "noun",
+    "correct": "glimpse",
+    "distractors": [
+      "betrayal",
+      "disco",
+      "banner"
+    ],
+    "a": 8.235971,
+    "b": 1.957962,
+    "c": 0.245054
+  },
+  {
+    "id": 129,
+    "level": 7,
+    "meaning_ja": "侵入者",
+    "pos": "noun",
+    "correct": "raider",
+    "distractors": [
+      "monopoly",
+      "skipper",
+      "cinnamon"
+    ],
+    "a": 0.910529,
+    "b": 1.109847,
+    "c": 0.021885
+  },
+  {
+    "id": 130,
+    "level": 7,
+    "meaning_ja": "外交",
+    "pos": "noun",
+    "correct": "diplomacy",
+    "distractors": [
+      "injunction",
+      "farmhouse",
+      "embargo"
+    ],
+    "a": 1.704693,
+    "b": 1.121898,
+    "c": 0.180829
+  },
+  {
+    "id": 131,
+    "level": 7,
+    "meaning_ja": "バランスをとる",
+    "pos": "verb",
+    "correct": "poise",
+    "distractors": [
+      "chuck",
+      "knit",
+      "shiver"
+    ],
+    "a": 1.644171,
+    "b": 2.072429,
+    "c": 0.012226
+  },
+  {
+    "id": 132,
+    "level": 7,
+    "meaning_ja": "装飾用の ",
+    "pos": "adjective",
+    "correct": "decorative",
+    "distractors": [
+      "aging",
+      "hopeless",
+      "marital"
+    ],
+    "a": 1.850386,
+    "b": 1.424916,
+    "c": 0.029336
+  },
+  {
+    "id": 133,
+    "level": 7,
+    "meaning_ja": "心臓の ",
+    "pos": "adjective",
+    "correct": "cardiac",
+    "distractors": [
+      "creamy",
+      "apt",
+      "dire"
+    ],
+    "a": 1.238026,
+    "b": 2.128939,
+    "c": 0.05876
+  },
+  {
+    "id": 134,
+    "level": 7,
+    "meaning_ja": "量の ",
+    "pos": "adjective",
+    "correct": "quantitative",
+    "distractors": [
+      "relentless",
+      "median",
+      "comparative"
+    ],
+    "a": 1.705042,
+    "b": 1.307472,
+    "c": 0.01396
+  },
+  {
+    "id": 135,
+    "level": 7,
+    "meaning_ja": "深く ",
+    "pos": "adverb",
+    "correct": "profoundly",
+    "distractors": [
+      "loosely",
+      "indirectly",
+      "etcetera"
+    ],
+    "a": 3.362299,
+    "b": 2.021102,
+    "c": 0.262957
+  },
+  {
+    "id": 136,
+    "level": 7,
+    "meaning_ja": "選挙区",
+    "pos": "noun",
+    "correct": "constituency",
+    "distractors": [
+      "unrest",
+      "majesty",
+      "baron"
+    ],
+    "a": 1.429262,
+    "b": 1.76268,
+    "c": 0.067466
+  },
+  {
+    "id": 137,
+    "level": 7,
+    "meaning_ja": "格言",
+    "pos": "noun",
+    "correct": "maxim",
+    "distractors": [
+      "brigade",
+      "accountant",
+      "probation"
+    ],
+    "a": 4.921808,
+    "b": 1.965463,
+    "c": 0.074633
+  },
+  {
+    "id": 138,
+    "level": 7,
+    "meaning_ja": "軽蔑",
+    "pos": "noun",
+    "correct": "contempt",
+    "distractors": [
+      "communism",
+      "stimulation",
+      "referendum"
+    ],
+    "a": 2.448542,
+    "b": 1.89077,
+    "c": 0.195612
+  },
+  {
+    "id": 139,
+    "level": 7,
+    "meaning_ja": "頑固な",
+    "pos": "adjective",
+    "correct": "stubborn",
+    "distractors": [
+      "pragmatic",
+      "bureaucratic",
+      "molecular"
+    ],
+    "a": 2.257918,
+    "b": 1.453424,
+    "c": 0.270928
+  },
+  {
+    "id": 140,
+    "level": 7,
+    "meaning_ja": "屋根裏部屋 ",
+    "pos": "noun",
+    "correct": "attic",
+    "distractors": [
+      "referral",
+      "embargo",
+      "goodwill"
+    ],
+    "a": 0.918663,
+    "b": 1.493043,
+    "c": 0.010344
+  },
+  {
+    "id": 141,
+    "level": 8,
+    "meaning_ja": "構文",
+    "pos": "noun",
+    "correct": "syntax",
+    "distractors": [
+      "brewery",
+      "hooker",
+      "hawk"
+    ],
+    "a": 1.073603,
+    "b": 2.313499,
+    "c": 0.007483
+  },
+  {
+    "id": 142,
+    "level": 8,
+    "meaning_ja": "起訴する",
+    "pos": "verb",
+    "correct": "prosecute",
+    "distractors": [
+      "grate",
+      "lurk",
+      "rinse"
+    ],
+    "a": 1.969437,
+    "b": 2.06748,
+    "c": 0.258245
+  },
+  {
+    "id": 143,
+    "level": 8,
+    "meaning_ja": "普遍的に",
+    "pos": "adverb",
+    "correct": "universally",
+    "distractors": [
+      "inadvertently",
+      "boldly",
+      "immensely"
+    ],
+    "a": 4.644819,
+    "b": 1.039984,
+    "c": 0.397517
+  },
+  {
+    "id": 144,
+    "level": 8,
+    "meaning_ja": "匿名であること",
+    "pos": "noun",
+    "correct": "anonymity",
+    "distractors": [
+      "broom",
+      "snooker",
+      "saloon"
+    ],
+    "a": 1.15138,
+    "b": 2.232751,
+    "c": 0.010232
+  },
+  {
+    "id": 145,
+    "level": 8,
+    "meaning_ja": "子宮",
+    "pos": "noun",
+    "correct": "womb",
+    "distractors": [
+      "envy",
+      "vibration",
+      "cooker"
+    ],
+    "a": 0.86098,
+    "b": 2.923696,
+    "c": 0.039692
+  },
+  {
+    "id": 146,
+    "level": 8,
+    "meaning_ja": "正気の",
+    "pos": "adjective",
+    "correct": "sane",
+    "distractors": [
+      "penal",
+      "pristine",
+      "pancreatic"
+    ],
+    "a": 3.395452,
+    "b": 2.956796,
+    "c": 0.170552
+  },
+  {
+    "id": 147,
+    "level": 8,
+    "meaning_ja": "自殺の",
+    "pos": "adjective",
+    "correct": "suicidal",
+    "distractors": [
+      "longitudinal",
+      "disruptive",
+      "endoscopic"
+    ],
+    "a": 1.870021,
+    "b": 0.872428,
+    "c": 0.051044
+  },
+  {
+    "id": 148,
+    "level": 8,
+    "meaning_ja": "聖歌",
+    "pos": "noun",
+    "correct": "anthem",
+    "distractors": [
+      "tempo",
+      "elegance",
+      "slaughter"
+    ],
+    "a": 0.902905,
+    "b": 2.03084,
+    "c": 0.027956
+  },
+  {
+    "id": 149,
+    "level": 8,
+    "meaning_ja": "説得",
+    "pos": "noun",
+    "correct": "persuasion",
+    "distractors": [
+      "persona",
+      "variability",
+      "heartbeat"
+    ],
+    "a": 2.394844,
+    "b": 1.754182,
+    "c": 0.21614
+  },
+  {
+    "id": 150,
+    "level": 8,
+    "meaning_ja": "長期間続く",
+    "pos": "adjective",
+    "correct": "perennial",
+    "distractors": [
+      "homogeneous",
+      "psychic",
+      "fluorescent"
+    ],
+    "a": 2.017679,
+    "b": 2.523532,
+    "c": 0.203785
+  },
+  {
+    "id": 151,
+    "level": 8,
+    "meaning_ja": "結果として起こる",
+    "pos": "adjective",
+    "correct": "consequent",
+    "distractors": [
+      "doctoral",
+      "stray",
+      "recurrent"
+    ],
+    "a": 2.05877,
+    "b": 1.48295,
+    "c": 0.226346
+  },
+  {
+    "id": 152,
+    "level": 8,
+    "meaning_ja": "没頭",
+    "pos": "noun",
+    "correct": "preoccupation",
+    "distractors": [
+      "monsieur",
+      "starvation",
+      "gypsy"
+    ],
+    "a": 3.644313,
+    "b": 1.06311,
+    "c": 0.262877
+  },
+  {
+    "id": 153,
+    "level": 8,
+    "meaning_ja": "恐怖",
+    "pos": "noun",
+    "correct": "dread",
+    "distractors": [
+      "relegation",
+      "deviation",
+      "midfielder"
+    ],
+    "a": 3.159229,
+    "b": 1.574089,
+    "c": 0.260123
+  },
+  {
+    "id": 154,
+    "level": 8,
+    "meaning_ja": "法令",
+    "pos": "noun",
+    "correct": "decree",
+    "distractors": [
+      "affinity",
+      "devastation",
+      "parasite"
+    ],
+    "a": 2.724891,
+    "b": 2.671903,
+    "c": 0.125061
+  },
+  {
+    "id": 155,
+    "level": 8,
+    "meaning_ja": "贅沢な",
+    "pos": "adjective",
+    "correct": "luxurious",
+    "distractors": [
+      "erratic",
+      "cunning",
+      "indicative"
+    ],
+    "a": 2.483155,
+    "b": 0.566513,
+    "c": 0.084049
+  },
+  {
+    "id": 156,
+    "level": 8,
+    "meaning_ja": "省略",
+    "pos": "noun",
+    "correct": "omission",
+    "distractors": [
+      "gem",
+      "resonance",
+      "retaliation"
+    ],
+    "a": 0.887333,
+    "b": 2.704704,
+    "c": 0.044241
+  },
+  {
+    "id": 157,
+    "level": 8,
+    "meaning_ja": "移り変わり",
+    "pos": "noun",
+    "correct": "flux",
+    "distractors": [
+      "coating",
+      "whereabouts",
+      "jeopardy"
+    ],
+    "a": 3.61521,
+    "b": 3.088248,
+    "c": 0.238071
+  },
+  {
+    "id": 158,
+    "level": 8,
+    "meaning_ja": "説教",
+    "pos": "noun",
+    "correct": "sermon",
+    "distractors": [
+      "apprehension",
+      "brilliance",
+      "pilgrimage"
+    ],
+    "a": 1.675847,
+    "b": 2.652474,
+    "c": 0.100311
+  },
+  {
+    "id": 159,
+    "level": 8,
+    "meaning_ja": "雑用",
+    "pos": "noun",
+    "correct": "chore",
+    "distractors": [
+      "wig",
+      "fracture",
+      "foreground"
+    ],
+    "a": 1.995238,
+    "b": 2.460883,
+    "c": 0.176672
+  },
+  {
+    "id": 160,
+    "level": 8,
+    "meaning_ja": "階層性の",
+    "pos": "adjective",
+    "correct": "hierarchical",
+    "distractors": [
+      "aristocratic",
+      "martial",
+      "proprietary"
+    ],
+    "a": 1.667135,
+    "b": 2.799883,
+    "c": 0.052275
+  }
+]
