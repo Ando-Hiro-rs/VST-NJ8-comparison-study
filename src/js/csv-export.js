@@ -79,7 +79,7 @@ export function buildVstTrialsCSV(participant, session, trials) {
   return rows.join('\n');
 }
 
-export function buildSummaryCSV(participant, session, celpResult, vstResult, practiceStats) {
+export function buildSummaryCSV(participant, session, celpResult, vstResult, practiceStats, browserInfo) {
   const headers = ['key', 'value'];
   const rows = [headers.join(',')];
   const data = [
@@ -94,6 +94,20 @@ export function buildSummaryCSV(participant, session, celpResult, vstResult, pra
     ['consent_agreed', session.consent_agreed ? 1 : 0],
     ['consent_timestamp', session.consent_timestamp || ''],
   ];
+  if (browserInfo) {
+    data.push(
+      ['browser_user_agent', browserInfo.user_agent],
+      ['browser_platform', browserInfo.platform],
+      ['browser_language', browserInfo.language],
+      ['browser_timezone', browserInfo.timezone],
+      ['screen_width', browserInfo.screen_width],
+      ['screen_height', browserInfo.screen_height],
+      ['screen_color_depth', browserInfo.color_depth],
+      ['device_pixel_ratio', browserInfo.pixel_ratio],
+      ['device_type', browserInfo.device_type],
+      ['touch_support', browserInfo.touch_support ? 1 : 0],
+    );
+  }
   if (practiceStats) {
     data.push(
       ['celp_practice_total', practiceStats.total],
