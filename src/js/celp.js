@@ -28,10 +28,11 @@ export function buildCelpTrials(pool, n) {
 }
 
 export class CelpRunner {
-  constructor(elements, items, callbacks) {
+  constructor(elements, items, callbacks, options = {}) {
     this.el = elements;
     this.items = items;
     this.callbacks = callbacks;
+    this.showFeedback = options.showFeedback ?? true;
     this.idx = 0;
     this.phase = 'idle';
     this.rtStart = 0;
@@ -92,8 +93,14 @@ export class CelpRunner {
     const rt = Math.round(performance.now() - this.rtStart);
     const item = this.items[this.idx];
     const correct = respondedYes === item.isSyn;
-    this.el.feedback.textContent = correct ? '✓ 正解' : '✗ 不正解';
-    this.el.feedback.className = 'feedback-msg ' + (correct ? 'fb-correct' : 'fb-wrong');
+
+    if (this.showFeedback) {
+      this.el.feedback.textContent = correct ? '✓ 正解' : '✗ 不正解';
+      this.el.feedback.className = 'feedback-msg ' + (correct ? 'fb-correct' : 'fb-wrong');
+    } else {
+      this.el.feedback.textContent = '';
+    }
+
     this.el.btnRow.style.display = 'none';
     this.results.push({
       trial_num: this.idx + 1,
@@ -105,7 +112,8 @@ export class CelpRunner {
       rt_ms: rt,
     });
     this.idx++;
-    this.timer = setTimeout(() => this.next(), 400);
+    const delay = this.showFeedback ? 600 : 300;
+    this.timer = setTimeout(() => this.next(), delay);
   }
 
   cleanup() {
