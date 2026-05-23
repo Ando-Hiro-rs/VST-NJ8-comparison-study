@@ -6,7 +6,7 @@ import {
   buildSummaryCSV, makeFilename
 } from './csv-export.js';
 
-const TEST_VERSION = 'NeoCELP-VST v1.2';
+const TEST_VERSION = 'NeoCELP-VST v1.3';
 const STORAGE_KEY = 'neocelp_vst_participant_ids';
 
 const state = {
@@ -20,12 +20,42 @@ const state = {
   vstRawTrials: [],
   celpPracticeResults: [],
   practiceStats: null,
+  browserInfo: null,
 };
 
 let celpItems = null;
 let vstItems = null;
 let celpRunner = null;
 let vstRunner = null;
+
+function detectBrowserInfo() {
+  const ua = navigator.userAgent;
+  let deviceType = 'desktop';
+  if (/Mobile|Android|iPhone/i.test(ua)) deviceType = 'mobile';
+  else if (/iPad|Tablet/i.test(ua)) deviceType = 'tablet';
+  return {
+    user_agent: ua,
+    platform: navigator.platform || '',
+    language: navigator.language || '',
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || '',
+    screen_width: window.screen.width,
+    screen_height: window.screen.height,
+    color_depth: window.screen.colorDepth,
+    pixel_ratio: window.devicePixelRatio || 1,
+    device_type: deviceType,
+    touch_support: 'ontouchstart' in window || navigator.maxTouchPoints > 0,
+  };
+}
+
+function applyDeviceClass() {
+  const info = state.browserInfo;
+  if (info.device_type === 'mobile' || info.touch_support) {
+    document.body.classList.add('is-touch-device');
+  }
+  if (info.device_type === 'mobile') {
+    document.body.classList.add('is-mobile');
+  }
+}
 
 async function loadData() {
   const [celp, vst] = await Promise.all([
@@ -61,11 +91,7 @@ function getStoredIds() {
 function addStoredId(id, mode) {
   try {
     const ids = getStoredIds();
-    ids.push({
-      id,
-      mode,
-      timestamp: new Date().toISOString(),
-    });
+    ids.push({ id, mode, timestamp: new Date().toISOString() });
     localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
   } catch (e) {
     console.warn('localStorage への保存に失敗しました', e);
@@ -108,13 +134,11 @@ function checkInfoForm() {
   const id = document.getElementById('f-id').value.trim();
   const warningEl = document.getElementById('id-warning');
   const btn = document.getElementById('info-btn');
-
   if (id.length === 0) {
     warningEl.style.display = 'none';
     btn.disabled = true;
     return;
   }
-
   if (isIdDuplicate(id, state.mode)) {
     warningEl.style.display = 'block';
     warningEl.textContent = `⚠ このIDは「${getModeLabel(state.mode)}」で既に受験記録があります。別のIDを使用してください。`;
@@ -131,7 +155,6 @@ function submitInfo() {
     alert(`このIDは「${getModeLabel(state.mode)}」で既に受験済みです。別のIDを使用してください。`);
     return;
   }
-
   state.participant = {
     id,
     age: document.getElementById('f-age').value.trim(),
@@ -170,7 +193,6 @@ function showCelpInstructions() {
 function startCelpPractice() {
   const practicePool = celpItems.practice;
   const practiceItems = buildCelpTrials(practicePool, 8);
-
   const elements = {
     fix: document.getElementById('celp-fix'),
     prime: document.getElementById('celp-prime'),
@@ -179,10 +201,8 @@ function startCelpPractice() {
     btnRow: document.getElementById('celp-btn-row'),
     feedback: document.getElementById('celp-feedback'),
   };
-
   document.getElementById('celp-phase').textContent = '練習';
   show('s-celp');
-
   celpRunner = new CelpRunner(elements, practiceItems, {
     onProgress: (i, n) => {
       document.getElementById('celp-prog-fill').style.width = `${(i / n) * 100}%`;
@@ -194,12 +214,7 @@ function startCelpPractice() {
       const acc = Math.round((correctCount / practiceResults.length) * 100);
       const validRts = practiceResults.filter(r => r.is_correct && r.rt_ms > 100).map(r => r.rt_ms);
       const meanRt = validRts.length ? Math.round(validRts.reduce((a, b) => a + b, 0) / validRts.length) : 0;
-      state.practiceStats = {
-        total: practiceResults.length,
-        correct: correctCount,
-        accuracy: acc,
-        mean_rt: meanRt,
-      };
+      state.practiceStats = { total: practiceResults.length, correct: correctCount, accuracy: acc, mean_rt: meanRt };
       document.getElementById('practice-acc').textContent = `${acc}%`;
       document.getElementById('practice-msg').textContent = acc >= 75
         ? '練習お疲れ様でした。準備ができたら本試験を始めましょう。'
@@ -213,7 +228,6 @@ function startCelpPractice() {
 function startCelpMain() {
   const pool = celpItems[state.cefrLevel];
   const items = buildCelpTrials(pool, 40);
-
   const elements = {
     fix: document.getElementById('celp-fix'),
     prime: document.getElementById('celp-prime'),
@@ -222,10 +236,8 @@ function startCelpMain() {
     btnRow: document.getElementById('celp-btn-row'),
     feedback: document.getElementById('celp-feedback'),
   };
-
   document.getElementById('celp-phase').textContent = '本試験';
   show('s-celp');
-
   celpRunner = new CelpRunner(elements, items, {
     onProgress: (i, n) => {
       document.getElementById('celp-prog-fill').style.width = `${(i / n) * 100}%`;
@@ -234,11 +246,8 @@ function startCelpMain() {
     onComplete: (results) => {
       state.celpRawTrials = results;
       state.celpResult = cleanRtData(results);
-      if (state.mode === 'combined') {
-        show('s-celp-end');
-      } else {
-        finishSession();
-      }
+      if (state.mode === 'combined') show('s-celp-end');
+      else finishSession();
     },
   }, { showFeedback: false });
   celpRunner.start();
@@ -264,9 +273,7 @@ function startVst() {
     onComplete: (results) => {
       state.vstRawTrials = results;
       const issues = validateVstIntegrity(results);
-      if (issues.length > 0) {
-        console.error('VST整合性エラー:', issues);
-      }
+      if (issues.length > 0) console.error('VST整合性エラー:', issues);
       state.vstResult = scoreVST(results, vstItems);
       finishSession();
     },
@@ -281,6 +288,40 @@ function continueToVst() {
 function finishSession() {
   addStoredId(state.participant.id, state.mode);
   showResult();
+}
+
+function vocabToCEFR(size) {
+  if (size >= 6500) return { label: 'C1〜C2', short: 'C1+', desc: '上級〜熟練者' };
+  if (size >= 4500) return { label: 'B2', short: 'B2', desc: '中上級' };
+  if (size >= 3000) return { label: 'B1', short: 'B1', desc: '中級' };
+  if (size >= 1500) return { label: 'A2', short: 'A2', desc: '初中級' };
+  return { label: 'A1', short: 'A1', desc: '基礎' };
+}
+
+function vocabToEiken(size) {
+  if (size >= 7500) return '英検 1 級相当';
+  if (size >= 6000) return '英検 準1 級相当';
+  if (size >= 4500) return '英検 2 級相当';
+  if (size >= 3000) return '英検 準2 級相当';
+  if (size >= 1500) return '英検 3 級相当';
+  return '英検 4・5 級相当';
+}
+
+function vocabToTOEIC(size) {
+  if (size >= 7000) return 'TOEIC 800+';
+  if (size >= 5500) return 'TOEIC 700〜800';
+  if (size >= 4000) return 'TOEIC 600〜700';
+  if (size >= 2500) return 'TOEIC 450〜600';
+  return 'TOEIC 〜450';
+}
+
+function celpToProficiency(acrrt, cv) {
+  if (!acrrt) return null;
+  if (acrrt < 800 && cv < 25) return { label: '熟達ゾーン', desc: '高速かつ安定。自動化が高度に達成されています。', tier: 'top' };
+  if (acrrt < 1000 && cv < 30) return { label: '流暢ゾーン', desc: '実用的な会話速度。コミュニケーションに支障ありません。', tier: 'high' };
+  if (acrrt < 1300 && cv < 35) return { label: '発展ゾーン', desc: '日常的な使用に十分。さらなる自動化の余地があります。', tier: 'mid' };
+  if (acrrt < 1700) return { label: '基礎ゾーン', desc: '意味は理解できていますが、処理に時間がかかります。', tier: 'low' };
+  return { label: '形成ゾーン', desc: '語彙意味への到達に時間が必要な段階です。継続的な練習が効果的です。', tier: 'beginner' };
 }
 
 function showResult() {
@@ -301,6 +342,18 @@ function showResult() {
     document.getElementById('ex-fast').textContent = `${c.n_fast} 問`;
     document.getElementById('ex-outlier').textContent = `${c.n_outlier} 問`;
     document.getElementById('ex-valid').textContent = `${c.n_valid} 問`;
+
+    const prof = celpToProficiency(c.acrrt, c.cv);
+    const profCard = document.getElementById('celp-proficiency');
+    if (prof) {
+      profCard.style.display = 'block';
+      profCard.className = `proficiency-card tier-${prof.tier}`;
+      profCard.innerHTML = `
+        <div class="prof-label">あなたのレベル</div>
+        <div class="prof-zone">${prof.label}</div>
+        <div class="prof-desc">${prof.desc}</div>
+      `;
+    }
   }
 
   if (showVst) {
@@ -310,6 +363,14 @@ function showResult() {
     document.getElementById('r-se').textContent = `SE: ${v.standard_error ?? '—'}`;
     document.getElementById('r-vst-acc').textContent = `${v.accuracy_percent}%`;
     document.getElementById('r-raw').textContent = `${v.raw_score} / ${v.total_items}`;
+
+    const cefr = vocabToCEFR(v.estimated_vocab_size);
+    const eiken = vocabToEiken(v.estimated_vocab_size);
+    const toeic = vocabToTOEIC(v.estimated_vocab_size);
+    document.getElementById('badge-cefr').textContent = cefr.short;
+    document.getElementById('badge-cefr-desc').textContent = `CEFR ${cefr.label} / ${cefr.desc}`;
+    document.getElementById('badge-eiken').textContent = eiken;
+    document.getElementById('badge-toeic').textContent = toeic;
 
     const lvBars = document.getElementById('level-bars');
     lvBars.innerHTML = '';
@@ -372,7 +433,7 @@ function exportSummary() {
   const csv = buildSummaryCSV(
     state.participant, state.session,
     state.celpResult, state.vstResult,
-    state.practiceStats
+    state.practiceStats, state.browserInfo
   );
   downloadCSV(makeFilename(state.participant, state.session, 'summary'), csv);
   toast('集計データをダウンロードしました');
@@ -383,8 +444,7 @@ function restart() {
     mode: null, participant: {}, cefrLevel: null, session: {},
     celpResult: null, vstResult: null,
     celpRawTrials: [], vstRawTrials: [],
-    celpPracticeResults: [],
-    practiceStats: null,
+    celpPracticeResults: [], practiceStats: null,
   });
   document.getElementById('f-id').value = '';
   document.getElementById('f-age').value = '';
@@ -421,6 +481,9 @@ window.exportCelpTrials = exportCelpTrials;
 window.exportVstTrials = exportVstTrials;
 window.exportSummary = exportSummary;
 window.restart = restart;
+
+state.browserInfo = detectBrowserInfo();
+applyDeviceClass();
 
 loadData().then(() => {
   show('s-consent');
