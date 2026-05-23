@@ -69,8 +69,8 @@ GitHub. https://github.com/Ando-Hiro-rs/NeoCELP-VST-NJ8
 ## ベースとなる先行研究
 
 - **VST-NJ8**: Hamada, A., Ishii, T., Kanazawa, Y., Kojima, M., Maeda, M., Mori, S., Saito, A., Sawano, R., Shimoda, Y., Tatsukawa, K., Tomita, K., Toyokuni, T., Tsubaki, M., & Yanagisawa, A. (2021). Development of a Vocabulary Size Test for Japanese EFL Learners Using the New JACET List of 8,000 Basic Words. *JACET Journal*, *65*, 23–45.
-- **CELP**: 横川博一 (2006) などの先行研究に基づく
-
+- **CELP**: 横川博一 (2006) や門田修平他（2014）などの先行研究に基づく
+また、小室竜也氏のVST-NJ8オンライン語彙サイズテストを参考にして開発しております。
 ## ライセンス
 
 MIT License。研究・教育目的での自由な利用を歓迎します。
