@@ -11,7 +11,7 @@
 <div class="container">
 
 <section id="s-mode" class="screen">
-  <span class="title-badge">NeoCELP & NeoVST-NJ8 v1.0</span>
+  <span class="title-badge">NeoCELP & NeoVST-NJ8 v1.1</span>
   <h1>総合的語彙力測定システム</h1>
   <p class="sub">日本人英語学習者向けの語彙力測定ツール。<br>新JACET8000ベース・3PL IRTスコアリング対応。</p>
 
@@ -111,7 +111,44 @@
       <div class="level-opt-sub">CEFR C1 / 英検準1級+</div>
     </div>
   </div>
-  <button class="btn" id="level-btn" onclick="startCelp()" disabled>NeoCELPを開始 →</button>
+  <button class="btn" id="level-btn" onclick="showCelpInstructions()" disabled>次へ →</button>
+</section>
+
+<section id="s-celp-instructions" class="screen">
+  <span class="title-badge">NeoCELP テストの説明</span>
+  <h2>語彙処理速度テストについて</h2>
+
+  <div class="instruction-card">
+    <h3 class="inst-section-title">テスト内容</h3>
+    <p class="inst-text">2つの英単語が画面に順番に表示されます。1つ目を見てから2つ目が表示されたとき、<b>2つの単語の意味が「近い (同義)」か「違う」かを素早く判断</b>してください。</p>
+
+    <h3 class="inst-section-title">画面の流れ (1問あたり)</h3>
+    <ul class="inst-list">
+      <li>画面中央に <b>+</b> マークが表示されます (2秒間)</li>
+      <li>1つ目の単語が表示されます (1.6秒間)</li>
+      <li>空白画面 (0.6秒間)</li>
+      <li>2つ目の単語が表示されます — ここで判断してください</li>
+    </ul>
+
+    <h3 class="inst-section-title">回答方法</h3>
+    <ul class="inst-list">
+      <li><b>意味が近い (同義)</b> と思ったら → <span class="inst-key">→ キー</span> または右側のボタン</li>
+      <li><b>意味が違う</b> と思ったら → <span class="inst-key">← キー</span> または左側のボタン</li>
+    </ul>
+
+    <h3 class="inst-section-title">大切なポイント</h3>
+    <ul class="inst-list">
+      <li><b>できるだけ速く、かつ正確に</b> 答えてください</li>
+      <li>判断に迷っても、深く考えすぎず<b>直感的に答える</b> ことが重要です</li>
+      <li>反応時間がミリ秒単位で記録されます</li>
+      <li>静かな環境で、集中して取り組んでください</li>
+    </ul>
+
+    <h3 class="inst-section-title">これから始めること</h3>
+    <p class="inst-text">まず操作に慣れるため <b>練習を 8 問</b> 行います。練習では各問の正誤が表示されます。<br>練習の後、<b>本試験 40 問</b> を行います (本試験では正誤は表示されません)。</p>
+  </div>
+
+  <button class="btn" onclick="startCelpPractice()">準備ができたら練習を開始 →</button>
 </section>
 
 <section id="s-celp" class="screen">
@@ -139,11 +176,59 @@
   </div>
 </section>
 
+<section id="s-celp-practice-end" class="screen">
+  <span class="title-badge">練習完了</span>
+  <h2>本試験を開始します</h2>
+  <div class="stat-grid" style="max-width:340px">
+    <div class="stat-card">
+      <div class="stat-val" id="practice-acc">—</div>
+      <div class="stat-lbl">練習の正答率</div>
+    </div>
+  </div>
+  <p class="sub" id="practice-msg">練習お疲れ様でした。準備ができたら本試験を始めましょう。</p>
+  <div class="instruction-card" style="max-width:480px">
+    <h3 class="inst-section-title">本試験について</h3>
+    <ul class="inst-list">
+      <li>これから <b>40 問</b> の本試験を行います</li>
+      <li>所要時間は約 4 分です</li>
+      <li><b>本試験では正誤は表示されません</b> (反応時間に集中できるようにするため)</li>
+      <li>引き続き、できるだけ速く正確に答えてください</li>
+    </ul>
+  </div>
+  <button class="btn" onclick="startCelpMain()">本試験を開始する →</button>
+</section>
+
 <section id="s-celp-end" class="screen">
   <span class="title-badge">NeoCELP 完了</span>
   <h2>続けて NeoVST-NJ8 を実施します</h2>
-  <p class="sub">日本語の意味に対応する英単語を4択から選んでください (160問)。<br>解答時間は記録されますが、評価には影響しません。</p>
-  <button class="btn" onclick="continueToVst()">NeoVST-NJ8 を開始 →</button>
+  <p class="sub">語彙処理速度テストはここまでです。<br>次は語彙サイズテストを行います。</p>
+  <button class="btn" onclick="continueToVst()">次へ →</button>
+</section>
+
+<section id="s-vst-instructions" class="screen">
+  <span class="title-badge">NeoVST-NJ8 テストの説明</span>
+  <h2>語彙サイズテストについて</h2>
+
+  <div class="instruction-card">
+    <h3 class="inst-section-title">テスト内容</h3>
+    <p class="inst-text">日本語の意味が画面に表示されます。<b>その意味に対応する英単語を、表示される4つの選択肢から選んでください</b>。</p>
+
+    <h3 class="inst-section-title">出題範囲</h3>
+    <p class="inst-text">新JACET8000の8レベル (各 1000 語)、合計 <b>160 問</b>を出題します。やさしい単語から難しい単語まで幅広く含まれます。</p>
+
+    <h3 class="inst-section-title">大切なポイント</h3>
+    <ul class="inst-list">
+      <li>このテストは <b>解答時間を評価しません</b>。じっくり考えて答えてください</li>
+      <li>分からない単語があっても問題ありません。<b>4つの中から最も近いと思うものを選んでください</b></li>
+      <li>すべての問題に必ず回答してください (スキップ機能はありません)</li>
+      <li>選択肢はランダムに並び替えられるので、毎問よく見て選んでください</li>
+    </ul>
+
+    <h3 class="inst-section-title">所要時間</h3>
+    <p class="inst-text">約 7 分です。途中で休憩はできないので、まとまった時間を確保してから開始してください。</p>
+  </div>
+
+  <button class="btn" onclick="startVst()">準備ができたら開始 →</button>
 </section>
 
 <section id="s-vst" class="screen">
@@ -213,7 +298,7 @@
 </section>
 
 <footer>
-  <p>NeoCELP & NeoVST-NJ8 v1.0 — 新JACET8000 + 3PL IRT</p>
+  <p>NeoCELP & NeoVST-NJ8 v1.1 — 新JACET8000 + 3PL IRT</p>
   <p><a href="https://github.com/Ando-Hiro-rs/NeoCELP-VST-NJ8">GitHub リポジトリ</a></p>
 </footer>
 
