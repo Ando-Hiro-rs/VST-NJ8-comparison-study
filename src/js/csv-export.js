@@ -20,22 +20,33 @@ export function downloadCSV(filename, csv) {
   URL.revokeObjectURL(url);
 }
 
-export function buildCelpTrialsCSV(participant, session, trials) {
+export function buildCelpTrialsCSV(participant, session, mainTrials, practiceTrials = []) {
   const headers = [
     'participant_id', 'age', 'gender', 'l1', 'learning_years',
     'test_version', 'mode', 'cefr_level', 'test_datetime',
     'fixation_ms', 'prime_ms', 'blank_ms',
-    'trial_num', 'prime', 'target', 'condition',
+    'phase', 'trial_num', 'prime', 'target', 'condition',
     'response', 'is_correct', 'rt_ms', 'exclude_reason'
   ];
   const rows = [headers.join(',')];
-  for (const t of trials) {
+  for (const t of practiceTrials) {
     const row = [
       participant.id, participant.age, participant.gender,
       participant.l1, participant.learning_years,
       session.test_version, session.mode, session.cefr_level,
       session.start_time, session.fixation_ms, session.prime_ms,
-      session.blank_ms, t.trial_num, t.prime, t.target, t.condition,
+      session.blank_ms, 'practice', t.trial_num, t.prime, t.target, t.condition,
+      t.response, t.is_correct ? 1 : 0, t.rt_ms, ''
+    ];
+    rows.push(row.map(csvEscape).join(','));
+  }
+  for (const t of mainTrials) {
+    const row = [
+      participant.id, participant.age, participant.gender,
+      participant.l1, participant.learning_years,
+      session.test_version, session.mode, session.cefr_level,
+      session.start_time, session.fixation_ms, session.prime_ms,
+      session.blank_ms, 'main', t.trial_num, t.prime, t.target, t.condition,
       t.response, t.is_correct ? 1 : 0, t.rt_ms, t.exclude_reason || ''
     ];
     rows.push(row.map(csvEscape).join(','));
@@ -68,7 +79,7 @@ export function buildVstTrialsCSV(participant, session, trials) {
   return rows.join('\n');
 }
 
-export function buildSummaryCSV(participant, session, celpResult, vstResult) {
+export function buildSummaryCSV(participant, session, celpResult, vstResult, practiceStats) {
   const headers = ['key', 'value'];
   const rows = [headers.join(',')];
   const data = [
@@ -80,7 +91,17 @@ export function buildSummaryCSV(participant, session, celpResult, vstResult) {
     ['test_version', session.test_version],
     ['mode', session.mode],
     ['test_datetime', session.start_time],
+    ['consent_agreed', session.consent_agreed ? 1 : 0],
+    ['consent_timestamp', session.consent_timestamp || ''],
   ];
+  if (practiceStats) {
+    data.push(
+      ['celp_practice_total', practiceStats.total],
+      ['celp_practice_correct', practiceStats.correct],
+      ['celp_practice_accuracy_percent', practiceStats.accuracy],
+      ['celp_practice_mean_rt_ms', practiceStats.mean_rt],
+    );
+  }
   if (celpResult) {
     data.push(
       ['celp_cefr_level', session.cefr_level],
@@ -118,7 +139,14 @@ export function buildSummaryCSV(participant, session, celpResult, vstResult) {
 }
 
 export function makeFilename(participant, session, type) {
-  const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, '0');
+  const d = String(now.getDate()).padStart(2, '0');
+  const hh = String(now.getHours()).padStart(2, '0');
+  const mm = String(now.getMinutes()).padStart(2, '0');
+  const ss = String(now.getSeconds()).padStart(2, '0');
+  const timestamp = `${y}${m}${d}_${hh}${mm}${ss}`;
   const id = participant.id || 'anonymous';
-  return `NeoCELP-VST_${id}_${session.mode}_${date}_${type}.csv`;
+  return `NeoCELP-VST_${id}_${session.mode}_${timestamp}_${type}.csv`;
 }
