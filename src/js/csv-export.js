@@ -49,7 +49,10 @@ export function buildCelpTrialsCSV(participant, session, mainTrials, practiceTri
     'test_version', 'mode', 'cefr_level', 'test_datetime',
     'fixation_ms', 'prime_ms', 'blank_ms',
     'phase', 'trial_num', 'prime', 'target', 'condition',
-    'response', 'is_correct', 'rt_ms', 'exclude_reason'
+    'response', 'is_correct', 'rt_ms', 'exclude_reason',
+    'fix_actual_ms', 'prime_actual_ms', 'blank_actual_ms',
+    'fix_deviation_ms', 'prime_deviation_ms', 'blank_deviation_ms',
+    'target_onset_ms'
   ];
   const rows = [headers.join(',')];
   const pValues = participantValues(participant);
@@ -59,7 +62,10 @@ export function buildCelpTrialsCSV(participant, session, mainTrials, practiceTri
       session.test_version, session.mode, session.cefr_level,
       session.start_time, session.fixation_ms, session.prime_ms,
       session.blank_ms, 'practice', t.trial_num, t.prime, t.target, t.condition,
-      t.response, t.is_correct ? 1 : 0, t.rt_ms, ''
+      t.response, t.is_correct ? 1 : 0, t.rt_ms, '',
+      t.fix_actual_ms || '', t.prime_actual_ms || '', t.blank_actual_ms || '',
+      t.fix_deviation_ms || '', t.prime_deviation_ms || '', t.blank_deviation_ms || '',
+      t.target_onset_ms || ''
     ];
     rows.push(row.map(csvEscape).join(','));
   }
@@ -69,7 +75,10 @@ export function buildCelpTrialsCSV(participant, session, mainTrials, practiceTri
       session.test_version, session.mode, session.cefr_level,
       session.start_time, session.fixation_ms, session.prime_ms,
       session.blank_ms, 'main', t.trial_num, t.prime, t.target, t.condition,
-      t.response, t.is_correct ? 1 : 0, t.rt_ms, t.exclude_reason || ''
+      t.response, t.is_correct ? 1 : 0, t.rt_ms, t.exclude_reason || '',
+      t.fix_actual_ms || '', t.prime_actual_ms || '', t.blank_actual_ms || '',
+      t.fix_deviation_ms || '', t.prime_deviation_ms || '', t.blank_deviation_ms || '',
+      t.target_onset_ms || ''
     ];
     rows.push(row.map(csvEscape).join(','));
   }
@@ -131,6 +140,25 @@ export function buildSummaryCSV(participant, session, celpResult, vstResult, pra
     ['consent_timestamp', session.consent_timestamp || ''],
     ['data_sharing_agreed', session.data_sharing_agreed ? 1 : 0],
   ];
+  if (session.timer_precision) {
+    data.push(
+      ['timer_resolution_ms', session.timer_precision.resolution_ms],
+      ['timer_sample_count', session.timer_precision.sample_count],
+    );
+  }
+  if (session.timing_precision) {
+    const tp = session.timing_precision;
+    data.push(
+      ['precision_fix_mean_deviation_ms', Math.round(tp.fixation.mean * 100) / 100],
+      ['precision_fix_max_deviation_ms', Math.round(tp.fixation.max * 100) / 100],
+      ['precision_prime_mean_deviation_ms', Math.round(tp.prime.mean * 100) / 100],
+      ['precision_prime_max_deviation_ms', Math.round(tp.prime.max * 100) / 100],
+      ['precision_blank_mean_deviation_ms', Math.round(tp.blank.mean * 100) / 100],
+      ['precision_blank_max_deviation_ms', Math.round(tp.blank.max * 100) / 100],
+      ['precision_trials_above_50ms', tp.prime.above_50ms],
+      ['precision_trials_above_100ms', tp.prime.above_100ms],
+    );
+  }
   if (browserInfo) {
     data.push(
       ['browser_user_agent', browserInfo.user_agent],
