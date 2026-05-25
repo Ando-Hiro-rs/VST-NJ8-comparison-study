@@ -91,6 +91,10 @@ export function isOutlier(participant) {
     const validRate = parseInt(participant.celp_n_valid) / parseInt(participant.celp_total_trials);
     if (validRate < 0.70) return { outlier: true, reason: 'Valid rate < 70%' };
   }
+  if (participant.precision_prime_mean_deviation_ms) {
+    const dev = parseFloat(participant.precision_prime_mean_deviation_ms);
+    if (dev > 50) return { outlier: true, reason: 'Timing precision > 50ms' };
+  }
   return { outlier: false, reason: '' };
 }
 
