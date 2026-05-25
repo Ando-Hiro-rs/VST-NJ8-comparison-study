@@ -62,7 +62,7 @@
 </section>
 
 <section id="s-mode" class="screen">
-  <span class="title-badge">NeoCELP & NeoVST-NJ8 v1.5</span>
+  <span class="title-badge">NeoCELP & NeoVST-NJ8 v1.6</span>
   <h1>総合的語彙力測定システム</h1>
   <p class="sub">日本人英語学習者向けの語彙力測定ツール。<br>新JACET8000ベース・3PL IRTスコアリング対応。</p>
 
@@ -479,7 +479,18 @@
     </div>
     <div id="celp-proficiency" class="proficiency-card" style="display:none"></div>
   </div>
-
+<div id="timing-precision" class="exclude-card" style="display:none">
+      <div class="exclude-title">
+        <span>タイミング精度レポート</span>
+        <span id="precision-quality" class="precision-badge">—</span>
+      </div>
+      <div class="exclude-row"><span>Prime提示の平均誤差</span><span id="precision-prime-mean">— ms</span></div>
+      <div class="exclude-row"><span>Prime提示の最大誤差</span><span id="precision-prime-max">— ms</span></div>
+      <div class="exclude-row"><span>誤差50ms超過の試行</span><span id="precision-above-50">— / —</span></div>
+      <div style="font-size:11px;color:var(--color-text-tertiary);margin-top:8px;line-height:1.5">
+        ※ requestAnimationFrame による画面描画同期で測定。誤差はブラウザの描画タイミングと指定時間のズレを示します。
+      </div>
+    </div>
   <div id="result-vst-section" class="screen" style="width:100%;align-items:center;gap:16px">
     <h3>NeoVST-NJ8 — 語彙サイズ</h3>
     <div class="stat-grid">
@@ -548,7 +559,7 @@
 </section>
 
 <footer>
-  <p>NeoCELP & NeoVST-NJ8 v1.5 — 新JACET8000 + 3PL IRT</p>
+  <p>NeoCELP & NeoVST-NJ8 v1.6 — 新JACET8000 + 3PL IRT</p>
   <p><a href="https://github.com/Ando-Hiro-rs/NeoCELP-VST-NJ8">GitHub リポジトリ</a></p>
 </footer>
 
