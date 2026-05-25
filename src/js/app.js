@@ -3,11 +3,16 @@ import { VstRunner, validateVstIntegrity } from './vst.js';
 import { scoreVST, cleanRtData } from './irt-scoring.js';
 import {
   downloadCSV, buildCelpTrialsCSV, buildVstTrialsCSV,
-  buildSummaryCSV, makeFilename
+  buildSummaryCSV, makeFilename,
+  sendByEmail, shareViaWebShareAPI
 } from './csv-export.js';
 
-const TEST_VERSION = 'NeoCELP-VST v1.3';
+const TEST_VERSION = 'NeoCELP-VST v1.4';
 const STORAGE_KEY = 'neocelp_vst_participant_ids';
+
+// ★ ここに研究者のメールアドレスを設定してください
+const RESEARCHER_EMAIL = 'd12136m1@stu.hokkyodai.ac.jp';
+const RESEARCHER_NAME = '北海道教育大学 札幌校 安藤 嘉';
 
 const state = {
   mode: null,
@@ -55,6 +60,9 @@ function applyDeviceClass() {
   if (info.device_type === 'mobile') {
     document.body.classList.add('is-mobile');
   }
+  if (navigator.share && navigator.canShare) {
+    document.body.classList.add('supports-web-share');
+  }
 }
 
 async function loadData() {
@@ -76,7 +84,7 @@ function toast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
+  setTimeout(() => t.classList.remove('show'), 2500);
 }
 
 function getStoredIds() {
@@ -113,6 +121,7 @@ function checkConsentForm() {
 function submitConsent() {
   state.session.consent_agreed = true;
   state.session.consent_timestamp = new Date().toISOString();
+  state.session.data_sharing_agreed = document.getElementById('consent-share').checked;
   show('s-mode');
 }
 
@@ -409,6 +418,30 @@ function showResult() {
     else msg = '基礎レベル。高頻度語の学習を継続することが重要です。';
   }
   document.getElementById('r-message').textContent = msg;
+
+  document.getElementById('researcher-email-display').textContent = RESEARCHER_EMAIL;
+  document.getElementById('researcher-name-display').textContent = RESEARCHER_NAME;
+}
+
+function buildAllCsvBlobs() {
+  const blobs = [];
+  if (state.celpResult) {
+    blobs.push({
+      filename: makeFilename(state.participant, state.session, 'celp_trials'),
+      content: buildCelpTrialsCSV(state.participant, state.session, state.celpResult.cleaned_trials, state.celpPracticeResults),
+    });
+  }
+  if (state.vstResult) {
+    blobs.push({
+      filename: makeFilename(state.participant, state.session, 'vst_trials'),
+      content: buildVstTrialsCSV(state.participant, state.session, state.vstRawTrials),
+    });
+  }
+  blobs.push({
+    filename: makeFilename(state.participant, state.session, 'summary'),
+    content: buildSummaryCSV(state.participant, state.session, state.celpResult, state.vstResult, state.practiceStats, state.browserInfo),
+  });
+  return blobs;
 }
 
 function exportCelpTrials() {
@@ -437,6 +470,26 @@ function exportSummary() {
   );
   downloadCSV(makeFilename(state.participant, state.session, 'summary'), csv);
   toast('集計データをダウンロードしました');
+}
+
+function sendDataByEmail() {
+  const blobs = buildAllCsvBlobs();
+  sendByEmail(RESEARCHER_EMAIL, state.participant, state.session, blobs);
+  toast('CSVをダウンロード後、メールアプリが起動します。CSVを手動で添付してください');
+}
+
+async function shareDataViaApps() {
+  try {
+    const blobs = buildAllCsvBlobs();
+    await shareViaWebShareAPI(state.participant, state.session, blobs);
+    toast('共有が完了しました');
+  } catch (err) {
+    if (err.name === 'AbortError') {
+      return;
+    }
+    console.error('共有エラー:', err);
+    toast('共有に失敗しました。メール送信機能をお試しください');
+  }
 }
 
 function restart() {
@@ -480,6 +533,8 @@ window.celpRespond = (b) => celpRunner && celpRunner.respond(b);
 window.exportCelpTrials = exportCelpTrials;
 window.exportVstTrials = exportVstTrials;
 window.exportSummary = exportSummary;
+window.sendDataByEmail = sendDataByEmail;
+window.shareDataViaApps = shareDataViaApps;
 window.restart = restart;
 
 state.browserInfo = detectBrowserInfo();
