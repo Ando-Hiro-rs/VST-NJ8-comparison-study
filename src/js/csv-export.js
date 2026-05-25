@@ -20,19 +20,42 @@ export function downloadCSV(filename, csv) {
   URL.revokeObjectURL(url);
 }
 
-export function buildCelpTrialsCSV(participant, session, mainTrials, practiceTrials = []) {
-  const headers = [
+function participantHeaders() {
+  return [
     'participant_id', 'age', 'gender', 'l1', 'learning_years',
+    'institution_type', 'major', 'grade',
+    'english_start_age', 'overseas_experience',
+    'cert_type', 'cert_score', 'cert_date',
+    'english_use_frequency', 'handedness',
+    'condition_rating', 'device_type', 'environment_type'
+  ];
+}
+
+function participantValues(p) {
+  return [
+    p.id, p.age, p.gender, p.l1, p.learning_years,
+    p.institution_type || '', p.major || '', p.grade || '',
+    p.english_start_age || '', p.overseas_experience || '',
+    p.cert_type || '', p.cert_score || '', p.cert_date || '',
+    p.english_use_frequency || '', p.handedness || '',
+    p.condition_rating || '', p.device_type || '', p.environment_type || ''
+  ];
+}
+
+export function buildCelpTrialsCSV(participant, session, mainTrials, practiceTrials = []) {
+  const pHeaders = participantHeaders();
+  const headers = [
+    ...pHeaders,
     'test_version', 'mode', 'cefr_level', 'test_datetime',
     'fixation_ms', 'prime_ms', 'blank_ms',
     'phase', 'trial_num', 'prime', 'target', 'condition',
     'response', 'is_correct', 'rt_ms', 'exclude_reason'
   ];
   const rows = [headers.join(',')];
+  const pValues = participantValues(participant);
   for (const t of practiceTrials) {
     const row = [
-      participant.id, participant.age, participant.gender,
-      participant.l1, participant.learning_years,
+      ...pValues,
       session.test_version, session.mode, session.cefr_level,
       session.start_time, session.fixation_ms, session.prime_ms,
       session.blank_ms, 'practice', t.trial_num, t.prime, t.target, t.condition,
@@ -42,8 +65,7 @@ export function buildCelpTrialsCSV(participant, session, mainTrials, practiceTri
   }
   for (const t of mainTrials) {
     const row = [
-      participant.id, participant.age, participant.gender,
-      participant.l1, participant.learning_years,
+      ...pValues,
       session.test_version, session.mode, session.cefr_level,
       session.start_time, session.fixation_ms, session.prime_ms,
       session.blank_ms, 'main', t.trial_num, t.prime, t.target, t.condition,
@@ -55,18 +77,19 @@ export function buildCelpTrialsCSV(participant, session, mainTrials, practiceTri
 }
 
 export function buildVstTrialsCSV(participant, session, trials) {
+  const pHeaders = participantHeaders();
   const headers = [
-    'participant_id', 'age', 'gender', 'l1', 'learning_years',
+    ...pHeaders,
     'test_version', 'mode', 'test_datetime',
     'item_id', 'level', 'pos', 'target_meaning_ja', 'correct_word',
     'option_pos_0', 'option_pos_1', 'option_pos_2', 'option_pos_3',
     'response_position', 'response_word', 'is_correct', 'response_time_ms'
   ];
   const rows = [headers.join(',')];
+  const pValues = participantValues(participant);
   for (const t of trials) {
     const row = [
-      participant.id, participant.age, participant.gender,
-      participant.l1, participant.learning_years,
+      ...pValues,
       session.test_version, session.mode, session.start_time,
       t.item_id, t.level, t.pos, t.target_meaning_ja, t.correct_word,
       t.displayed_options[0], t.displayed_options[1],
@@ -88,6 +111,19 @@ export function buildSummaryCSV(participant, session, celpResult, vstResult, pra
     ['gender', participant.gender],
     ['l1', participant.l1],
     ['learning_years', participant.learning_years],
+    ['institution_type', participant.institution_type || ''],
+    ['major', participant.major || ''],
+    ['grade', participant.grade || ''],
+    ['english_start_age', participant.english_start_age || ''],
+    ['overseas_experience', participant.overseas_experience || ''],
+    ['cert_type', participant.cert_type || ''],
+    ['cert_score', participant.cert_score || ''],
+    ['cert_date', participant.cert_date || ''],
+    ['english_use_frequency', participant.english_use_frequency || ''],
+    ['handedness', participant.handedness || ''],
+    ['condition_rating', participant.condition_rating || ''],
+    ['device_type', participant.device_type || ''],
+    ['environment_type', participant.environment_type || ''],
     ['test_version', session.test_version],
     ['mode', session.mode],
     ['test_datetime', session.start_time],
