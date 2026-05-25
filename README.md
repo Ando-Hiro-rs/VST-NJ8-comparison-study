@@ -53,17 +53,6 @@ GitHub. https://github.com/Ando-Hiro-rs/NeoCELP-VST-NJ8
 
 MIT License。研究・教育目的での自由な利用を歓迎します。
 
-## デモ
-
-`https://ando-hiro-rs.github.io/NeoCELP-VST-NJ8/`
-
-### 研究者用ダッシュボード
-
-`https://ando-hiro-rs.github.io/NeoCELP-VST-NJ8/dashboard.html`
-
-研究者向けに、受験データの集約・分析・エクスポートができる管理画面を提供しています。
-パスワード保護されており、CSVファイルをドラッグ&ドロップでアップロードして使用します。
-
 ## 制作者
 
 安藤嘉
