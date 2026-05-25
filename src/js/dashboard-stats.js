@@ -105,7 +105,34 @@ export function calculateDescriptiveStats(participants, key) {
     max: maxOf(values),
   };
 }
+export function groupBy(participants, key) {
+  const groups = {};
+  for (const p of participants) {
+    const value = p[key] || '(未回答)';
+    if (!groups[value]) groups[value] = [];
+    groups[value].push(p);
+  }
+  return groups;
+}
 
+export function calculateGroupStats(participants, groupKey, metricKey) {
+  const groups = groupBy(participants, groupKey);
+  const result = {};
+  for (const [group, members] of Object.entries(groups)) {
+    const values = members.map(p => parseFloat(p[metricKey])).filter(v => !isNaN(v));
+    if (values.length === 0) continue;
+    result[group] = {
+      n: values.length,
+      mean: values.reduce((s, v) => s + v, 0) / values.length,
+      values: values,
+    };
+    if (values.length > 1) {
+      const m = result[group].mean;
+      result[group].sd = Math.sqrt(values.reduce((s, v) => s + (v - m) ** 2, 0) / (values.length - 1));
+    }
+  }
+  return result;
+}
 export function buildMergedCSV(participants) {
   if (participants.length === 0) return '';
   const allKeys = new Set();
