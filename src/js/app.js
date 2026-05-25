@@ -1,4 +1,4 @@
-import { CelpRunner, buildCelpTrials, CELP_TIMING } from './celp.js';
+import { CelpRunner, buildCelpTrials, CELP_TIMING, measureTimerPrecision, calculateTimingPrecision } from './celp.js';
 import { VstRunner, validateVstIntegrity } from './vst.js';
 import { scoreVST, cleanRtData } from './irt-scoring.js';
 import {
@@ -7,7 +7,7 @@ import {
   sendByEmail, shareViaWebShareAPI
 } from './csv-export.js';
 
-const TEST_VERSION = 'NeoCELP-VST v1.5';
+const TEST_VERSION = 'NeoCELP-VST v1.6';
 const STORAGE_KEY = 'neocelp_vst_participant_ids';
 
 // ★ ここに研究者のメールアドレスを設定してください
@@ -72,6 +72,8 @@ async function loadData() {
   ]);
   celpItems = celp;
   vstItems = vst;
+  state.session.timer_precision = measureTimerPrecision();
+  console.log('タイマー精度:', state.session.timer_precision);
 }
 
 function show(id) {
@@ -268,6 +270,7 @@ function startCelpMain() {
     onComplete: (results) => {
       state.celpRawTrials = results;
       state.celpResult = cleanRtData(results);
+      state.session.timing_precision = calculateTimingPrecision(results);
       if (state.mode === 'combined') show('s-celp-end');
       else finishSession();
     },
@@ -364,7 +367,25 @@ function showResult() {
     document.getElementById('ex-fast').textContent = `${c.n_fast} 問`;
     document.getElementById('ex-outlier').textContent = `${c.n_outlier} 問`;
     document.getElementById('ex-valid').textContent = `${c.n_valid} 問`;
-
+if (state.session.timing_precision) {
+      const tp = state.session.timing_precision;
+      const precisionEl = document.getElementById('timing-precision');
+      if (precisionEl) {
+        precisionEl.style.display = 'block';
+        document.getElementById('precision-prime-mean').textContent = tp.prime.mean.toFixed(2) + ' ms';
+        document.getElementById('precision-prime-max').textContent = tp.prime.max.toFixed(2) + ' ms';
+        document.getElementById('precision-above-50').textContent = tp.prime.above_50ms + ' / ' + tp.total_trials;
+        const quality = tp.prime.mean < 10 ? '優秀' :
+                       tp.prime.mean < 20 ? '良好' :
+                       tp.prime.mean < 50 ? '許容範囲' : '要注意';
+        const qualityClass = tp.prime.mean < 10 ? 'top' :
+                            tp.prime.mean < 20 ? 'high' :
+                            tp.prime.mean < 50 ? 'mid' : 'low';
+        const qualityEl = document.getElementById('precision-quality');
+        qualityEl.textContent = quality;
+        qualityEl.className = 'precision-badge tier-' + qualityClass;
+      }
+    }
     const prof = celpToProficiency(c.acrrt, c.cv);
     const profCard = document.getElementById('celp-proficiency');
     if (prof) {
