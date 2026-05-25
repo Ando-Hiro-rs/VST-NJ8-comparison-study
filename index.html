@@ -40,17 +40,21 @@
   </div>
 
   <div class="consent-checks">
-    <label class="consent-row">
+    <label class="consent-row required">
       <input type="checkbox" id="consent-1" onchange="checkConsentForm()">
-      <span>上記の内容を確認し、理解しました</span>
+      <span>上記の内容を確認し、理解しました <em>(必須)</em></span>
     </label>
-    <label class="consent-row">
+    <label class="consent-row required">
       <input type="checkbox" id="consent-2" onchange="checkConsentForm()">
-      <span>研究目的でのデータ利用に同意します</span>
+      <span>研究目的でのデータ利用に同意します <em>(必須)</em></span>
     </label>
-    <label class="consent-row">
+    <label class="consent-row required">
       <input type="checkbox" id="consent-3" onchange="checkConsentForm()">
-      <span>静かな環境で集中して受験できる状態です</span>
+      <span>静かな環境で集中して受験できる状態です <em>(必須)</em></span>
+    </label>
+    <label class="consent-row optional">
+      <input type="checkbox" id="consent-share">
+      <span>テスト終了後、結果データを研究者に送信することに同意します <em>(任意)</em><br><span class="consent-detail">※ 送信は結果画面で改めて選択できます。同意していなくてもテストは受験できます。</span></span>
     </label>
   </div>
 
@@ -58,7 +62,7 @@
 </section>
 
 <section id="s-mode" class="screen">
-  <span class="title-badge">NeoCELP & NeoVST-NJ8 v1.3</span>
+  <span class="title-badge">NeoCELP & NeoVST-NJ8 v1.4</span>
   <h1>総合的語彙力測定システム</h1>
   <p class="sub">日本人英語学習者向けの語彙力測定ツール。<br>新JACET8000ベース・3PL IRTスコアリング対応。</p>
 
@@ -360,12 +364,30 @@
       <button class="btn-csv" onclick="exportSummary()">集計サマリー</button>
     </div>
   </div>
-
+<div class="export-card share-card">
+    <div class="export-title">📧 研究者にデータを送信 (任意)</div>
+    <p class="share-desc">研究にご協力いただける場合、テスト結果を以下の研究者に送信できます。</p>
+    <div class="researcher-info">
+      <div class="researcher-row"><span class="researcher-lbl">送信先:</span> <span id="researcher-name-display">—</span></div>
+      <div class="researcher-row"><span class="researcher-lbl">メール:</span> <span id="researcher-email-display">—</span></div>
+    </div>
+    <div class="share-btn-row">
+      <button class="btn-share btn-share-mail" onclick="sendDataByEmail()">
+        📨 メールで送信
+        <span class="share-note">CSVをダウンロード後、メールアプリが起動します</span>
+      </button>
+      <button class="btn-share btn-share-app supports-web-share-only" onclick="shareDataViaApps()">
+        🔗 他のアプリで共有
+        <span class="share-note">LINE・Gmail・AirDrop などで送信</span>
+      </button>
+    </div>
+    <p class="share-note-bottom">※ 送信は完全に任意です。データ送信の同意確認は受験前に行いました。</p>
+  </div>
   <button class="btn-outline" onclick="restart()">最初の画面に戻る</button>
 </section>
 
 <footer>
-  <p>NeoCELP & NeoVST-NJ8 v1.3 — 新JACET8000 + 3PL IRT</p>
+  <p>NeoCELP & NeoVST-NJ8 v1.4 — 新JACET8000 + 3PL IRT</p>
   <p><a href="https://github.com/Ando-Hiro-rs/NeoCELP-VST-NJ8">GitHub リポジトリ</a></p>
 </footer>
 
