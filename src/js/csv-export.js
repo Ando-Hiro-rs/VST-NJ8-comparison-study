@@ -42,33 +42,6 @@ function participantValues(p) {
   ];
 }
 
-export function buildCelpTrialsCSV(participant, session, mainTrials, practiceTrials = []) {
-  const pHeaders = participantHeaders();
-  const headers = [
-    ...pHeaders,
-    'test_version', 'mode', 'cefr_level', 'test_datetime',
-    'fixation_ms', 'prime_ms', 'blank_ms',
-    'phase', 'trial_num', 'prime', 'target', 'condition',
-    'response', 'is_correct', 'rt_ms', 'exclude_reason',
-    'fix_actual_ms', 'prime_actual_ms', 'blank_actual_ms',
-    'fix_deviation_ms', 'prime_deviation_ms', 'blank_deviation_ms',
-    'target_onset_ms'
-  ];
-  const rows = [headers.join(',')];
-  const pValues = participantValues(participant);
-  for (const t of practiceTrials) {
-    const row = [
-      ...pValues,
-      session.test_version, session.mode, session.cefr_level,
-      session.start_time, session.fixation_ms, session.prime_ms,
-      session.blank_ms, 'practice', t.trial_num, t.prime, t.target, t.condition,
-      t.response, t.is_correct ? 1 : 0, t.rt_ms, '',
-      t.fix_actual_ms || '', t.prime_actual_ms || '', t.blank_actual_ms || '',
-      t.fix_deviation_ms || '', t.prime_deviation_ms || '', t.blank_deviation_ms || '',
-      t.target_onset_ms || ''
-    ];
-    rows.push(row.map(csvEscape).join(','));
-  }
   for (const t of mainTrials) {
     const row = [
       ...pValues,
@@ -111,7 +84,7 @@ export function buildVstTrialsCSV(participant, session, trials) {
   return rows.join('\n');
 }
 
-export function buildSummaryCSV(participant, session, celpResult, vstResult, practiceStats, browserInfo) {
+export function buildSummaryCSV(participant, session, vstResult, browserInfo) {
   const headers = ['key', 'value'];
   const rows = [headers.join(',')];
   const data = [
@@ -173,30 +146,8 @@ export function buildSummaryCSV(participant, session, celpResult, vstResult, pra
       ['touch_support', browserInfo.touch_support ? 1 : 0],
     );
   }
-  if (practiceStats) {
-    data.push(
-      ['celp_practice_total', practiceStats.total],
-      ['celp_practice_correct', practiceStats.correct],
-      ['celp_practice_accuracy_percent', practiceStats.accuracy],
-      ['celp_practice_mean_rt_ms', practiceStats.mean_rt],
-    );
-  }
-  if (celpResult) {
-    data.push(
-      ['celp_cefr_level', session.cefr_level],
-      ['celp_total_trials', celpResult.total],
-      ['celp_n_wrong', celpResult.n_wrong],
-      ['celp_n_fast', celpResult.n_fast],
-      ['celp_n_outlier', celpResult.n_outlier],
-      ['celp_n_valid', celpResult.n_valid],
-      ['celp_acrrt_ms', celpResult.acrrt],
-      ['celp_sd_ms', celpResult.sd],
-      ['celp_cv_percent', celpResult.cv],
-      ['celp_synonym_mean_ms', celpResult.syn_mean],
-      ['celp_nonsynonym_mean_ms', celpResult.nsyn_mean],
-      ['celp_priming_effect_ms', celpResult.priming_effect],
-    );
-  }
+  
+  
   if (vstResult) {
     data.push(
       ['vst_raw_score', vstResult.raw_score],
