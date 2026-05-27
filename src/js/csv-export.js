@@ -109,7 +109,7 @@ export function buildSummaryCSV(participant, session, vstResult, browserInfo) {
     ['test_version', session.test_version],
     ['mode', session.mode],
     ['test_datetime', session.start_time],
-    ['consent_agreed', session.consent_agreed ? 1 : 0],
+    ['consent_agreed', session.concefr_levelsent_agreed ? 1 : 0],
     ['consent_timestamp', session.consent_timestamp || ''],
     ['data_sharing_agreed', session.data_sharing_agreed ? 1 : 0],
   ];
