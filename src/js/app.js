@@ -80,7 +80,6 @@ function getStoredIds() {
     return [];
   }
 }
-
 function addStoredId(id) {
   try {
     const ids = getStoredIds();
