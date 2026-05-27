@@ -61,47 +61,6 @@
   <button class="btn" id="consent-btn" onclick="submitConsent()" disabled>同意してテストを開始 →</button>
 </section>
 
-<section id="s-mode" class="screen">
-  <span class="title-badge">NeoCELP & NeoVST-NJ8 v1.6</span>
-  <h1>総合的語彙力測定システム</h1>
-  <p class="sub">日本人英語学習者向けの語彙力測定ツール。<br>新JACET8000ベース・3PL IRTスコアリング対応。</p>
-
-  <div class="mode-grid">
-    <div class="mode-card" onclick="selectMode('celp_only')">
-      <div class="mode-icon">⚡</div>
-      <div class="mode-title">NeoCELP のみ</div>
-      <div class="mode-desc">語彙処理速度・自動化の測定</div>
-      <div class="mode-meta">
-        <div>所要時間: 約 5 分</div>
-        <div>40 問 + 練習 8 問</div>
-        <div>ACRRT・CV・プライミング効果</div>
-      </div>
-    </div>
-
-    <div class="mode-card recommended" onclick="selectMode('combined')">
-      <span class="mode-badge">推奨</span>
-      <div class="mode-icon">⊞</div>
-      <div class="mode-title">複合型テスト</div>
-      <div class="mode-desc">処理速度と語彙サイズを両方測定</div>
-      <div class="mode-meta">
-        <div>所要時間: 約 12 分</div>
-        <div>NeoCELP 40 問 → VST 160 問</div>
-        <div>速度 × サイズの統合分析</div>
-      </div>
-    </div>
-
-    <div class="mode-card" onclick="selectMode('vst_only')">
-      <div class="mode-icon">📚</div>
-      <div class="mode-title">NeoVST-NJ8 のみ</div>
-      <div class="mode-desc">語彙サイズ (0〜8000語) の測定</div>
-      <div class="mode-meta">
-        <div>所要時間: 約 7 分</div>
-        <div>160 問 (各レベル 20 問 × 8)</div>
-        <div>3PL IRT θ + 推定語彙サイズ</div>
-      </div>
-    </div>
-  </div>
-</section>
 
 <section id="s-info" class="screen">
   <span class="title-badge">受験者情報</span>
@@ -299,124 +258,14 @@
     </div>
   </div>
 
-  <button class="btn" id="info-btn" onclick="submitInfo()" disabled>次へ →</button>
+ <button class="btn" id="consent-btn" onclick="submitConsent()" disabled>同意してテストを開始 →</button>
 </section>
 
-<section id="s-level" class="screen">
-  <span class="title-badge">レベル選択 (NeoCELP)</span>
-  <h2>出題語彙レベルを選んでください</h2>
-  <p class="sub">受験者の英語力に合ったレベルを選択してください。</p>
-  <div class="level-grid">
-    <div class="level-opt" onclick="selectLevel('A1-A2', this)">
-      <div class="level-opt-title">基礎 (1000語レベル)</div>
-      <div class="level-opt-sub">CEFR A1–A2 / 中学卒業相当</div>
-    </div>
-    <div class="level-opt" onclick="selectLevel('B1', this)">
-      <div class="level-opt-title">初中級 (2000語レベル)</div>
-      <div class="level-opt-sub">CEFR B1 / 英検3–準2級</div>
-    </div>
-    <div class="level-opt" onclick="selectLevel('B2', this)">
-      <div class="level-opt-title">中上級 (4000語レベル)</div>
-      <div class="level-opt-sub">CEFR B2 / 英検2級・TOEIC 600+</div>
-    </div>
-    <div class="level-opt" onclick="selectLevel('C1', this)">
-      <div class="level-opt-title">上級 (6000語レベル)</div>
-      <div class="level-opt-sub">CEFR C1 / 英検準1級+</div>
-    </div>
-  </div>
-  <button class="btn" id="level-btn" onclick="showCelpInstructions()" disabled>次へ →</button>
-</section>
 
-<section id="s-celp-instructions" class="screen">
-  <span class="title-badge">NeoCELP テストの説明</span>
-  <h2>語彙処理速度テストについて</h2>
 
-  <div class="instruction-card">
-    <h3 class="inst-section-title">テスト内容</h3>
-    <p class="inst-text">2つの英単語が画面に順番に表示されます。1つ目を見てから2つ目が表示されたとき、<b>2つの単語の意味が「近い (同義)」か「違う」かを素早く判断</b>してください。</p>
 
-    <h3 class="inst-section-title">画面の流れ (1問あたり)</h3>
-    <ul class="inst-list">
-      <li>画面中央に <b>+</b> マークが表示されます (2秒間)</li>
-      <li>1つ目の単語が表示されます (1.6秒間)</li>
-      <li>空白画面 (0.6秒間)</li>
-      <li>2つ目の単語が表示されます — ここで判断してください</li>
-    </ul>
 
-    <h3 class="inst-section-title">回答方法</h3>
-    <ul class="inst-list">
-      <li><b>意味が近い (同義)</b> と思ったら → <span class="inst-key">→ キー</span> または右側のボタン</li>
-      <li><b>意味が違う</b> と思ったら → <span class="inst-key">← キー</span> または左側のボタン</li>
-    </ul>
 
-    <h3 class="inst-section-title">大切なポイント</h3>
-    <ul class="inst-list">
-      <li><b>できるだけ速く、かつ正確に</b> 答えてください</li>
-      <li>判断に迷っても、深く考えすぎず<b>直感的に答える</b> ことが重要です</li>
-      <li>反応時間がミリ秒単位で記録されます</li>
-      <li>静かな環境で、集中して取り組んでください</li>
-    </ul>
-
-    <h3 class="inst-section-title">これから始めること</h3>
-    <p class="inst-text">まず操作に慣れるため <b>練習を 8 問</b> 行います。練習では各問の正誤が表示されます。<br>練習の後、<b>本試験 40 問</b> を行います (本試験では正誤は表示されません)。</p>
-  </div>
-
-  <button class="btn" onclick="startCelpPractice()">準備ができたら練習を開始 →</button>
-</section>
-
-<section id="s-celp" class="screen">
-  <div style="display:flex;align-items:center;gap:8px">
-    <span class="phase-label" id="celp-phase">練習</span>
-  </div>
-  <div class="progress-wrap">
-    <div class="progress-bar"><div class="progress-fill" id="celp-prog-fill" style="width:0%"></div></div>
-    <span class="progress-label" id="celp-prog-label">0 / 8</span>
-  </div>
-  <div class="fixation" id="celp-fix">+</div>
-  <div class="prime-word" id="celp-prime" style="display:none"></div>
-  <div class="blank-area" id="celp-blank" style="display:none"></div>
-  <div class="target-word" id="celp-target" style="display:none"></div>
-  <p class="feedback-msg" id="celp-feedback"></p>
-  <div class="big-btn-row" id="celp-btn-row" style="display:none">
-    <button class="big-btn big-no" onclick="celpRespond(false)">
-      <span>意味が違う</span>
-      <span class="kbd-hint">← キー</span>
-    </button>
-    <button class="big-btn big-yes" onclick="celpRespond(true)">
-      <span>意味が近い</span>
-      <span class="kbd-hint">→ キー</span>
-    </button>
-  </div>
-</section>
-
-<section id="s-celp-practice-end" class="screen">
-  <span class="title-badge">練習完了</span>
-  <h2>本試験を開始します</h2>
-  <div class="stat-grid" style="max-width:340px">
-    <div class="stat-card">
-      <div class="stat-val" id="practice-acc">—</div>
-      <div class="stat-lbl">練習の正答率</div>
-    </div>
-  </div>
-  <p class="sub" id="practice-msg">練習お疲れ様でした。準備ができたら本試験を始めましょう。</p>
-  <div class="instruction-card" style="max-width:480px">
-    <h3 class="inst-section-title">本試験について</h3>
-    <ul class="inst-list">
-      <li>これから <b>40 問</b> の本試験を行います</li>
-      <li>所要時間は約 4 分です</li>
-      <li><b>本試験では正誤は表示されません</b> (反応時間に集中できるようにするため)</li>
-      <li>引き続き、できるだけ速く正確に答えてください</li>
-    </ul>
-  </div>
-  <button class="btn" onclick="startCelpMain()">本試験を開始する →</button>
-</section>
-
-<section id="s-celp-end" class="screen">
-  <span class="title-badge">NeoCELP 完了</span>
-  <h2>続けて NeoVST-NJ8 を実施します</h2>
-  <p class="sub">語彙処理速度テストはここまでです。<br>次は語彙サイズテストを行います。</p>
-  <button class="btn" onclick="continueToVst()">次へ →</button>
-</section>
 
 <section id="s-vst-instructions" class="screen">
   <span class="title-badge">NeoVST-NJ8 テストの説明</span>
@@ -462,35 +311,6 @@
   <span class="title-badge">テスト結果</span>
   <h2>受験お疲れ様でした</h2>
 
-  <div id="result-celp-section" class="screen" style="width:100%;align-items:center;gap:16px">
-    <h3>NeoCELP — 語彙処理速度</h3>
-    <div class="stat-grid">
-      <div class="stat-card"><div class="stat-val" id="r-acrrt">—</div><div class="stat-lbl">ACRRT (ms)</div><div class="stat-sub">正答平均反応時間</div></div>
-      <div class="stat-card"><div class="stat-val" id="r-cv">—</div><div class="stat-lbl">CV (%)</div><div class="stat-sub">変動係数 = 安定性</div></div>
-      <div class="stat-card"><div class="stat-val" id="r-priming">—</div><div class="stat-lbl">プライミング効果 (ms)</div><div class="stat-sub">非同義 − 同義</div></div>
-      <div class="stat-card"><div class="stat-val" id="r-valid">—</div><div class="stat-lbl">有効データ</div><div class="stat-sub">最終 / 総試行</div></div>
-    </div>
-    <div class="exclude-card">
-      <div class="exclude-title">自動データクリーニング</div>
-      <div class="exclude-row"><span>不正解の除外</span><span id="ex-wrong">— 問</span></div>
-      <div class="exclude-row"><span>100ms以下のフライング除外</span><span id="ex-fast">— 問</span></div>
-      <div class="exclude-row"><span>平均±3SD範囲外の異常値除外</span><span id="ex-outlier">— 問</span></div>
-      <div class="exclude-row total"><span>最終有効データ</span><span id="ex-valid">— 問</span></div>
-    </div>
-    <div id="celp-proficiency" class="proficiency-card" style="display:none"></div>
-  </div>
-<div id="timing-precision" class="exclude-card" style="display:none">
-      <div class="exclude-title">
-        <span>タイミング精度レポート</span>
-        <span id="precision-quality" class="precision-badge">—</span>
-      </div>
-      <div class="exclude-row"><span>Prime提示の平均誤差</span><span id="precision-prime-mean">— ms</span></div>
-      <div class="exclude-row"><span>Prime提示の最大誤差</span><span id="precision-prime-max">— ms</span></div>
-      <div class="exclude-row"><span>誤差50ms超過の試行</span><span id="precision-above-50">— / —</span></div>
-      <div style="font-size:11px;color:var(--color-text-tertiary);margin-top:8px;line-height:1.5">
-        ※ requestAnimationFrame による画面描画同期で測定。誤差はブラウザの描画タイミングと指定時間のズレを示します。
-      </div>
-    </div>
   <div id="result-vst-section" class="screen" style="width:100%;align-items:center;gap:16px">
     <h3>NeoVST-NJ8 — 語彙サイズ</h3>
     <div class="stat-grid">
