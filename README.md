@@ -1,58 +1,68 @@
-# NeoCELPテスト & NeoVST-NJ8
+# VST-NJ8-online-vocabulary-test-fixed
 
-日本人英語学習者向けの総合的語彙力測定システムです。テスト受験者の語彙処理速度と語彙サイズを Web ブラウザで測定し、結果を CSV で出力します。
+日本人英語学習者向けの Web ベース語彙サイズ測定ツール。Hamada et al. (2021) の VST-NJ8 を、小室竜也先生のオンライン版実装を参考に、データ品質保証と機能拡張を行った改良版です。
+
+## 「fixed」の意味
+
+本ツール名の `fixed` は、以下のデータ品質保証のための改良を意味します。
+
+- **シャッフル整合性の保証**: 選択肢の表示順と回答記録の対応関係を厳密に追跡し、CSV データの正確性を確保
+- **受験者情報の体系化**: 研究に必要な参加者属性の構造化収集
+- **タイミング精度の向上**: 反応時間測定の信頼性向上
+- **データエクスポートの研究対応**: 学術論文化を見据えた CSV 構造
+
+これらの改良は、小室先生のオリジナル版を批判するものではなく、研究目的での利用に特化した拡張です。小室先生のツールへの敬意と感謝のもと、相補的に位置付けられるものです。
+> ⚠ **本プロジェクトについて**
+>
+> 本プロジェクトは、濱田彰先生 (信州大学准教授) らが開発された
+> VST-NJ8 (Hamada et al., 2021) と、小室竜也先生が開発された
+> オンライン版 VST-NJ8 を参考に、独自に Web ベースで実装した
+> 語彙サイズ測定ツールです。
+>
+> **現在、関係する研究者の先生方に正式な許諾申請を行っています。**
+>
+> 本リポジトリは開発作業の透明性のため公開していますが、
+> 正式な研究公開・利用は許諾取得後となります。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ## 特長
 
-- **3モード対応** — NeoCELPテスト のみ / NeoVST-NJ8 のみ / 複合型テスト から選択可能
 - **新JACET8000ベース** — 2016年改訂版の頻度リストに準拠
-- **3PL IRTスコアリング内蔵** — NeoVST-NJ8に関して、JACET語彙研究会が提供している、公式 Excel 語彙サイズ計算シートのアルゴリズムを移植
-- **自動データクリーニング** — 不正解・フライング応答・±3SD外れ値を自動除外（井関, 2020; 大久保, 2011; 橋本, 2010）
-- **CSV出力対応** — シャッフル整合性を保証した試行レベルデータと集計データの両方を出力
+- **3PL IRTスコアリング内蔵** — JACET公式 Excel シートのアルゴリズムを完全移植
+- **シャッフル整合性保証** — 選択肢の表示順と回答記録の対応関係を厳密に保証
+- **CSV出力対応** — 試行レベルデータと集計データの両方を出力
+- **サーバー不要** — HTML/CSS/JavaScript のみで動作。GitHub Pages で即公開可能
 
-## テストのURL
-https://Ando-Hiro-rs.github.io/NeoCELP-VST-NJ8/ 
+## デモ
 
-## プロジェクト構成
+`https://ando-hiro-rs.github.io/VST-NJ8-online-vocabulary-test-fixed/`
 
-```
-.
-├── index.html              # エントリーポイント (モード選択画面)
-├── src/
-│   ├── css/                # スタイルシート
-│   ├── js/                 # JavaScript モジュール
-│   │   ├── celp.js         # NeoCELP テストロジック
-│   │   ├── vst.js          # NeoVST-NJ8 テストロジック
-│   │   ├── irt-scoring.js  # 3PL IRT スコアリングエンジン
-│   │   └── csv-export.js   # CSV 出力モジュール
-│   └── data/
-│       ├── celp-items.json # CELP 同義語ペア
-│       └── vst-items.json  # VST-NJ8 160項目バンク (IRTパラメータ込み)
-├── docs/                   # 設計仕様・スコアリング理論
-└── analysis/               # R/Python 分析スクリプト
+## 関連プロジェクト
+
+語彙処理速度の測定には [NeoCELP](https://github.com/Ando-Hiro-rs/NeoCELP) (開発中) をご利用ください。
+
+## ローカルで動かす
+
+```bash
+git clonehttps://ando-hiro-rs.github.io/VST-NJ8-online-vocabulary-test-fixed/
+python3 -m http.server 8000
 ```
 
-## 引用方法
+ブラウザで `http://localhost:8000` にアクセスします。
 
-このツールを研究で使用された場合は、以下のように引用してください。
-```
-安藤嘉. (2026). NeoCELP & NeoVST-NJ8: 日本人英語学習者向け総合的語彙力測定システム.
-GitHub. https://github.com/Ando-Hiro-rs/NeoCELP-VST-NJ8
-```
+## 引用文献
 
-## ベースとなる先行研究
+- Hamada, A., Iso, T., Kojima, M., Aizawa, K., Hoshino, Y., Sato, K., Sato, R., Chujo, J., & Yamauchi, Y. (2021). Development of a vocabulary size test for Japanese EFL learners using the New JACET List of 8,000 Basic Words. *JACET Journal*, *65*, 23–45.
+- JACET Vocabulary Acquisition Research Group. (n.d.). VST-NJ8 scoring sheet [Excel sheet]. https://j-varg.sakura.ne.jp/vst-nj8/
+- Komuro, R. (2023). Online VST-NJ8 [Web application]. https://ryuya-dot-com.github.io/OnlineVST-NJ8WithoutDontKnow/
+- Ando, H. (2026). A study of the vocabulary processing speed and vocabulary size of Japanese university students [Bachelor's thesis]. Hokkaido University of Education, Sapporo.
 
-- **NeoCELPテスト**:
-- 横川博一 (2006).『日本人英語学習者の英単語親密度 文字編―教育・研究のための第二言語データベース』くろしお出版.
-- 門田修平・野呂忠司・氏木道人・長谷尚弥 (編著) (2014).『英単語運用力判定ソフトを使った語彙指導』大修館書店.
-- **NeoVST-NJ8**: Hamada, A., Ishii, T., Kanazawa, Y., Kojima, M., Maeda, M., Mori, S., Saito, A., Sawano, R., Shimoda, Y., Tatsukawa, K., Tomita, K., Toyokuni, T., Tsubaki, M., & Yanagisawa, A. (2021). Development of a Vocabulary Size Test for Japanese EFL Learners Using the New JACET List of 8,000 Basic Words. *JACET Journal*, *65*, 23–45. https://doi.org/10.32234/jacetjournal.65.0_23 
-- また、小室竜也氏のVST-NJ8オンライン語彙サイズテスト（https://ryuya-dot-com.github.io/OnlineVST-NJ8WithoutDontKnow/） とそのGit Hub公開コード（https://github.com/Ryuya-dot-com/OnlineVST-NJ8/blob/main/README.md） を参考にしながら、ユーザー様に快適にご利用して頂けるように開発しております。
 ## ライセンス
 
-MIT License。研究・教育目的での自由な利用を歓迎します。
+MIT License
 
-## 制作者
+## 作者
 
-安藤嘉
+安藤 嘉 (北海道教育大学 札幌校 英語教育分野)
+指導教員: 内野駿介 准教授
