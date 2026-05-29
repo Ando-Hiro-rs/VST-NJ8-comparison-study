@@ -96,10 +96,15 @@ function isIdDuplicate(id) {
 }
 
 function checkConsentForm() {
-  const c1 = document.getElementById('consent-1').checked;
-  const c2 = document.getElementById('consent-2').checked;
-  const c3 = document.getElementById('consent-3').checked;
-  document.getElementById('consent-btn').disabled = !(c1 && c2 && c3);
+  const c1 = document.getElementById('consent-1');
+  const c2 = document.getElementById('consent-2');
+  const c3 = document.getElementById('consent-3');
+  const btn = document.getElementById('consent-btn');
+  if (!c1 || !c2 || !c3 || !btn) {
+    console.error('同意画面の要素が見つかりません');
+    return;
+  }
+  btn.disabled = !(c1.checked && c2.checked && c3.checked);
 }
 
 function submitConsent() {
