@@ -60,7 +60,13 @@
 
   <button class="btn" id="consent-btn" onclick="submitConsent()" disabled>同意してテストを開始 →</button>
 </section>
-
+function submitConsent() {
+  state.session.consent_agreed = true;
+  state.session.consent_timestamp = new Date().toISOString();
+  const shareEl = document.getElementById('consent-share');
+  state.session.data_sharing_agreed = shareEl ? shareEl.checked : false;
+  show('s-info');
+}
 
 <section id="s-info" class="screen">
   <span class="title-badge">受験者情報</span>
