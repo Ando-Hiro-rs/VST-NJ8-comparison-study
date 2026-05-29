@@ -42,27 +42,11 @@ function participantValues(p) {
   ];
 }
 
-  for (const t of mainTrials) {
-    const row = [
-      ...pValues,
-      session.test_version, session.mode, session.cefr_level,
-      session.start_time, session.fixation_ms, session.prime_ms,
-      session.blank_ms, 'main', t.trial_num, t.prime, t.target, t.condition,
-      t.response, t.is_correct ? 1 : 0, t.rt_ms, t.exclude_reason || '',
-      t.fix_actual_ms || '', t.prime_actual_ms || '', t.blank_actual_ms || '',
-      t.fix_deviation_ms || '', t.prime_deviation_ms || '', t.blank_deviation_ms || '',
-      t.target_onset_ms || ''
-    ];
-    rows.push(row.map(csvEscape).join(','));
-  }
-  return rows.join('\n');
-}
-
 export function buildVstTrialsCSV(participant, session, trials) {
   const pHeaders = participantHeaders();
   const headers = [
     ...pHeaders,
-    'test_version', 'mode', 'test_datetime',
+    'test_version', 'test_datetime',
     'item_id', 'level', 'pos', 'target_meaning_ja', 'correct_word',
     'option_pos_0', 'option_pos_1', 'option_pos_2', 'option_pos_3',
     'response_position', 'response_word', 'is_correct', 'response_time_ms'
@@ -72,7 +56,7 @@ export function buildVstTrialsCSV(participant, session, trials) {
   for (const t of trials) {
     const row = [
       ...pValues,
-      session.test_version, session.mode, session.start_time,
+      session.test_version, session.start_time,
       t.item_id, t.level, t.pos, t.target_meaning_ja, t.correct_word,
       t.displayed_options[0], t.displayed_options[1],
       t.displayed_options[2], t.displayed_options[3],
@@ -107,31 +91,11 @@ export function buildSummaryCSV(participant, session, vstResult, browserInfo) {
     ['device_type', participant.device_type || ''],
     ['environment_type', participant.environment_type || ''],
     ['test_version', session.test_version],
-    ['mode', session.mode],
     ['test_datetime', session.start_time],
-    ['consent_agreed', session.concefr_levelsent_agreed ? 1 : 0],
+    ['consent_agreed', session.consent_agreed ? 1 : 0],
     ['consent_timestamp', session.consent_timestamp || ''],
     ['data_sharing_agreed', session.data_sharing_agreed ? 1 : 0],
   ];
-  if (session.timer_precision) {
-    data.push(
-      ['timer_resolution_ms', session.timer_precision.resolution_ms],
-      ['timer_sample_count', session.timer_precision.sample_count],
-    );
-  }
-  if (session.timing_precision) {
-    const tp = session.timing_precision;
-    data.push(
-      ['precision_fix_mean_deviation_ms', Math.round(tp.fixation.mean * 100) / 100],
-      ['precision_fix_max_deviation_ms', Math.round(tp.fixation.max * 100) / 100],
-      ['precision_prime_mean_deviation_ms', Math.round(tp.prime.mean * 100) / 100],
-      ['precision_prime_max_deviation_ms', Math.round(tp.prime.max * 100) / 100],
-      ['precision_blank_mean_deviation_ms', Math.round(tp.blank.mean * 100) / 100],
-      ['precision_blank_max_deviation_ms', Math.round(tp.blank.max * 100) / 100],
-      ['precision_trials_above_50ms', tp.prime.above_50ms],
-      ['precision_trials_above_100ms', tp.prime.above_100ms],
-    );
-  }
   if (browserInfo) {
     data.push(
       ['browser_user_agent', browserInfo.user_agent],
@@ -146,8 +110,6 @@ export function buildSummaryCSV(participant, session, vstResult, browserInfo) {
       ['touch_support', browserInfo.touch_support ? 1 : 0],
     );
   }
-  
-  
   if (vstResult) {
     data.push(
       ['vst_raw_score', vstResult.raw_score],
@@ -178,19 +140,18 @@ export function makeFilename(participant, session, type) {
   const ss = String(now.getSeconds()).padStart(2, '0');
   const timestamp = `${y}${m}${d}_${hh}${mm}${ss}`;
   const id = participant.id || 'anonymous';
-  return `NeoCELP-VST_${id}_${session.mode}_${timestamp}_${type}.csv`;
+  return `VST-NJ8_${id}_${timestamp}_${type}.csv`;
 }
 
 export function sendByEmail(recipientEmail, participant, session, csvBlobs) {
-  const subject = `NeoCELP-VST テスト結果 (${participant.id} / ${session.mode})`;
+  const subject = `VST-NJ8 テスト結果 (${participant.id})`;
   const bodyLines = [
     `お世話になっております。`,
     ``,
-    `NeoCELP & NeoVST-NJ8 のテスト結果を送付いたします。`,
+    `VST-NJ8 のテスト結果を送付いたします。`,
     ``,
     `■ 受験者情報`,
     `  ID: ${participant.id}`,
-    `  モード: ${session.mode}`,
     `  受験日時: ${session.start_time}`,
     ``,
     `■ 添付ファイル`,
@@ -203,7 +164,7 @@ export function sendByEmail(recipientEmail, participant, session, csvBlobs) {
   bodyLines.push(`本メールにファイルが添付されていない場合は、お手数ですがダウンロードしたファイルを手動で添付してください。`);
   bodyLines.push(``);
   bodyLines.push(`---`);
-  bodyLines.push(`このメールは NeoCELP & NeoVST-NJ8 システムから自動生成されました。`);
+  bodyLines.push(`このメールは VST-NJ8 システムから自動生成されました。`);
 
   const body = bodyLines.join('\n');
   const mailtoUrl = `mailto:${recipientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -221,22 +182,18 @@ export async function shareViaWebShareAPI(participant, session, csvBlobs) {
   if (!navigator.share || !navigator.canShare) {
     throw new Error('お使いのブラウザは共有機能に対応していません');
   }
-
   const files = csvBlobs.map(blob => {
     const bom = '\uFEFF';
     const fileContent = bom + blob.content;
     return new File([fileContent], blob.filename, { type: 'text/csv' });
   });
-
   const shareData = {
-    title: `NeoCELP-VST テスト結果 (${participant.id})`,
-    text: `NeoCELP & NeoVST-NJ8 テスト結果\n受験者ID: ${participant.id}\nモード: ${session.mode}\n受験日時: ${session.start_time}`,
+    title: `VST-NJ8 テスト結果 (${participant.id})`,
+    text: `VST-NJ8 テスト結果\n受験者ID: ${participant.id}\n受験日時: ${session.start_time}`,
     files: files,
   };
-
   if (!navigator.canShare(shareData)) {
     throw new Error('このデバイスではファイル共有がサポートされていません');
   }
-
   await navigator.share(shareData);
 }
