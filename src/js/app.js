@@ -103,10 +103,16 @@ function checkConsentForm() {
 }
 
 function submitConsent() {
-  state.session.consent_agreed = true;
-  state.session.consent_timestamp = new Date().toISOString();
-  state.session.data_sharing_agreed = document.getElementById('consent-share').checked;
-  show('s-info');
+  try {
+    state.session.consent_agreed = true;
+    state.session.consent_timestamp = new Date().toISOString();
+    const shareEl = document.getElementById('consent-share');
+    state.session.data_sharing_agreed = shareEl ? shareEl.checked : false;
+    show('s-info');
+  } catch (err) {
+    console.error('同意処理でエラー:', err);
+    alert('画面遷移でエラーが発生しました。ページをリロードして再試行してください。');
+  }
 }
 
 function checkInfoForm() {
