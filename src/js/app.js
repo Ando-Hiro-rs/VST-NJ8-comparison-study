@@ -121,20 +121,27 @@ function submitConsent() {
 }
 
 function checkInfoForm() {
-  const id = document.getElementById('f-id').value.trim();
+  const idEl = document.getElementById('f-id');
   const warningEl = document.getElementById('id-warning');
   const btn = document.getElementById('info-btn');
+  if (!idEl || !btn) {
+    console.error('受験者情報フォームの要素が見つかりません', { idEl, warningEl, btn });
+    return;
+  }
+  const id = idEl.value.trim();
   if (id.length === 0) {
-    warningEl.style.display = 'none';
+    if (warningEl) warningEl.style.display = 'none';
     btn.disabled = true;
     return;
   }
   if (isIdDuplicate(id)) {
-    warningEl.style.display = 'block';
-    warningEl.textContent = `⚠ このIDは既に受験記録があります。別のIDを使用してください。`;
+    if (warningEl) {
+      warningEl.style.display = 'block';
+      warningEl.textContent = '⚠ このIDは既に受験記録があります。別のIDを使用してください。';
+    }
     btn.disabled = true;
   } else {
-    warningEl.style.display = 'none';
+    if (warningEl) warningEl.style.display = 'none';
     btn.disabled = false;
   }
 }
