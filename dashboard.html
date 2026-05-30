@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NeoCELP-VST 研究データ管理ダッシュボード</title>
+<title>VST-NJ8 研究データ管理ダッシュボード</title>
 <link rel="stylesheet" href="./src/css/main.css">
 <link rel="stylesheet" href="./src/css/dashboard.css">
 </head>
@@ -24,7 +24,7 @@
 <section id="d-main" class="d-screen">
   <header class="d-header">
     <div>
-      <h1>📊 NeoCELP-VST 研究データ管理</h1>
+      <h1>📊 VST-NJ8 研究データ管理</h1>
       <p class="d-subtitle">受験者データの集約・分析・エクスポート</p>
     </div>
     <div class="d-header-actions">
@@ -40,7 +40,7 @@
       <div class="upload-prompt">
         <div class="upload-icon">📁</div>
         <p><b>クリックしてファイルを選択</b> または <b>ここにドラッグ&ドロップ</b></p>
-        <p class="upload-hint">複数のCSVファイルを一度に選択できます (CELP・VST・サマリー)</p>
+        <p class="upload-hint">VST-NJ8 のサマリーCSVを複数まとめて選択できます</p>
       </div>
     </div>
     <div id="upload-status" class="upload-status"></div>
@@ -50,9 +50,9 @@
     <h2>📈 集計サマリー</h2>
     <div class="stats-grid" id="stats-grid">
       <div class="stat-box"><div class="stat-num" id="stat-n">0</div><div class="stat-label">受験者数</div></div>
-      <div class="stat-box"><div class="stat-num" id="stat-celp-n">0</div><div class="stat-label">CELP受験</div></div>
-      <div class="stat-box"><div class="stat-num" id="stat-vst-n">0</div><div class="stat-label">VST受験</div></div>
-      <div class="stat-box"><div class="stat-num" id="stat-combined-n">0</div><div class="stat-label">複合型受験</div></div>
+      <div class="stat-box"><div class="stat-num" id="stat-vocab-mean">—</div><div class="stat-label">語彙サイズ平均</div></div>
+      <div class="stat-box"><div class="stat-num" id="stat-theta-mean">—</div><div class="stat-label">θ 平均</div></div>
+      <div class="stat-box"><div class="stat-num" id="stat-acc-mean">—</div><div class="stat-label">正答率平均</div></div>
     </div>
     <div id="descriptive-stats" class="descriptive-stats"></div>
   </section>
@@ -61,20 +61,12 @@
     <h2>📊 可視化</h2>
     <div class="charts-grid">
       <div class="chart-card">
-        <h3>ACRRT ヒストグラム</h3>
-        <canvas id="chart-acrrt-hist" width="400" height="240"></canvas>
-      </div>
-      <div class="chart-card">
-        <h3>語彙サイズ ヒストグラム</h3>
+        <h3>推定語彙サイズ ヒストグラム</h3>
         <canvas id="chart-vocab-hist" width="400" height="240"></canvas>
       </div>
       <div class="chart-card">
-        <h3>ACRRT × 語彙サイズ 散布図</h3>
-        <canvas id="chart-scatter-vocab" width="400" height="240"></canvas>
-      </div>
-      <div class="chart-card">
-        <h3>ACRRT × CV 散布図 (Ando 2026 Figure 4 相当)</h3>
-        <canvas id="chart-scatter-cv" width="400" height="240"></canvas>
+        <h3>IRT θ ヒストグラム</h3>
+        <canvas id="chart-theta-hist" width="400" height="240"></canvas>
       </div>
     </div>
   </section>
@@ -83,15 +75,9 @@
     <h2>👥 受験者一覧</h2>
     <div class="table-controls">
       <input type="text" id="filter-input" placeholder="🔍 IDで検索..." oninput="applyFilter()">
-      <select id="filter-mode" onchange="applyFilter()">
-        <option value="">全モード</option>
-        <option value="celp_only">CELPのみ</option>
-        <option value="vst_only">VSTのみ</option>
-        <option value="combined">複合型</option>
-      </select>
       <label class="check-label">
         <input type="checkbox" id="filter-outliers" onchange="applyFilter()">
-        <span>異常値のみ表示</span>
+        <span>要確認データのみ表示</span>
       </label>
       <button class="btn-outline" onclick="exportMergedCSV()">📊 集約CSVをダウンロード</button>
       <button class="btn-outline" onclick="clearAllData()">🗑 全データ削除</button>
@@ -100,9 +86,8 @@
       <table id="participants-table">
         <thead>
           <tr>
-            <th>ID</th><th>モード</th><th>年齢</th><th>性別</th>
-            <th>CELP正答率</th><th>ACRRT (ms)</th><th>CV (%)</th>
-            <th>語彙サイズ</th><th>θ</th>
+            <th>ID</th><th>年齢</th><th>性別</th>
+            <th>正答率</th><th>語彙サイズ</th><th>θ</th><th>SE</th>
             <th>受験日時</th><th>状態</th>
           </tr>
         </thead>
