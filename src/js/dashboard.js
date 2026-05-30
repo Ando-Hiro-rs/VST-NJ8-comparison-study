@@ -1,9 +1,10 @@
 import { parseCSV, detectCsvType, parseSummaryCSV, isOutlier, calculateDescriptiveStats, buildMergedCSV } from './dashboard-stats.js';
-import { drawHistogram, drawScatter } from './dashboard-charts.js';
+import { drawHistogram } from './dashboard-charts.js';
 
+// ★ アクセスパスワード（自分にしか分からないものに変更してください）
 const DASHBOARD_PASSWORD = 'h1r0research2026';
-const STORAGE_KEY = 'neocelp_dashboard_participants';
-const AUTH_KEY = 'neocelp_dashboard_auth';
+const STORAGE_KEY = 'vstnj8_dashboard_participants';
+const AUTH_KEY = 'vstnj8_dashboard_auth';
 
 let participants = [];
 
@@ -62,8 +63,7 @@ async function handleFiles(fileList) {
   }
 
   let summaryCount = 0;
-  let celpCount = 0;
-  let vstCount = 0;
+  let otherCount = 0;
 
   for (const file of files) {
     const text = await file.text();
@@ -74,7 +74,7 @@ async function handleFiles(fileList) {
       const data = parseSummaryCSV(rows);
       const id = data.participant_id;
       if (!id) continue;
-      const sessionKey = `${id}__${data.mode}__${data.test_datetime}`;
+      const sessionKey = `${id}__${data.test_datetime}`;
       const existing = participants.find(p => p._key === sessionKey);
       if (existing) {
         Object.assign(existing, data);
@@ -82,19 +82,15 @@ async function handleFiles(fileList) {
         participants.push({ _key: sessionKey, ...data });
       }
       summaryCount++;
-    } else if (type === 'celp') {
-      celpCount++;
-    } else if (type === 'vst') {
-      vstCount++;
+    } else {
+      otherCount++;
     }
   }
 
   saveStoredData();
 
-  let statusMsg = `<span class="success">✓ 読み込み完了: `;
-  statusMsg += `サマリー ${summaryCount}件`;
-  if (celpCount > 0) statusMsg += `, CELP試行 ${celpCount}件`;
-  if (vstCount > 0) statusMsg += `, VST試行 ${vstCount}件`;
+  let statusMsg = `<span class="success">✓ 読み込み完了: サマリー ${summaryCount}件`;
+  if (otherCount > 0) statusMsg += `（サマリー以外の ${otherCount}件はスキップ）`;
   statusMsg += `</span>`;
   document.getElementById('upload-status').innerHTML = statusMsg;
 
@@ -132,9 +128,15 @@ function refreshAll() {
 
 function refreshStats() {
   document.getElementById('stat-n').textContent = participants.length;
-  document.getElementById('stat-celp-n').textContent = participants.filter(p => p.celp_acrrt_ms).length;
-  document.getElementById('stat-vst-n').textContent = participants.filter(p => p.vst_estimated_vocab_size).length;
-  document.getElementById('stat-combined-n').textContent = participants.filter(p => p.mode === 'combined').length;
+
+  const vocabStats = calculateDescriptiveStats(participants, 'vst_estimated_vocab_size');
+  const thetaStats = calculateDescriptiveStats(participants, 'vst_irt_theta');
+  const accStats = calculateDescriptiveStats(participants, 'vst_accuracy_percent');
+
+  const fmtBox = (v, d = 0) => v === null ? '—' : v.toFixed(d);
+  document.getElementById('stat-vocab-mean').textContent = fmtBox(vocabStats.mean, 0);
+  document.getElementById('stat-theta-mean').textContent = fmtBox(thetaStats.mean, 2);
+  document.getElementById('stat-acc-mean').textContent = accStats.mean === null ? '—' : fmtBox(accStats.mean, 1) + '%';
 
   const container = document.getElementById('descriptive-stats');
   if (participants.length === 0) {
@@ -142,32 +144,12 @@ function refreshStats() {
     return;
   }
 
-  const acrrtStats = calculateDescriptiveStats(participants, 'celp_acrrt_ms');
-  const cvStats = calculateDescriptiveStats(participants, 'celp_cv_percent');
-  const vocabStats = calculateDescriptiveStats(participants, 'vst_estimated_vocab_size');
-  const thetaStats = calculateDescriptiveStats(participants, 'vst_irt_theta');
-
+  const seStats = calculateDescriptiveStats(participants, 'vst_standard_error');
   const fmt = (v, d = 1) => v === null ? '—' : v.toFixed(d);
 
   container.innerHTML = `
     <div class="desc-stat-row header">
       <div></div><div>n</div><div>平均</div><div>SD</div><div>中央値</div><div>範囲</div>
-    </div>
-    <div class="desc-stat-row">
-      <div class="label">ACRRT (ms)</div>
-      <div>${acrrtStats.n}</div>
-      <div>${fmt(acrrtStats.mean, 0)}</div>
-      <div>${fmt(acrrtStats.sd, 0)}</div>
-      <div>${fmt(acrrtStats.median, 0)}</div>
-      <div>${fmt(acrrtStats.min, 0)} – ${fmt(acrrtStats.max, 0)}</div>
-    </div>
-    <div class="desc-stat-row">
-      <div class="label">CV (%)</div>
-      <div>${cvStats.n}</div>
-      <div>${fmt(cvStats.mean, 1)}</div>
-      <div>${fmt(cvStats.sd, 1)}</div>
-      <div>${fmt(cvStats.median, 1)}</div>
-      <div>${fmt(cvStats.min, 1)} – ${fmt(cvStats.max, 1)}</div>
     </div>
     <div class="desc-stat-row">
       <div class="label">語彙サイズ</div>
@@ -185,29 +167,31 @@ function refreshStats() {
       <div>${fmt(thetaStats.median, 2)}</div>
       <div>${fmt(thetaStats.min, 2)} – ${fmt(thetaStats.max, 2)}</div>
     </div>
+    <div class="desc-stat-row">
+      <div class="label">正答率 (%)</div>
+      <div>${accStats.n}</div>
+      <div>${fmt(accStats.mean, 1)}</div>
+      <div>${fmt(accStats.sd, 1)}</div>
+      <div>${fmt(accStats.median, 1)}</div>
+      <div>${fmt(accStats.min, 1)} – ${fmt(accStats.max, 1)}</div>
+    </div>
+    <div class="desc-stat-row">
+      <div class="label">SE</div>
+      <div>${seStats.n}</div>
+      <div>${fmt(seStats.mean, 3)}</div>
+      <div>${fmt(seStats.sd, 3)}</div>
+      <div>${fmt(seStats.median, 3)}</div>
+      <div>${fmt(seStats.min, 3)} – ${fmt(seStats.max, 3)}</div>
+    </div>
   `;
 }
 
 function refreshCharts() {
-  const acrrtValues = participants.map(p => parseFloat(p.celp_acrrt_ms)).filter(v => !isNaN(v));
-  drawHistogram('chart-acrrt-hist', acrrtValues, { xLabel: 'ACRRT (ms)', color: '#185fa5' });
-
   const vocabValues = participants.map(p => parseFloat(p.vst_estimated_vocab_size)).filter(v => !isNaN(v));
   drawHistogram('chart-vocab-hist', vocabValues, { xLabel: '推定語彙サイズ', color: '#0f6e56' });
 
-  const vocabScatterPoints = participants
-    .filter(p => p.celp_acrrt_ms && p.vst_estimated_vocab_size)
-    .map(p => ({ x: parseFloat(p.celp_acrrt_ms), y: parseFloat(p.vst_estimated_vocab_size) }));
-  drawScatter('chart-scatter-vocab', vocabScatterPoints, {
-    xLabel: 'ACRRT (ms)', yLabel: '語彙サイズ', color: '#854f0b'
-  });
-
-  const cvScatterPoints = participants
-    .filter(p => p.celp_acrrt_ms && p.celp_cv_percent)
-    .map(p => ({ x: parseFloat(p.celp_acrrt_ms), y: parseFloat(p.celp_cv_percent) }));
-  drawScatter('chart-scatter-cv', cvScatterPoints, {
-    xLabel: 'ACRRT (ms)', yLabel: 'CV (%)', color: '#a32d2d'
-  });
+  const thetaValues = participants.map(p => parseFloat(p.vst_irt_theta)).filter(v => !isNaN(v));
+  drawHistogram('chart-theta-hist', thetaValues, { xLabel: 'IRT θ', color: '#185fa5' });
 }
 
 function refreshTable() {
@@ -216,7 +200,6 @@ function refreshTable() {
 
 function applyFilter() {
   const filterText = (document.getElementById('filter-input').value || '').toLowerCase();
-  const filterMode = document.getElementById('filter-mode').value;
   const onlyOutliers = document.getElementById('filter-outliers').checked;
 
   const tbody = document.getElementById('participants-tbody');
@@ -224,14 +207,13 @@ function applyFilter() {
 
   const filtered = participants.filter(p => {
     if (filterText && !(p.participant_id || '').toLowerCase().includes(filterText)) return false;
-    if (filterMode && p.mode !== filterMode) return false;
     const out = isOutlier(p);
     if (onlyOutliers && !out.outlier) return false;
     return true;
   });
 
   if (filtered.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:2rem;color:#888">該当する受験者がいません</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2rem;color:#888">該当する受験者がいません</td></tr>';
     return;
   }
 
@@ -240,28 +222,16 @@ function applyFilter() {
     const tr = document.createElement('tr');
     if (out.outlier) tr.className = 'outlier';
 
-    const modeBadge = {
-      'celp_only': '<span class="badge badge-celp">CELP</span>',
-      'vst_only': '<span class="badge badge-vst">VST</span>',
-      'combined': '<span class="badge badge-combined">複合型</span>',
-    }[p.mode] || p.mode;
-
-    const acc = p.celp_total_trials
-      ? Math.round((parseInt(p.celp_n_valid || 0) / parseInt(p.celp_total_trials)) * 100) + '%'
-      : '—';
-
     const datetime = p.test_datetime ? p.test_datetime.slice(0, 16).replace('T', ' ') : '—';
 
     tr.innerHTML = `
       <td><b>${p.participant_id || '—'}</b></td>
-      <td>${modeBadge}</td>
       <td>${p.age || '—'}</td>
       <td>${p.gender || '—'}</td>
-      <td>${acc}</td>
-      <td>${p.celp_acrrt_ms || '—'}</td>
-      <td>${p.celp_cv_percent || '—'}</td>
+      <td>${p.vst_accuracy_percent ? p.vst_accuracy_percent + '%' : '—'}</td>
       <td>${p.vst_estimated_vocab_size || '—'}</td>
       <td>${p.vst_irt_theta || '—'}</td>
+      <td>${p.vst_standard_error || '—'}</td>
       <td>${datetime}</td>
       <td>${out.outlier ? `<span class="badge badge-outlier" title="${out.reason}">⚠ 要確認</span>` : '<span class="badge badge-ok">✓</span>'}</td>
     `;
@@ -280,7 +250,7 @@ function exportMergedCSV() {
   const a = document.createElement('a');
   const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
   a.href = url;
-  a.download = `NeoCELP-VST_merged_${date}_n${participants.length}.csv`;
+  a.download = `VST-NJ8_merged_${date}_n${participants.length}.csv`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
