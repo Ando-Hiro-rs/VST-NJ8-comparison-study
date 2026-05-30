@@ -79,25 +79,20 @@ export function maxOf(arr) {
 }
 
 export function isOutlier(participant) {
-  if (participant.celp_acrrt_ms) {
-    const acrrt = parseFloat(participant.celp_acrrt_ms);
-    if (acrrt > 2000) return { outlier: true, reason: 'ACRRT > 2000ms' };
+  const acc = parseFloat(participant.vst_accuracy_percent);
+  if (!isNaN(acc) && acc < 30) {
+    return { outlier: true, reason: '正答率 < 30%（4択の偶然正答率を下回る）' };
   }
-  if (participant.celp_cv_percent) {
-    const cv = parseFloat(participant.celp_cv_percent);
-    if (cv > 60) return { outlier: true, reason: 'CV > 60%' };
+  const se = parseFloat(participant.vst_standard_error);
+  if (!isNaN(se) && se > 0.5) {
+    return { outlier: true, reason: 'SE > 0.5（推定が不安定）' };
   }
-  if (participant.celp_total_trials && participant.celp_n_valid) {
-    const validRate = parseInt(participant.celp_n_valid) / parseInt(participant.celp_total_trials);
-    if (validRate < 0.70) return { outlier: true, reason: 'Valid rate < 70%' };
-  }
-  if (participant.precision_prime_mean_deviation_ms) {
-    const dev = parseFloat(participant.precision_prime_mean_deviation_ms);
-    if (dev > 50) return { outlier: true, reason: 'Timing precision > 50ms' };
+  const total = parseInt(participant.vst_total_items);
+  if (!isNaN(total) && total < 160) {
+    return { outlier: true, reason: `回答数 ${total}/160（未完了の可能性）` };
   }
   return { outlier: false, reason: '' };
 }
-
 export function calculateDescriptiveStats(participants, key) {
   const values = participants.map(p => parseFloat(p[key])).filter(v => !isNaN(v));
   return {
