@@ -68,7 +68,7 @@ export function buildVstTrialsCSV(participant, session, trials) {
   return rows.join('\n');
 }
 
-export function buildSummaryCSV(participant, session, vstResult, browserInfo) {
+export function buildSummaryCSV(participant, session, vstResult, browserInfo, qualityData) {
   const headers = ['key', 'value'];
   const rows = [headers.join(',')];
   const data = [
@@ -123,6 +123,19 @@ export function buildSummaryCSV(participant, session, vstResult, browserInfo) {
       data.push([`vst_level_${lv}_correct`, vstResult.correct_by_level[`level_${lv}`]]);
       data.push([`vst_level_${lv}_estimated_words`, vstResult.vocab_size_by_level[`level_${lv}`]]);
     }
+  }
+  if (qualityData) {
+    const totalSec = qualityData.total_duration_ms
+      ? Math.round(qualityData.total_duration_ms / 1000) : '';
+    const lossSec = qualityData.focus_loss_total_ms
+      ? Math.round(qualityData.focus_loss_total_ms / 1000) : 0;
+    data.push(
+      ['quality_focus_loss_count', qualityData.focus_loss_count ?? 0],
+      ['quality_focus_loss_total_ms', qualityData.focus_loss_total_ms ?? 0],
+      ['quality_focus_loss_total_sec', lossSec],
+      ['quality_total_duration_ms', qualityData.total_duration_ms ?? ''],
+      ['quality_total_duration_sec', totalSec],
+    );
   }
   for (const [k, v] of data) {
     rows.push([csvEscape(k), csvEscape(v)].join(','));
