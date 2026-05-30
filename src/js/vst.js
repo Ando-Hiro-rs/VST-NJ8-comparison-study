@@ -52,17 +52,85 @@ export class VstRunner {
     this.idx = 0;
     this.startTime = 0;
     this.results = [];
+    this.testStartTime = 0;
+    this.focusLossCount = 0;
+    this.focusLossTotalMs = 0;
+    this.focusLossEvents = [];
+    this.blurStart = 0;
+    this._onVisibilityChange = null;
+    this._onBlur = null;
+    this._onFocus = null;
   }
 
   start() {
     this.idx = 0;
     this.results = [];
+    this.testStartTime = performance.now();
+    this.focusLossCount = 0;
+    this.focusLossTotalMs = 0;
+    this.focusLossEvents = [];
+    this.blurStart = 0;
+    this._attachFocusMonitors();
     this.renderCurrent();
+  }
+
+  _attachFocusMonitors() {
+    this._onVisibilityChange = () => {
+      if (document.hidden) {
+        this._markBlur();
+      } else {
+        this._markFocus();
+      }
+    };
+    this._onBlur = () => this._markBlur();
+    this._onFocus = () => this._markFocus();
+    document.addEventListener('visibilitychange', this._onVisibilityChange);
+    window.addEventListener('blur', this._onBlur);
+    window.addEventListener('focus', this._onFocus);
+  }
+
+  _detachFocusMonitors() {
+    if (this._onVisibilityChange) {
+      document.removeEventListener('visibilitychange', this._onVisibilityChange);
+    }
+    if (this._onBlur) window.removeEventListener('blur', this._onBlur);
+    if (this._onFocus) window.removeEventListener('focus', this._onFocus);
+    this._onVisibilityChange = null;
+    this._onBlur = null;
+    this._onFocus = null;
+  }
+
+  _markBlur() {
+    if (this.blurStart === 0) {
+      this.blurStart = performance.now();
+    }
+  }
+
+  _markFocus() {
+    if (this.blurStart > 0) {
+      const duration = Math.round(performance.now() - this.blurStart);
+      this.focusLossCount += 1;
+      this.focusLossTotalMs += duration;
+      this.focusLossEvents.push({
+        trial_index: this.idx + 1,
+        duration_ms: duration,
+      });
+      this.blurStart = 0;
+    }
   }
 
   renderCurrent() {
     if (this.idx >= this.items.length) {
-      this.callbacks.onComplete(this.results);
+      this._markFocus();
+      this._detachFocusMonitors();
+      const totalDurationMs = Math.round(performance.now() - this.testStartTime);
+      const quality = {
+        focus_loss_count: this.focusLossCount,
+        focus_loss_total_ms: this.focusLossTotalMs,
+        focus_loss_events: this.focusLossEvents,
+        total_duration_ms: totalDurationMs,
+      };
+      this.callbacks.onComplete(this.results, quality);
       return;
     }
     if (this.callbacks.onProgress) {
@@ -91,7 +159,6 @@ export class VstRunner {
     this.renderCurrent();
   }
 }
-
 export function validateVstIntegrity(records) {
   const issues = [];
   for (const r of records) {
