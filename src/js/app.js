@@ -18,6 +18,7 @@ const state = {
   vstResult: null,
   vstRawTrials: [],
   browserInfo: null,
+  qualityData: null,
 };
 
 let vstItems = null;
@@ -197,8 +198,9 @@ function startVst() {
       document.getElementById('vst-prog-fill').style.width = `${(i / n) * 100}%`;
       document.getElementById('vst-prog-label').textContent = `${i} / ${n}`;
     },
-    onComplete: (results) => {
+   onComplete: (results, quality) => {
       state.vstRawTrials = results;
+      state.qualityData = quality;
       const issues = validateVstIntegrity(results);
       if (issues.length > 0) console.error('VST整合性エラー:', issues);
       state.vstResult = scoreVST(results, vstItems);
@@ -302,9 +304,9 @@ function buildAllCsvBlobs() {
       content: buildVstTrialsCSV(state.participant, state.session, state.vstRawTrials),
     });
   }
-  blobs.push({
+ blobs.push({
     filename: makeFilename(state.participant, state.session, 'summary'),
-    content: buildSummaryCSV(state.participant, state.session, state.vstResult, state.browserInfo),
+    content: buildSummaryCSV(state.participant, state.session, state.vstResult, state.browserInfo, state.qualityData),
   });
   return blobs;
 }
@@ -317,7 +319,7 @@ function exportVstTrials() {
 }
 
 function exportSummary() {
-  const csv = buildSummaryCSV(state.participant, state.session, state.vstResult, state.browserInfo);
+  const csv = buildSummaryCSV(state.participant, state.session, state.vstResult, state.browserInfo, state.qualityData);
   downloadCSV(makeFilename(state.participant, state.session, 'summary'), csv);
   toast('集計データをダウンロードしました');
 }
@@ -341,9 +343,10 @@ async function shareDataViaApps() {
 }
 
 function restart() {
-  Object.assign(state, {
+ Object.assign(state, {
     participant: {}, session: {},
     vstResult: null, vstRawTrials: [],
+    qualityData: null,
   });
   const fieldsToReset = ['f-id', 'f-age', 'f-years', 'f-english-start', 'f-cert-score', 'f-cert-date'];
   fieldsToReset.forEach(id => {
