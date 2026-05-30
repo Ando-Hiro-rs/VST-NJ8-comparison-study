@@ -198,7 +198,7 @@ function startVst() {
       document.getElementById('vst-prog-fill').style.width = `${(i / n) * 100}%`;
       document.getElementById('vst-prog-label').textContent = `${i} / ${n}`;
     },
-   onComplete: (results, quality) => {
+    onComplete: (results, quality) => {
       state.vstRawTrials = results;
       state.qualityData = quality;
       const issues = validateVstIntegrity(results);
@@ -304,7 +304,7 @@ function buildAllCsvBlobs() {
       content: buildVstTrialsCSV(state.participant, state.session, state.vstRawTrials),
     });
   }
- blobs.push({
+  blobs.push({
     filename: makeFilename(state.participant, state.session, 'summary'),
     content: buildSummaryCSV(state.participant, state.session, state.vstResult, state.browserInfo, state.qualityData),
   });
@@ -343,7 +343,7 @@ async function shareDataViaApps() {
 }
 
 function restart() {
- Object.assign(state, {
+  Object.assign(state, {
     participant: {}, session: {},
     vstResult: null, vstRawTrials: [],
     qualityData: null,
