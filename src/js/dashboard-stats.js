@@ -91,8 +91,18 @@ export function isOutlier(participant) {
   if (!isNaN(total) && total < 160) {
     return { outlier: true, reason: `回答数 ${total}/160（未完了の可能性）` };
   }
+  const durationSec = parseFloat(participant.quality_total_duration_sec);
+  const MIN_DURATION_SEC = 120;
+  if (!isNaN(durationSec) && durationSec < MIN_DURATION_SEC) {
+    return { outlier: true, reason: `所要時間 ${durationSec}秒（速すぎる可能性）` };
+  }
+  const focusLoss = parseInt(participant.quality_focus_loss_count);
+  if (!isNaN(focusLoss) && focusLoss >= 5) {
+    return { outlier: true, reason: `離脱 ${focusLoss}回（集中の中断が多い）` };
+  }
   return { outlier: false, reason: '' };
 }
+
 export function calculateDescriptiveStats(participants, key) {
   const values = participants.map(p => parseFloat(p[key])).filter(v => !isNaN(v));
   return {
@@ -104,6 +114,7 @@ export function calculateDescriptiveStats(participants, key) {
     max: maxOf(values),
   };
 }
+
 export function groupBy(participants, key) {
   const groups = {};
   for (const p of participants) {
@@ -132,6 +143,7 @@ export function calculateGroupStats(participants, groupKey, metricKey) {
   }
   return result;
 }
+
 export function buildMergedCSV(participants) {
   if (participants.length === 0) return '';
   const allKeys = new Set();
