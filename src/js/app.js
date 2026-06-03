@@ -6,8 +6,8 @@ import {
   sendByEmail, shareViaWebShareAPI
 } from './csv-export.js';
 
-const TEST_VERSION = 'VST-NJ8 online vocabulary test fixed v2.0';
-const STORAGE_KEY = 'neovst_participant_ids';
+const TEST_VERSION = 'VST-NJ8 comparison study v1.0';
+const STORAGE_KEY = 'vstnj8_study_student_ids';
 
 const RESEARCHER_EMAIL = 'ahiro.research1006@gmail.com';
 const RESEARCHER_NAME = '安藤 嘉';
@@ -81,19 +81,15 @@ function getStoredIds() {
     return [];
   }
 }
-function addStoredId(id) {
+
+function addStoredId(studentId) {
   try {
     const ids = getStoredIds();
-    ids.push({ id, timestamp: new Date().toISOString() });
+    ids.push({ studentId, timestamp: new Date().toISOString() });
     localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
   } catch (e) {
     console.warn('localStorage への保存に失敗しました', e);
   }
-}
-
-function isIdDuplicate(id) {
-  const ids = getStoredIds();
-  return ids.some(record => record.id === id);
 }
 
 function checkConsentForm() {
@@ -122,61 +118,41 @@ function submitConsent() {
 }
 
 function checkInfoForm() {
-  const idEl = document.getElementById('f-id');
-  const warningEl = document.getElementById('id-warning');
+  const sidEl = document.getElementById('f-student-id');
+  const weekdayEl = document.getElementById('f-weekday');
+  const deptEl = document.getElementById('f-department');
   const btn = document.getElementById('info-btn');
-  if (!idEl || !btn) {
-    console.error('受験者情報フォームの要素が見つかりません', { idEl, warningEl, btn });
+  if (!sidEl || !weekdayEl || !deptEl || !btn) {
+    console.error('受験者情報フォームの要素が見つかりません', { sidEl, weekdayEl, deptEl, btn });
     return;
   }
-  const id = idEl.value.trim();
-  if (id.length === 0) {
-    if (warningEl) warningEl.style.display = 'none';
-    btn.disabled = true;
-    return;
-  }
-  if (isIdDuplicate(id)) {
-    if (warningEl) {
-      warningEl.style.display = 'block';
-      warningEl.textContent = '⚠ このIDは既に受験記録があります。別のIDを使用してください。';
-    }
-    btn.disabled = true;
-  } else {
-    if (warningEl) warningEl.style.display = 'none';
-    btn.disabled = false;
-  }
+  const sid = sidEl.value.trim();
+  const weekday = weekdayEl.value;
+  const dept = deptEl.value;
+  btn.disabled = !(sid.length > 0 && weekday && dept);
 }
 
 function submitInfo() {
-  const id = document.getElementById('f-id').value.trim();
-  if (isIdDuplicate(id)) {
-    alert(`このIDは既に受験済みです。別のIDを使用してください。`);
+  const sid = document.getElementById('f-student-id').value.trim();
+  const nameEl = document.getElementById('f-name');
+  const weekday = document.getElementById('f-weekday').value;
+  const dept = document.getElementById('f-department').value;
+  if (sid.length === 0 || !weekday || !dept) {
+    alert('学籍番号・曜日・学科は必須です。');
     return;
   }
   state.participant = {
-    id,
-    age: document.getElementById('f-age').value.trim(),
-    gender: document.getElementById('f-gender').value,
-    l1: document.getElementById('f-l1').value,
-    learning_years: document.getElementById('f-years').value.trim(),
-    institution_type: document.getElementById('f-institution').value,
-    major: document.getElementById('f-major').value,
-    grade: document.getElementById('f-grade').value,
-    english_start_age: document.getElementById('f-english-start').value.trim(),
-    overseas_experience: document.getElementById('f-overseas').value,
-    cert_type: document.getElementById('f-cert-type').value,
-    cert_score: document.getElementById('f-cert-score').value.trim(),
-    cert_date: document.getElementById('f-cert-date').value.trim(),
-    english_use_frequency: document.getElementById('f-english-use').value,
-    handedness: document.getElementById('f-handedness').value,
-    condition_rating: document.getElementById('f-condition').value,
-    device_type: document.getElementById('f-device').value,
-    environment_type: document.getElementById('f-environment').value,
+    id: sid,
+    student_id: sid,
+    name: nameEl ? nameEl.value.trim() : '',
+    weekday: weekday,
+    department: dept,
   };
   state.session = {
     ...state.session,
     test_version: TEST_VERSION,
     start_time: new Date().toISOString(),
+    device_type: state.browserInfo.device_type,
   };
   show('s-vst-instructions');
 }
@@ -211,87 +187,13 @@ function startVst() {
 }
 
 function finishSession() {
-  addStoredId(state.participant.id);
+  addStoredId(state.participant.student_id);
   showResult();
-}
-
-function toggleSection(sectionId) {
-  const section = document.getElementById(sectionId);
-  const arrow = document.getElementById(sectionId + '-arrow');
-  if (!section || !arrow) return;
-  if (section.style.display === 'none' || section.style.display === '') {
-    section.style.display = 'grid';
-    arrow.textContent = '▼';
-  } else {
-    section.style.display = 'none';
-    arrow.textContent = '▶';
-  }
-}
-
-function vocabToCEFR(size) {
-  if (size >= 6500) return { label: 'C1〜C2', short: 'C1+', desc: '上級〜熟練者' };
-  if (size >= 4500) return { label: 'B2', short: 'B2', desc: '中上級' };
-  if (size >= 3000) return { label: 'B1', short: 'B1', desc: '中級' };
-  if (size >= 1500) return { label: 'A2', short: 'A2', desc: '初中級' };
-  return { label: 'A1', short: 'A1', desc: '基礎' };
-}
-
-function vocabToEiken(size) {
-  if (size >= 7500) return '英検 1 級相当';
-  if (size >= 6000) return '英検 準1 級相当';
-  if (size >= 4500) return '英検 2 級相当';
-  if (size >= 3000) return '英検 準2 級相当';
-  if (size >= 1500) return '英検 3 級相当';
-  return '英検 4・5 級相当';
-}
-
-function vocabToTOEIC(size) {
-  if (size >= 7000) return 'TOEIC 800+';
-  if (size >= 5500) return 'TOEIC 700〜800';
-  if (size >= 4000) return 'TOEIC 600〜700';
-  if (size >= 2500) return 'TOEIC 450〜600';
-  return 'TOEIC 〜450';
 }
 
 function showResult() {
   show('s-result');
-  const v = state.vstResult;
-  document.getElementById('r-vocab').textContent = v.estimated_vocab_size.toLocaleString();
-  document.getElementById('r-theta').textContent = v.irt_theta;
-  document.getElementById('r-se').textContent = `SE: ${v.standard_error ?? '—'}`;
-  document.getElementById('r-vst-acc').textContent = `${v.accuracy_percent}%`;
-  document.getElementById('r-raw').textContent = `${v.raw_score} / ${v.total_items}`;
-
-  const cefr = vocabToCEFR(v.estimated_vocab_size);
-  const eiken = vocabToEiken(v.estimated_vocab_size);
-  const toeic = vocabToTOEIC(v.estimated_vocab_size);
-  document.getElementById('badge-cefr').textContent = cefr.short;
-  document.getElementById('badge-cefr-desc').textContent = `CEFR ${cefr.label} / ${cefr.desc}`;
-  document.getElementById('badge-eiken').textContent = eiken;
-  document.getElementById('badge-toeic').textContent = toeic;
-
-  const lvBars = document.getElementById('level-bars');
-  lvBars.innerHTML = '';
-  for (let lv = 1; lv <= 8; lv++) {
-    const correct = v.correct_by_level[`level_${lv}`];
-    const est = v.vocab_size_by_level[`level_${lv}`];
-    const pct = (correct / 20) * 100;
-    lvBars.innerHTML += `
-      <div class="level-bar-row">
-        <span class="level-bar-name">Lv${lv}</span>
-        <div class="level-bar-track"><div class="level-bar-fill" style="width:${pct}%"></div></div>
-        <span class="level-bar-val">${correct}/20 → ${est}語</span>
-      </div>`;
-  }
-
-  let msg = '';
-  const size = v.estimated_vocab_size;
-  if (size >= 6000) msg = '上級者レベルの語彙サイズです。専門的読解にも対応できます。';
-  else if (size >= 4000) msg = '中上級レベル。学術文章の理解に十分な語彙力があります。';
-  else if (size >= 2000) msg = '中級レベル。日常的なコミュニケーションには十分です。';
-  else msg = '基礎レベル。高頻度語の学習を継続することが重要です。';
-  document.getElementById('r-message').textContent = msg;
-
+  // 研究版: スコアは受験者に表示しない（裏で計算し、CSVには記録される）
   document.getElementById('researcher-email-display').textContent = RESEARCHER_EMAIL;
   document.getElementById('researcher-name-display').textContent = RESEARCHER_NAME;
 }
@@ -348,24 +250,18 @@ function restart() {
     vstResult: null, vstRawTrials: [],
     qualityData: null,
   });
-  const fieldsToReset = ['f-id', 'f-age', 'f-years', 'f-english-start', 'f-cert-score', 'f-cert-date'];
+  const fieldsToReset = ['f-student-id', 'f-name'];
   fieldsToReset.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
-  const selectsToReset = [
-    'f-gender', 'f-institution', 'f-major', 'f-grade',
-    'f-overseas', 'f-cert-type', 'f-english-use',
-    'f-handedness', 'f-condition', 'f-device', 'f-environment'
-  ];
+  const selectsToReset = ['f-weekday', 'f-department'];
   selectsToReset.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
-  const l1El = document.getElementById('f-l1');
-  if (l1El) l1El.value = 'japanese';
-  document.getElementById('info-btn').disabled = true;
-  document.getElementById('id-warning').style.display = 'none';
+  const btn = document.getElementById('info-btn');
+  if (btn) btn.disabled = true;
   show('s-consent');
 }
 
@@ -374,7 +270,6 @@ window.submitConsent = submitConsent;
 window.checkInfoForm = checkInfoForm;
 window.submitInfo = submitInfo;
 window.startVst = startVst;
-window.toggleSection = toggleSection;
 window.exportVstTrials = exportVstTrials;
 window.exportSummary = exportSummary;
 window.sendDataByEmail = sendDataByEmail;
