@@ -22,23 +22,13 @@ export function downloadCSV(filename, csv) {
 
 function participantHeaders() {
   return [
-    'participant_id', 'age', 'gender', 'l1', 'learning_years',
-    'institution_type', 'major', 'grade',
-    'english_start_age', 'overseas_experience',
-    'cert_type', 'cert_score', 'cert_date',
-    'english_use_frequency', 'handedness',
-    'condition_rating', 'device_type', 'environment_type'
+    'participant_id', 'student_id', 'name', 'weekday', 'department'
   ];
 }
 
 function participantValues(p) {
   return [
-    p.id, p.age, p.gender, p.l1, p.learning_years,
-    p.institution_type || '', p.major || '', p.grade || '',
-    p.english_start_age || '', p.overseas_experience || '',
-    p.cert_type || '', p.cert_score || '', p.cert_date || '',
-    p.english_use_frequency || '', p.handedness || '',
-    p.condition_rating || '', p.device_type || '', p.environment_type || ''
+    p.id, p.student_id || '', p.name || '', p.weekday || '', p.department || ''
   ];
 }
 
@@ -46,17 +36,18 @@ export function buildVstTrialsCSV(participant, session, trials) {
   const pHeaders = participantHeaders();
   const headers = [
     ...pHeaders,
-    'test_version', 'test_datetime',
+    'test_version', 'test_datetime', 'device_type',
     'item_id', 'level', 'pos', 'target_meaning_ja', 'correct_word',
     'option_pos_0', 'option_pos_1', 'option_pos_2', 'option_pos_3',
     'response_position', 'response_word', 'is_correct', 'response_time_ms'
   ];
   const rows = [headers.join(',')];
   const pValues = participantValues(participant);
+  const device = session.device_type || '';
   for (const t of trials) {
     const row = [
       ...pValues,
-      session.test_version, session.start_time,
+      session.test_version, session.start_time, device,
       t.item_id, t.level, t.pos, t.target_meaning_ja, t.correct_word,
       t.displayed_options[0], t.displayed_options[1],
       t.displayed_options[2], t.displayed_options[3],
@@ -73,25 +64,13 @@ export function buildSummaryCSV(participant, session, vstResult, browserInfo, qu
   const rows = [headers.join(',')];
   const data = [
     ['participant_id', participant.id],
-    ['age', participant.age],
-    ['gender', participant.gender],
-    ['l1', participant.l1],
-    ['learning_years', participant.learning_years],
-    ['institution_type', participant.institution_type || ''],
-    ['major', participant.major || ''],
-    ['grade', participant.grade || ''],
-    ['english_start_age', participant.english_start_age || ''],
-    ['overseas_experience', participant.overseas_experience || ''],
-    ['cert_type', participant.cert_type || ''],
-    ['cert_score', participant.cert_score || ''],
-    ['cert_date', participant.cert_date || ''],
-    ['english_use_frequency', participant.english_use_frequency || ''],
-    ['handedness', participant.handedness || ''],
-    ['condition_rating', participant.condition_rating || ''],
-    ['device_type', participant.device_type || ''],
-    ['environment_type', participant.environment_type || ''],
+    ['student_id', participant.student_id || ''],
+    ['name', participant.name || ''],
+    ['weekday', participant.weekday || ''],
+    ['department', participant.department || ''],
     ['test_version', session.test_version],
     ['test_datetime', session.start_time],
+    ['device_type', session.device_type || (browserInfo ? browserInfo.device_type : '')],
     ['consent_agreed', session.consent_agreed ? 1 : 0],
     ['consent_timestamp', session.consent_timestamp || ''],
     ['data_sharing_agreed', session.data_sharing_agreed ? 1 : 0],
@@ -152,19 +131,19 @@ export function makeFilename(participant, session, type) {
   const mm = String(now.getMinutes()).padStart(2, '0');
   const ss = String(now.getSeconds()).padStart(2, '0');
   const timestamp = `${y}${m}${d}_${hh}${mm}${ss}`;
-  const id = participant.id || 'anonymous';
+  const id = participant.student_id || participant.id || 'anonymous';
   return `VST-NJ8_${id}_${timestamp}_${type}.csv`;
 }
 
 export function sendByEmail(recipientEmail, participant, session, csvBlobs) {
-  const subject = `VST-NJ8 テスト結果 (${participant.id})`;
+  const subject = `VST-NJ8 テスト結果 (${participant.student_id || participant.id})`;
   const bodyLines = [
     `お世話になっております。`,
     ``,
     `VST-NJ8 のテスト結果を送付いたします。`,
     ``,
     `■ 受験者情報`,
-    `  ID: ${participant.id}`,
+    `  学籍番号: ${participant.student_id || participant.id}`,
     `  受験日時: ${session.start_time}`,
     ``,
     `■ 添付ファイル`,
@@ -201,8 +180,8 @@ export async function shareViaWebShareAPI(participant, session, csvBlobs) {
     return new File([fileContent], blob.filename, { type: 'text/csv' });
   });
   const shareData = {
-    title: `VST-NJ8 テスト結果 (${participant.id})`,
-    text: `VST-NJ8 テスト結果\n受験者ID: ${participant.id}\n受験日時: ${session.start_time}`,
+    title: `VST-NJ8 テスト結果 (${participant.student_id || participant.id})`,
+    text: `VST-NJ8 テスト結果\n学籍番号: ${participant.student_id || participant.id}\n受験日時: ${session.start_time}`,
     files: files,
   };
   if (!navigator.canShare(shareData)) {
