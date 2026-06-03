@@ -9,7 +9,7 @@ import {
 const TEST_VERSION = 'VST-NJ8 comparison study v1.0';
 const STORAGE_KEY = 'vstnj8_study_student_ids';
 
-const RESEARCHER_EMAIL = 'ahiro.research1006@gmail.com';
+const RESEARCHER_EMAIL = 'd16638f2@stu.hokkyodai.ac.jp';
 const RESEARCHER_NAME = '安藤 嘉';
 
 const state = {
