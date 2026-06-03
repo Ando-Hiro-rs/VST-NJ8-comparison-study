@@ -64,47 +64,41 @@
 
 <section id="s-info" class="screen">
   <span class="title-badge">受験者情報</span>
-  <h2>基本情報を入力してください</h2>
-  <p class="sub">必須項目を入力してください。任意項目は研究にご協力いただける方のみご記入ください。</p>
+  <h2>情報を入力してください</h2>
+  <p class="sub">すべての項目が必須です。お名前は任意です。</p>
 
   <div class="info-section">
     <h3 class="info-section-title">基本情報 <span class="req-label">必須</span></h3>
     <div class="form-grid">
       <div class="form-row full">
-        <label class="form-label" for="f-id">受験者ID <span class="req">*</span></label>
-        <input type="text" id="f-id" placeholder="例: P001" oninput="checkInfoForm()">
-        <div id="id-warning" style="display:none; font-size:11px; color:var(--color-danger); padding:6px 8px; background:var(--color-danger-bg); border-radius:6px; margin-top:4px"></div>
+        <label class="form-label" for="f-student-id">学籍番号 <span class="req">*</span></label>
+        <input type="text" id="f-student-id" placeholder="例: 1234567" oninput="checkInfoForm()">
+      </div>
+      <div class="form-row full">
+        <label class="form-label" for="f-name">お名前（任意）</label>
+        <input type="text" id="f-name" placeholder="例: 安藤 嘉" oninput="checkInfoForm()">
       </div>
       <div class="form-row">
-        <label class="form-label" for="f-age">年齢</label>
-        <input type="text" id="f-age" placeholder="例: 20">
-      </div>
-      <div class="form-row">
-        <label class="form-label" for="f-gender">性別</label>
-        <select id="f-gender">
+        <label class="form-label" for="f-weekday">受講している曜日 <span class="req">*</span></label>
+        <select id="f-weekday" onchange="checkInfoForm()">
           <option value="">選択してください</option>
-          <option value="female">女性</option>
-          <option value="male">男性</option>
-          <option value="other">その他</option>
-          <option value="na">回答しない</option>
+          <option value="thursday">木曜</option>
+          <option value="friday">金曜</option>
         </select>
       </div>
       <div class="form-row">
-        <label class="form-label" for="f-l1">母語</label>
-        <select id="f-l1">
-          <option value="japanese">日本語</option>
-          <option value="chinese">中国語</option>
-          <option value="korean">韓国語</option>
-          <option value="other">その他</option>
+        <label class="form-label" for="f-department">学科 <span class="req">*</span></label>
+        <select id="f-department" onchange="checkInfoForm()">
+          <option value="">選択してください</option>
+          <option value="english">英語科</option>
+          <option value="other">その他の学科</option>
         </select>
-      </div>
-      <div class="form-row">
-        <label class="form-label" for="f-years">英語学習歴 (年)</label>
-        <input type="text" id="f-years" placeholder="例: 10">
       </div>
     </div>
   </div>
 
+  <button class="btn" id="info-btn" onclick="submitInfo()" disabled>次へ →</button>
+</section>
   <div class="info-section">
     <h3 class="info-section-title clickable" onclick="toggleSection('info-section-2')">
       <span id="info-section-2-arrow">▶</span> 学習・研究文脈情報 <span class="opt-label">任意</span>
@@ -295,7 +289,7 @@
 
 <section id="s-vst" class="screen">
   <div style="display:flex;align-items:center;gap:8px">
-    <span class="phase-label">NeoVST-NJ8</span>
+    <span class="phase-label">VST-NJ8</span>
   </div>
   <div class="progress-wrap">
     <div class="progress-bar"><div class="progress-fill" id="vst-prog-fill" style="width:0%"></div></div>
@@ -308,56 +302,16 @@
 </section>
 
 <section id="s-result" class="screen">
-  <span class="title-badge">テスト結果</span>
+  <span class="title-badge">テスト終了</span>
   <h2>受験お疲れ様でした</h2>
 
-  <div id="result-vst-section" class="screen" style="width:100%;align-items:center;gap:16px">
-    <h3>NeoVST-NJ8 — 語彙サイズ</h3>
-    <div class="stat-grid">
-      <div class="stat-card"><div class="stat-val" id="r-vocab">—</div><div class="stat-lbl">推定語彙サイズ</div><div class="stat-sub">3PL IRT モデル</div></div>
-      <div class="stat-card"><div class="stat-val" id="r-theta">—</div><div class="stat-lbl">IRT θ</div><div class="stat-sub" id="r-se">SE: —</div></div>
-      <div class="stat-card"><div class="stat-val" id="r-vst-acc">—</div><div class="stat-lbl">正答率</div><div class="stat-sub" id="r-raw">— / —</div></div>
-      <div class="stat-card"><div class="stat-val">8</div><div class="stat-lbl">頻度レベル</div><div class="stat-sub">JACET 8000</div></div>
-    </div>
-    <div class="conversion-card">
-      <div class="conversion-title">あなたの英語レベル目安</div>
-      <div class="conversion-badges">
-        <div class="conv-badge cefr">
-          <div class="conv-badge-val" id="badge-cefr">—</div>
-          <div class="conv-badge-lbl" id="badge-cefr-desc">CEFR レベル</div>
-        </div>
-        <div class="conv-badge eiken">
-          <div class="conv-badge-val" id="badge-eiken">—</div>
-          <div class="conv-badge-lbl">英検 換算目安</div>
-        </div>
-        <div class="conv-badge toeic">
-          <div class="conv-badge-val" id="badge-toeic">—</div>
-          <div class="conv-badge-lbl">TOEIC 目安</div>
-        </div>
-      </div>
-      <div class="conversion-note">※ 換算は語彙サイズに基づく目安であり、正式なスコアではありません。</div>
-    </div>
-    <div class="exclude-card">
-      <div class="exclude-title">レベル別 推定語彙数</div>
-      <div id="level-bars"></div>
-    </div>
+  <div class="instruction-card">
+    <p class="inst-text">テストは以上で終了です。ご協力ありがとうございました。</p>
+    <p class="inst-text" style="margin-top:8px">下のボタンを押して、結果データを研究者に送信してください。送信が完了したら、試験監督者の指示をお待ちください。</p>
   </div>
 
-  <div class="eval-card">
-    <div class="eval-title">あなたへのメッセージ</div>
-    <p class="eval-msg" id="r-message">—</p>
-  </div>
-
-  <div class="export-card">
-    <div class="export-title">📥 データエクスポート</div>
-    <div class="export-btn-row">
-      <button class="btn-csv" id="exp-vst" onclick="exportVstTrials()">VST 試行データ</button>
-      <button class="btn-csv" onclick="exportSummary()">集計サマリー</button>
-    </div>
-  </div>
-<div class="export-card share-card">
-    <div class="export-title">📧 研究者にデータを送信 (任意)</div>
-    <p class="share-desc">研究にご協力いただける場合、テスト結果を以下の研究者に送信できます。</p>
+  <div class="export-card share-card">
+    <div class="export-title">📤 結果データの送信</div>
     <div class="researcher-info">
       <div class="researcher-row"><span class="researcher-lbl">送信先:</span> <span id="researcher-name-display">—</span></div>
       <div class="researcher-row"><span class="researcher-lbl">メール:</span> <span id="researcher-email-display">—</span></div>
@@ -372,14 +326,21 @@
         <span class="share-note">LINE・Gmail・AirDrop などで送信</span>
       </button>
     </div>
-    <p class="share-note-bottom">※ 送信は完全に任意です。データ送信の同意確認は受験前に行いました。</p>
   </div>
+
+  <div class="export-card">
+    <div class="export-title">📥 手動ダウンロード（試験監督者用）</div>
+    <div class="export-btn-row">
+      <button class="btn-csv" id="exp-vst" onclick="exportVstTrials()">VST 試行データ</button>
+      <button class="btn-csv" onclick="exportSummary()">集計サマリー</button>
+    </div>
+  </div>
+
   <button class="btn-outline" onclick="restart()">最初の画面に戻る</button>
 </section>
-
 <footer>
-  <p>VST-NJ8 online vocabulary test fixed v1.6 — 新JACET8000 + 3PL IRT</p>
-  <p><a href="https://github.com/Ando-Hiro-rs/NeoCELP-VST-NJ8">GitHub リポジトリ</a></p>
+  <p>VST-NJ8 comparison study — 新JACET8000 + 3PL IRT — 新JACET8000 + 3PL IRT</p>
+  <p><a href="https://github.com/Ando-Hiro-rs/VST-NJ8-comparison-study">GitHub リポジトリ</a></p>
 </footer>
 
 </div>
