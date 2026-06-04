@@ -180,6 +180,8 @@ function startVst() {
     meaning: document.getElementById('vst-meaning'),
     pos: document.getElementById('vst-pos'),
     options: document.getElementById('vst-options'),
+    timer: document.getElementById('vst-timer'),
+    timeup: document.getElementById('vst-timeup'),
   };
   show('s-vst');
   vstRunner = new VstRunner(elements, items, {
