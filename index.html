@@ -149,26 +149,9 @@
 
   <div class="instruction-card">
     <p class="inst-text">テストは以上で終了です。ご協力ありがとうございました。</p>
-    <p class="inst-text" style="margin-top:8px">下のボタンを押して、結果データを研究者に送信してください。送信が完了したら、試験監督者の指示をお待ちください。</p>
   </div>
 
-  <div class="export-card share-card">
-    <div class="export-title">📤 結果データの送信</div>
-    <div class="researcher-info">
-      <div class="researcher-row"><span class="researcher-lbl">送信先:</span> <span id="researcher-name-display">—</span></div>
-      <div class="researcher-row"><span class="researcher-lbl">メール:</span> <span id="researcher-email-display">—</span></div>
-    </div>
-    <div class="share-btn-row">
-      <button class="btn-share btn-share-mail" onclick="sendDataByEmail()">
-        📨 メールで送信
-        <span class="share-note">CSVをダウンロード後、メールアプリが起動します</span>
-      </button>
-      <button class="btn-share btn-share-app supports-web-share-only" onclick="shareDataViaApps()">
-        🔗 他のアプリで共有
-        <span class="share-note">LINE・Gmail・AirDrop などで送信</span>
-      </button>
-    </div>
-  </div>
+  <div id="gas-status" class="gas-status sending">⏳ データを送信中です。しばらくお待ちください…</div>
 
   <div class="export-card">
     <div class="export-title">📥 手動ダウンロード（試験監督者用）</div>
