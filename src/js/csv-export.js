@@ -39,7 +39,7 @@ export function buildVstTrialsCSV(participant, session, trials) {
     'test_version', 'test_datetime', 'device_type',
     'item_id', 'level', 'pos', 'target_meaning_ja', 'correct_word',
     'option_pos_0', 'option_pos_1', 'option_pos_2', 'option_pos_3',
-    'response_position', 'response_word', 'is_correct', 'response_time_ms'
+    'response_position', 'response_word', 'is_correct', 'response_time_ms', 'note'
   ];
   const rows = [headers.join(',')];
   const pValues = participantValues(participant);
@@ -52,7 +52,7 @@ export function buildVstTrialsCSV(participant, session, trials) {
       t.displayed_options[0], t.displayed_options[1],
       t.displayed_options[2], t.displayed_options[3],
       t.response_position, t.response_word,
-      t.is_correct ? 1 : 0, t.response_time_ms
+      t.is_correct ? 1 : 0, t.response_time_ms, t.note || ''
     ];
     rows.push(row.map(csvEscape).join(','));
   }
