@@ -1,6 +1,7 @@
 const LEVEL_TIME_MS = 3 * 60 * 1000 + 30 * 1000; // 各レベル3分30秒 = 210000ms
 const WARNING_MS = 30 * 1000; // 残り30秒で警告色
 const TIMEUP_MESSAGE_MS = 2500; // 「時間です」表示の長さ
+const FIXATION_MS = 1000; // 注視点(+)の表示時間 = 1秒
 
 function shuffle(arr) {
   const a = [...arr];
@@ -247,10 +248,30 @@ export class VstRunner {
       this._startLevelTimer(item.level);
     }
 
-    if (this.callbacks.onProgress) {
+  if (this.callbacks.onProgress) {
       this.callbacks.onProgress(this.idx, this.items.length);
     }
 
+    this._showFixationThenQuestion(item);
+  }
+
+  // 注視点(+)を一定時間表示してから問題を表示する
+  _showFixationThenQuestion(item) {
+    this.isTransitioning = true;
+    // 注視点表示中は意味・品詞・選択肢を隠し、中央に「+」を出す
+    this.el.pos.textContent = '';
+    this.el.options.innerHTML = '';
+    this.el.meaning.textContent = '+';
+    this.el.meaning.classList.add('vst-fixation');
+
+    setTimeout(() => {
+      // 注視点が終わったら問題を表示
+      this.el.meaning.classList.remove('vst-fixation');
+      this._showQuestion(item);
+    }, FIXATION_MS);
+  }
+
+  _showQuestion(item) {
     this.el.meaning.textContent = item.meaning_ja;
     this.el.pos.textContent = item.pos;
     this.el.options.innerHTML = '';
@@ -261,6 +282,7 @@ export class VstRunner {
       btn.onclick = () => this.respond(c.display_position);
       this.el.options.appendChild(btn);
     });
+    this.isTransitioning = false;
     this.startTime = performance.now();
   }
 
