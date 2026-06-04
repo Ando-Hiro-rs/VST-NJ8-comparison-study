@@ -158,10 +158,23 @@ function submitInfo() {
 }
 
 function startVst() {
-  const items = [...vstItems];
-  for (let i = items.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [items[i], items[j]] = [items[j], items[i]];
+  // レベル(1〜8)ごとに問題を分類
+  const byLevel = {};
+  for (const item of vstItems) {
+    const lv = item.level;
+    if (!byLevel[lv]) byLevel[lv] = [];
+    byLevel[lv].push(item);
+  }
+  // 各レベル内でシャッフルし、レベル順(1→8)に連結
+  const items = [];
+  const levels = Object.keys(byLevel).map(Number).sort((a, b) => a - b);
+  for (const lv of levels) {
+    const levelItems = [...byLevel[lv]];
+    for (let i = levelItems.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [levelItems[i], levelItems[j]] = [levelItems[j], levelItems[i]];
+    }
+    items.push(...levelItems);
   }
   const elements = {
     meaning: document.getElementById('vst-meaning'),
