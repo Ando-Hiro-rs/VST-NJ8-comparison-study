@@ -103,7 +103,7 @@ export function buildSummaryCSV(participant, session, vstResult, browserInfo, qu
       data.push([`vst_level_${lv}_estimated_words`, vstResult.vocab_size_by_level[`level_${lv}`]]);
     }
   }
-  if (qualityData) {
+ if (qualityData) {
     const totalSec = qualityData.total_duration_ms
       ? Math.round(qualityData.total_duration_ms / 1000) : '';
     const lossSec = qualityData.focus_loss_total_ms
@@ -115,6 +115,15 @@ export function buildSummaryCSV(participant, session, vstResult, browserInfo, qu
       ['quality_total_duration_ms', qualityData.total_duration_ms ?? ''],
       ['quality_total_duration_sec', totalSec],
     );
+    if (qualityData.level_durations_ms) {
+      for (let lv = 1; lv <= 8; lv++) {
+        const ms = qualityData.level_durations_ms[lv];
+        if (ms !== undefined) {
+          data.push([`level_${lv}_duration_ms`, ms]);
+          data.push([`level_${lv}_duration_sec`, Math.round(ms / 1000)]);
+        }
+      }
+    }
   }
   for (const [k, v] of data) {
     rows.push([csvEscape(k), csvEscape(v)].join(','));
