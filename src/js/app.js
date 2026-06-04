@@ -209,9 +209,32 @@ function finishSession() {
 
 function showResult() {
   show('s-result');
-  // 研究版: スコアは受験者に表示しない（裏で計算し、CSVには記録される）
+  // 研究版: スコアは受験者に表示しない（裏で計算し、CSVに記録・GASに送信される）
   document.getElementById('researcher-email-display').textContent = RESEARCHER_EMAIL;
   document.getElementById('researcher-name-display').textContent = RESEARCHER_NAME;
+  // テスト終了と同時にGASへ自動送信
+  autoSendToGAS();
+}
+
+async function autoSendToGAS() {
+  const statusEl = document.getElementById('gas-status');
+  if (statusEl) {
+    statusEl.className = 'gas-status sending';
+    statusEl.textContent = '⏳ データを送信中です。しばらくお待ちください…';
+  }
+  try {
+    await sendToGAS();
+    if (statusEl) {
+      statusEl.className = 'gas-status done';
+      statusEl.textContent = '✅ データの送信が完了しました。試験監督者の指示をお待ちください。';
+    }
+  } catch (err) {
+    console.error('GAS送信エラー:', err);
+    if (statusEl) {
+      statusEl.className = 'gas-status error';
+      statusEl.textContent = '⚠ 送信に失敗しました。試験監督者にお知らせください。';
+    }
+  }
 }
 
 // GAS(Googleスプレッドシート)へサマリーデータを自動送信する
