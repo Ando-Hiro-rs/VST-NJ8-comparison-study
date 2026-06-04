@@ -128,13 +128,15 @@
 </section>
 
 <section id="s-vst" class="screen">
-  <div style="display:flex;align-items:center;gap:8px">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
     <span class="phase-label">VST-NJ8</span>
+    <span class="vst-timer" id="vst-timer">残り 3:30</span>
   </div>
   <div class="progress-wrap">
     <div class="progress-bar"><div class="progress-fill" id="vst-prog-fill" style="width:0%"></div></div>
     <span class="progress-label" id="vst-prog-label">0 / 160</span>
   </div>
+  <div class="vst-timeup" id="vst-timeup" style="display:none"></div>
   <p class="vst-prompt">この日本語の意味の英単語は?</p>
   <div class="vst-meaning" id="vst-meaning">—</div>
   <p class="vst-pos-lbl" id="vst-pos">noun</p>
