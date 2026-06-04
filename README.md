@@ -1,15 +1,7 @@
-# VST-NJ8-online-vocabulary-test-fixed
+# VST-NJ8-comparison-study
 
 日本人英語学習者向けの Web ベース語彙サイズ測定ツール。Hamada et al. (2021) の VST-NJ8 を、小室竜也先生のオンライン版実装を参考に、データ品質保証と機能拡張を行った改良版です。
 
-## 「fixed」の意味
-
-本ツール名の `fixed` は、以下のデータ品質保証のための改良を意味します。
-
-- **シャッフル整合性の保証**: 選択肢の表示順と回答記録の対応関係を厳密に追跡し、CSV データの正確性を確保
-- **受験者情報の体系化**: 研究に必要な参加者属性の構造化収集
-- **タイミング精度の向上**: 反応時間測定の信頼性向上
-- **データエクスポートの研究対応**: 学術論文化を見据えた CSV 構造
 
 これらの改良は、小室先生のオリジナル版を批判するものではなく、研究目的での利用に特化した拡張です。小室先生のツールへの敬意と感謝のもと、相補的に位置付けられるものです。
 > ⚠ **本プロジェクトについて**
@@ -29,24 +21,11 @@
 ## 特長
 
 - **新JACET8000ベース** — 2016年改訂版の頻度リストに準拠
-- **3PL IRTスコアリング内蔵** — JACET公式 Excel シートのアルゴリズムを完全移植
+- **3PL IRTスコアリング内蔵** — JACET公式 Excel Open Scoringシートのアルゴリズムを完全移植
 - **シャッフル整合性保証** — 選択肢の表示順と回答記録の対応関係を厳密に保証
 - **CSV出力対応** — 試行レベルデータと集計データの両方を出力
 - **サーバー不要** — HTML/CSS/JavaScript のみで動作。GitHub Pages で即公開可能
 
-## デモ
-
-`https://ando-hiro-rs.github.io/VST-NJ8-online-vocabulary-test-fixed/`
-
-
-## ローカルで動かす
-
-```bash
-git clonehttps://ando-hiro-rs.github.io/VST-NJ8-online-vocabulary-test-fixed/
-python3 -m http.server 8000
-```
-
-ブラウザで `http://localhost:8000` にアクセスします。
 
 ## 引用文献
 
