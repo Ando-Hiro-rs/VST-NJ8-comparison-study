@@ -210,8 +210,6 @@ function finishSession() {
 function showResult() {
   show('s-result');
   // 研究版: スコアは受験者に表示しない（裏で計算し、CSVに記録・GASに送信される）
-  document.getElementById('researcher-email-display').textContent = RESEARCHER_EMAIL;
-  document.getElementById('researcher-name-display').textContent = RESEARCHER_NAME;
   // テスト終了と同時にGASへ自動送信
   autoSendToGAS();
 }
