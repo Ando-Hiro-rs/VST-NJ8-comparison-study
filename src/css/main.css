@@ -1198,3 +1198,10 @@ footer a:hover { text-decoration: underline; }
   border-radius: var(--radius-md);
   margin: 12px 0;
 }
+.vst-meaning.vst-fixation {
+  background: transparent;
+  font-size: 48px;
+  color: var(--color-text-tertiary);
+  font-weight: 400;
+  padding: 16px 32px;
+}
