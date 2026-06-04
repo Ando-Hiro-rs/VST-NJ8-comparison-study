@@ -1167,3 +1167,34 @@ footer a:hover { text-decoration: underline; }
   background: var(--color-danger-bg);
   color: var(--color-danger);
 }
+.vst-timer {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text);
+  background: var(--color-bg-secondary);
+  padding: 4px 12px;
+  border-radius: var(--radius-md);
+  font-variant-numeric: tabular-nums;
+}
+
+.vst-timer.timer-warning {
+  color: var(--color-danger);
+  background: var(--color-danger-bg);
+  animation: timer-blink 1s ease-in-out infinite;
+}
+
+@keyframes timer-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.vst-timeup {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-danger);
+  background: var(--color-danger-bg);
+  padding: 16px;
+  border-radius: var(--radius-md);
+  margin: 12px 0;
+}
