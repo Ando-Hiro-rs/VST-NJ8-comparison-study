@@ -1,3 +1,7 @@
+const LEVEL_TIME_MS = 3 * 60 * 1000 + 30 * 1000; // 各レベル3分30秒 = 210000ms
+const WARNING_MS = 30 * 1000; // 残り30秒で警告色
+const TIMEUP_MESSAGE_MS = 2500; // 「時間です」表示の長さ
+
 function shuffle(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -41,6 +45,24 @@ export function recordVstResponse(preparedItem, clickedPosition, responseTimeMs)
     response_word: chosen.word,
     is_correct: isCorrect,
     response_time_ms: responseTimeMs,
+    note: '',
+  };
+}
+
+// 時間切れで未回答になった問題の記録（is_correct=0、選択は空、noteに理由）
+export function recordTimeoutResponse(preparedItem) {
+  return {
+    item_id: preparedItem.item_id,
+    level: preparedItem.level,
+    pos: preparedItem.pos,
+    target_meaning_ja: preparedItem.meaning_ja,
+    correct_word: preparedItem.correct_word,
+    displayed_options: preparedItem.shuffled_choices.map(c => c.word),
+    response_position: '',
+    response_word: '',
+    is_correct: false,
+    response_time_ms: '',
+    note: '制限時間切れのため回答不可',
   };
 }
 
@@ -60,6 +82,13 @@ export class VstRunner {
     this._onVisibilityChange = null;
     this._onBlur = null;
     this._onFocus = null;
+    // レベル・タイマー管理
+    this.currentLevel = null;
+    this.levelStartTime = 0;
+    this.levelDurations = {};     // { level: ms }
+    this.timerIntervalId = null;
+    this.levelDeadline = 0;
+    this.isTransitioning = false;
   }
 
   start() {
@@ -70,17 +99,16 @@ export class VstRunner {
     this.focusLossTotalMs = 0;
     this.focusLossEvents = [];
     this.blurStart = 0;
+    this.currentLevel = null;
+    this.levelDurations = {};
     this._attachFocusMonitors();
     this.renderCurrent();
   }
 
   _attachFocusMonitors() {
     this._onVisibilityChange = () => {
-      if (document.hidden) {
-        this._markBlur();
-      } else {
-        this._markFocus();
-      }
+      if (document.hidden) this._markBlur();
+      else this._markFocus();
     };
     this._onBlur = () => this._markBlur();
     this._onFocus = () => this._markFocus();
@@ -101,9 +129,7 @@ export class VstRunner {
   }
 
   _markBlur() {
-    if (this.blurStart === 0) {
-      this.blurStart = performance.now();
-    }
+    if (this.blurStart === 0) this.blurStart = performance.now();
   }
 
   _markFocus() {
@@ -111,16 +137,94 @@ export class VstRunner {
       const duration = Math.round(performance.now() - this.blurStart);
       this.focusLossCount += 1;
       this.focusLossTotalMs += duration;
-      this.focusLossEvents.push({
-        trial_index: this.idx + 1,
-        duration_ms: duration,
-      });
+      this.focusLossEvents.push({ trial_index: this.idx + 1, duration_ms: duration });
       this.blurStart = 0;
     }
   }
 
+  // レベルのタイマーを開始
+  _startLevelTimer(level) {
+    this.currentLevel = level;
+    this.levelStartTime = performance.now();
+    this.levelDeadline = this.levelStartTime + LEVEL_TIME_MS;
+    this._updateTimerDisplay();
+    if (this.timerIntervalId) clearInterval(this.timerIntervalId);
+    this.timerIntervalId = setInterval(() => {
+      this._updateTimerDisplay();
+      if (performance.now() >= this.levelDeadline) {
+        this._onLevelTimeout();
+      }
+    }, 250);
+  }
+
+  _stopLevelTimer() {
+    if (this.timerIntervalId) {
+      clearInterval(this.timerIntervalId);
+      this.timerIntervalId = null;
+    }
+  }
+
+  _updateTimerDisplay() {
+    if (!this.el.timer) return;
+    const remainMs = Math.max(0, this.levelDeadline - performance.now());
+    const totalSec = Math.ceil(remainMs / 1000);
+    const mm = Math.floor(totalSec / 60);
+    const ss = totalSec % 60;
+    this.el.timer.textContent = `残り ${mm}:${String(ss).padStart(2, '0')}`;
+    if (remainMs <= WARNING_MS) {
+      this.el.timer.classList.add('timer-warning');
+    } else {
+      this.el.timer.classList.remove('timer-warning');
+    }
+  }
+
+  // 現在のレベルの記録済みの所要時間を保存
+  _recordLevelDuration() {
+    if (this.currentLevel !== null) {
+      const dur = Math.round(performance.now() - this.levelStartTime);
+      this.levelDurations[this.currentLevel] =
+        (this.levelDurations[this.currentLevel] || 0) + dur;
+    }
+  }
+
+  // 時間切れ: 現在レベルの残り問題を未回答(不正解)として記録し、次レベルへ
+  _onLevelTimeout() {
+    this._stopLevelTimer();
+    this._recordLevelDuration();
+    const timedOutLevel = this.currentLevel;
+    // 現在のレベルに属する未回答問題をすべて未回答として記録
+    while (this.idx < this.items.length && this.items[this.idx].level === timedOutLevel) {
+      this.results.push(recordTimeoutResponse(this.items[this.idx]));
+      this.idx++;
+    }
+    if (this.callbacks.onProgress) {
+      this.callbacks.onProgress(this.idx, this.items.length);
+    }
+    this._showTimeupMessage(() => {
+      this.renderCurrent();
+    });
+  }
+
+  _showTimeupMessage(done) {
+    this.isTransitioning = true;
+    if (this.el.options) this.el.options.innerHTML = '';
+    if (this.el.meaning) this.el.meaning.textContent = '';
+    if (this.el.pos) this.el.pos.textContent = '';
+    if (this.el.timeup) {
+      this.el.timeup.style.display = 'block';
+      this.el.timeup.textContent = '時間です。次のレベルに進みます。';
+    }
+    setTimeout(() => {
+      if (this.el.timeup) this.el.timeup.style.display = 'none';
+      this.isTransitioning = false;
+      done();
+    }, TIMEUP_MESSAGE_MS);
+  }
+
   renderCurrent() {
     if (this.idx >= this.items.length) {
+      this._stopLevelTimer();
+      this._recordLevelDuration();
       this._markFocus();
       this._detachFocusMonitors();
       const totalDurationMs = Math.round(performance.now() - this.testStartTime);
@@ -129,14 +233,24 @@ export class VstRunner {
         focus_loss_total_ms: this.focusLossTotalMs,
         focus_loss_events: this.focusLossEvents,
         total_duration_ms: totalDurationMs,
+        level_durations_ms: this.levelDurations,
       };
       this.callbacks.onComplete(this.results, quality);
       return;
     }
+
+    const item = this.items[this.idx];
+
+    // レベルが切り替わったらタイマーをリセット
+    if (item.level !== this.currentLevel) {
+      if (this.currentLevel !== null) this._recordLevelDuration();
+      this._startLevelTimer(item.level);
+    }
+
     if (this.callbacks.onProgress) {
       this.callbacks.onProgress(this.idx, this.items.length);
     }
-    const item = this.items[this.idx];
+
     this.el.meaning.textContent = item.meaning_ja;
     this.el.pos.textContent = item.pos;
     this.el.options.innerHTML = '';
@@ -151,19 +265,36 @@ export class VstRunner {
   }
 
   respond(clickedPosition) {
+    if (this.isTransitioning) return; // 遷移中のクリックは無視
     const rt = Math.round(performance.now() - this.startTime);
     const item = this.items[this.idx];
     const rec = recordVstResponse(item, clickedPosition, rt);
     this.results.push(rec);
     this.idx++;
+
+    // 次の問題が別レベル（=今のレベルを解き終えた）なら、レベル所要時間を記録しタイマー停止
+    const next = this.items[this.idx];
+    if (!next || next.level !== this.currentLevel) {
+      this._stopLevelTimer();
+      this._recordLevelDuration();
+      this.currentLevel = null; // 次の renderCurrent で新レベルのタイマーが始まる
+    }
     this.renderCurrent();
   }
 }
+
 export function validateVstIntegrity(records) {
   const issues = [];
   for (const r of records) {
     if (!Array.isArray(r.displayed_options) || r.displayed_options.length !== 4) {
       issues.push({ item_id: r.item_id, reason: 'displayed_options invalid' });
+      continue;
+    }
+    // 時間切れ未回答（response_positionが空）は整合性チェックの対象外
+    if (r.response_position === '' || r.response_position === null || r.response_position === undefined) {
+      if (!r.displayed_options.includes(r.correct_word)) {
+        issues.push({ item_id: r.item_id, reason: 'correct_word not in options' });
+      }
       continue;
     }
     if (r.displayed_options[r.response_position] !== r.response_word) {
