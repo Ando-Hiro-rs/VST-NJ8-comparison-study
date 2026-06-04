@@ -11,6 +11,7 @@ const STORAGE_KEY = 'vstnj8_study_student_ids';
 
 const RESEARCHER_EMAIL = 'ahiro.research1006@gmail.com';
 const RESEARCHER_NAME = '安藤 嘉';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzrRYofYf8VGqTNbT7m_SIYrAovOBUzlQ-1YZfUE8Cfh6_1FTvCms7FSfUzOojc0xk/exec';
 
 const state = {
   participant: {},
@@ -211,6 +212,67 @@ function showResult() {
   // 研究版: スコアは受験者に表示しない（裏で計算し、CSVには記録される）
   document.getElementById('researcher-email-display').textContent = RESEARCHER_EMAIL;
   document.getElementById('researcher-name-display').textContent = RESEARCHER_NAME;
+}
+
+// GAS(Googleスプレッドシート)へサマリーデータを自動送信する
+async function sendToGAS() {
+  // 送信するデータを1つのオブジェクトにまとめる（サマリーCSVと同じ内容）
+  const v = state.vstResult || {};
+  const q = state.qualityData || {};
+  const b = state.browserInfo || {};
+  const p = state.participant;
+  const s = state.session;
+
+  const payload = {
+    participant_id: p.id || '',
+    student_id: p.student_id || '',
+    name: p.name || '',
+    weekday: p.weekday || '',
+    department: p.department || '',
+    test_version: s.test_version || '',
+    test_datetime: s.start_time || '',
+    device_type: s.device_type || b.device_type || '',
+    consent_agreed: s.consent_agreed ? 1 : 0,
+    consent_timestamp: s.consent_timestamp || '',
+    data_sharing_agreed: s.data_sharing_agreed ? 1 : 0,
+    browser_user_agent: b.user_agent || '',
+    browser_platform: b.platform || '',
+    browser_language: b.language || '',
+    browser_timezone: b.timezone || '',
+    screen_width: b.screen_width || '',
+    screen_height: b.screen_height || '',
+    vst_raw_score: v.raw_score ?? '',
+    vst_total_items: v.total_items ?? '',
+    vst_accuracy_percent: v.accuracy_percent ?? '',
+    vst_irt_theta: v.irt_theta ?? '',
+    vst_standard_error: v.standard_error ?? '',
+    vst_estimated_vocab_size: v.estimated_vocab_size ?? '',
+    quality_focus_loss_count: q.focus_loss_count ?? 0,
+    quality_focus_loss_total_ms: q.focus_loss_total_ms ?? 0,
+    quality_total_duration_ms: q.total_duration_ms ?? '',
+    quality_total_duration_sec: q.total_duration_ms ? Math.round(q.total_duration_ms / 1000) : '',
+  };
+
+  // レベル別の正答数と所要時間も追加
+  if (v.correct_by_level) {
+    for (let lv = 1; lv <= 8; lv++) {
+      payload[`vst_level_${lv}_correct`] = v.correct_by_level[`level_${lv}`] ?? '';
+    }
+  }
+  if (q.level_durations_ms) {
+    for (let lv = 1; lv <= 8; lv++) {
+      const ms = q.level_durations_ms[lv];
+      payload[`level_${lv}_duration_sec`] = (ms !== undefined) ? Math.round(ms / 1000) : '';
+    }
+  }
+
+  // GASへ送信（no-corsモードで送る）
+  await fetch(GAS_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload),
+  });
 }
 
 function buildAllCsvBlobs() {
