@@ -1205,3 +1205,28 @@ footer a:hover { text-decoration: underline; }
   font-weight: 400;
   padding: 16px 32px;
 }
+.gas-status {
+  width: 100%;
+  max-width: 480px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  line-height: 1.6;
+}
+.gas-status.sending {
+  background: var(--color-info-bg);
+  color: var(--color-info);
+  border: 0.5px solid var(--color-info);
+}
+.gas-status.done {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+  border: 0.5px solid var(--color-success);
+}
+.gas-status.error {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+  border: 0.5px solid var(--color-danger);
+}
