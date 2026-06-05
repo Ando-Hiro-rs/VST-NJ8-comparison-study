@@ -368,7 +368,7 @@ input[type=text]:focus, select:focus {
 
 .vst-options {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: 10px;
   width: 100%;
   max-width: 480px;
@@ -931,14 +931,12 @@ footer a:hover { text-decoration: underline; }
   }
 }
 
-/* タブレット対応 */
 @media (min-width: 601px) and (max-width: 900px) {
   .mode-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-
   .vst-options {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
   }
 }
 
