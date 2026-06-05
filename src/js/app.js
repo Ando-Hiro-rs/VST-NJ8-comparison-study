@@ -216,6 +216,11 @@ function showResult() {
 
 async function autoSendToGAS() {
   const statusEl = document.getElementById('gas-status');
+  const restartBtn = document.getElementById('restart-btn');
+  const manualCard = document.getElementById('manual-download-card');
+  // 送信中は「最初に戻る」ボタンと手動ダウンロードカードを隠す
+  if (restartBtn) restartBtn.style.display = 'none';
+  if (manualCard) manualCard.style.display = 'none';
   if (statusEl) {
     statusEl.className = 'gas-status sending';
     statusEl.textContent = '⏳ データを送信中です。しばらくお待ちください…';
@@ -226,12 +231,18 @@ async function autoSendToGAS() {
       statusEl.className = 'gas-status done';
       statusEl.textContent = '✅ データの送信が完了しました。試験監督者の指示をお待ちください。';
     }
+    // 成功時は手動ダウンロードカードは出さない
   } catch (err) {
     console.error('GAS送信エラー:', err);
     if (statusEl) {
       statusEl.className = 'gas-status error';
       statusEl.textContent = '⚠ 送信に失敗しました。試験監督者にお知らせください。';
     }
+    // 失敗時だけ手動ダウンロードカードを表示
+    if (manualCard) manualCard.style.display = '';
+  } finally {
+    // 送信処理が終わったら「最初に戻る」ボタンを表示
+    if (restartBtn) restartBtn.style.display = '';
   }
 }
 
