@@ -153,8 +153,9 @@
 
   <div id="gas-status" class="gas-status sending">⏳ データを送信中です。しばらくお待ちください…</div>
 
-  <div class="export-card">
+  <div class="export-card" id="manual-download-card" style="display:none">
     <div class="export-title">📥 手動ダウンロード（試験監督者用）</div>
+    <p class="inst-text" style="margin-bottom:8px">自動送信に失敗しました。下のボタンからデータを保存し、試験監督者にお渡しください。</p>
     <div class="export-btn-row">
       <button class="btn-csv" id="exp-vst" onclick="exportVstTrials()">VST 試行データ</button>
       <button class="btn-csv" onclick="exportSummary()">集計サマリー</button>
