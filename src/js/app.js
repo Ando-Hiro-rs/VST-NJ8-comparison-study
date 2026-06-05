@@ -308,15 +308,19 @@ async function sendToGAS() {
     );
     payload.trials_csv_filename = makeFilename(state.participant, state.session, 'trials');
   }
-  // GASへ送信（no-corsモードで送る）
-  await fetch(GAS_URL, {
+// GASへ送信し、返事(成功/失敗)を受け取る
+  const response = await fetch(GAS_URL, {
     method: 'POST',
-    mode: 'no-cors',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify(payload),
+    redirect: 'follow',
   });
+  const result = await response.json();
+  if (!result || result.result !== 'success') {
+    throw new Error('GAS returned non-success: ' + JSON.stringify(result));
+  }
+  return result;
 }
-
 function buildAllCsvBlobs() {
   const blobs = [];
   if (state.vstResult) {
