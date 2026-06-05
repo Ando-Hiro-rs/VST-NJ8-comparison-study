@@ -286,25 +286,15 @@ export class VstRunner {
     this.startTime = performance.now();
   }
 
-  respond(clickedPosition) {
+respond(clickedPosition) {
     if (this.isTransitioning) return; // 遷移中のクリックは無視
     const rt = Math.round(performance.now() - this.startTime);
     const item = this.items[this.idx];
     const rec = recordVstResponse(item, clickedPosition, rt);
     this.results.push(rec);
     this.idx++;
-
-    // 次の問題が別レベル（=今のレベルを解き終えた）なら、レベル所要時間を記録しタイマー停止
-    const next = this.items[this.idx];
-    if (!next || next.level !== this.currentLevel) {
-      this._stopLevelTimer();
-      this._recordLevelDuration();
-      this.currentLevel = null; // 次の renderCurrent で新レベルのタイマーが始まる
-    }
     this.renderCurrent();
   }
-}
-
 export function validateVstIntegrity(records) {
   const issues = [];
   for (const r of records) {
