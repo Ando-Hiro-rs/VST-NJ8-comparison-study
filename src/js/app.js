@@ -286,7 +286,17 @@ async function sendToGAS() {
       payload[`level_${lv}_duration_sec`] = (ms !== undefined) ? Math.round(ms / 1000) : '';
     }
   }
-
+// summaryとtrialsのCSVの中身も送る（GAS側でドライブに保存しリンク化する）
+  payload.summary_csv_content = buildSummaryCSV(
+    state.participant, state.session, state.vstResult, state.browserInfo, state.qualityData
+  );
+  payload.summary_csv_filename = makeFilename(state.participant, state.session, 'summary');
+  if (state.vstResult) {
+    payload.trials_csv_content = buildVstTrialsCSV(
+      state.participant, state.session, state.vstRawTrials
+    );
+    payload.trials_csv_filename = makeFilename(state.participant, state.session, 'trials');
+  }
   // GASへ送信（no-corsモードで送る）
   await fetch(GAS_URL, {
     method: 'POST',
