@@ -11,7 +11,7 @@ const STORAGE_KEY = 'vstnj8_study_student_ids';
 
 const RESEARCHER_EMAIL = 'ahiro.research1006@gmail.com';
 const RESEARCHER_NAME = '安藤 嘉';
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbzrRYofYf8VGqTNbT7m_SIYrAovOBUzlQ-1YZfUE8Cfh6_1FTvCms7FSfUzOojc0xk/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzrRYofYf8VGqTNbT7m_SIYrAovOBUzlQ-1YZfUE8Cfh6_1FTvCms7FSfUzOojc0xk/exec_BROKEN';
 
 const state = {
   participant: {},
