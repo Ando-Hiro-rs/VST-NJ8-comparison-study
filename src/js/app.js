@@ -120,16 +120,16 @@ function submitConsent() {
 
 function checkInfoForm() {
   const sidEl = document.getElementById('f-student-id');
-  const weekdayEl = document.getElementById('f-weekday');
+  const nameEl = document.getElementById('f-name');
   const deptEl = document.getElementById('f-department');
   const warningEl = document.getElementById('student-id-warning');
   const btn = document.getElementById('info-btn');
-  if (!sidEl || !weekdayEl || !deptEl || !btn) {
-    console.error('受験者情報フォームの要素が見つかりません', { sidEl, weekdayEl, deptEl, btn });
+  if (!sidEl || !nameEl || !deptEl || !btn) {
+    console.error('受験者情報フォームの要素が見つかりません', { sidEl, nameEl, deptEl, btn });
     return;
   }
   const sid = sidEl.value.trim();
-  const weekday = weekdayEl.value;
+  const name = nameEl.value.trim();
   const dept = deptEl.value;
 
   // 学籍番号は算用数字7桁かチェック
@@ -145,24 +145,23 @@ function checkInfoForm() {
     }
   }
 
-  // 学籍番号が7桁の数字 かつ 曜日・学科が選択されていれば「次へ」を有効化
-  btn.disabled = !(sidValid && weekday && dept);
+  // 学籍番号が7桁の数字 かつ 名前・学科が入力されていれば「次へ」を有効化
+  btn.disabled = !(sidValid && name.length > 0 && dept);
 }
 
 function submitInfo() {
   const sid = document.getElementById('f-student-id').value.trim();
-  const nameEl = document.getElementById('f-name');
-  const weekday = document.getElementById('f-weekday').value;
+  const name = document.getElementById('f-name').value.trim();
   const dept = document.getElementById('f-department').value;
-  if (!/^[0-9]{7}$/.test(sid) || !weekday || !dept) {
-    alert('学籍番号は算用数字7桁で入力してください。曜日・学科も必須です。');
+  if (!/^[0-9]{7}$/.test(sid) || name.length === 0 || !dept) {
+    alert('学籍番号（算用数字7桁）・お名前・学科は必須です。');
     return;
   }
   state.participant = {
     id: sid,
     student_id: sid,
-    name: nameEl ? nameEl.value.trim() : '',
-    weekday: weekday,
+    name: name,
+    weekday: '',
     department: dept,
   };
   state.session = {
@@ -399,7 +398,7 @@ function restart() {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
-  const selectsToReset = ['f-weekday', 'f-department'];
+ const selectsToReset = ['f-department'];
   selectsToReset.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
