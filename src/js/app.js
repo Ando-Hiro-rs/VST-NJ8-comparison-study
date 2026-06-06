@@ -122,6 +122,7 @@ function checkInfoForm() {
   const sidEl = document.getElementById('f-student-id');
   const weekdayEl = document.getElementById('f-weekday');
   const deptEl = document.getElementById('f-department');
+  const warningEl = document.getElementById('student-id-warning');
   const btn = document.getElementById('info-btn');
   if (!sidEl || !weekdayEl || !deptEl || !btn) {
     console.error('受験者情報フォームの要素が見つかりません', { sidEl, weekdayEl, deptEl, btn });
@@ -130,7 +131,22 @@ function checkInfoForm() {
   const sid = sidEl.value.trim();
   const weekday = weekdayEl.value;
   const dept = deptEl.value;
-  btn.disabled = !(sid.length > 0 && weekday && dept);
+
+  // 学籍番号は算用数字7桁かチェック
+  const sidValid = /^[0-9]{7}$/.test(sid);
+
+  // 何か入力されていて、7桁の数字でないときだけ注意文を出す
+  if (warningEl) {
+    if (sid.length > 0 && !sidValid) {
+      warningEl.style.display = 'block';
+      warningEl.textContent = '⚠ 学籍番号は算用数字7桁で入力してください（例: 1234567）。';
+    } else {
+      warningEl.style.display = 'none';
+    }
+  }
+
+  // 学籍番号が7桁の数字 かつ 曜日・学科が選択されていれば「次へ」を有効化
+  btn.disabled = !(sidValid && weekday && dept);
 }
 
 function submitInfo() {
@@ -138,8 +154,8 @@ function submitInfo() {
   const nameEl = document.getElementById('f-name');
   const weekday = document.getElementById('f-weekday').value;
   const dept = document.getElementById('f-department').value;
-  if (sid.length === 0 || !weekday || !dept) {
-    alert('学籍番号・曜日・学科は必須です。');
+  if (!/^[0-9]{7}$/.test(sid) || !weekday || !dept) {
+    alert('学籍番号は算用数字7桁で入力してください。曜日・学科も必須です。');
     return;
   }
   state.participant = {
