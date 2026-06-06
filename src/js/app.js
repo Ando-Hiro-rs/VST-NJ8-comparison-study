@@ -161,7 +161,6 @@ function submitInfo() {
     id: sid,
     student_id: sid,
     name: name,
-    weekday: '',
     department: dept,
   };
   state.session = {
@@ -279,7 +278,6 @@ async function sendToGAS() {
     participant_id: p.id || '',
     student_id: p.student_id || '',
     name: p.name || '',
-    weekday: p.weekday || '',
     department: p.department || '',
     test_version: s.test_version || '',
     test_datetime: s.start_time || '',
