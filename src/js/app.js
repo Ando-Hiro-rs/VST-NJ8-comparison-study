@@ -186,9 +186,9 @@ function startVst() {
   };
   show('s-vst');
   vstRunner = new VstRunner(elements, items, {
-    onProgress: (i, n) => {
-      document.getElementById('vst-prog-fill').style.width = `${(i / n) * 100}%`;
-      document.getElementById('vst-prog-label').textContent = `${i} / ${n}`;
+   onProgress: (i, n) => {
+      document.getElementById('vst-prog-fill').style.width = `${((i + 1) / n) * 100}%`;
+      document.getElementById('vst-prog-label').textContent = `${i + 1} / ${n}`;
     },
     onComplete: (results, quality) => {
       state.vstRawTrials = results;
