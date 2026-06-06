@@ -67,27 +67,19 @@
   <h2>情報を入力してください</h2>
   <p class="sub">すべての項目が必須です。お名前は任意です。</p>
 
-  <div class="info-section">
+<div class="info-section">
     <h3 class="info-section-title">基本情報 <span class="req-label">必須</span></h3>
     <div class="form-grid">
-    <div class="form-row full">
+      <div class="form-row full">
         <label class="form-label" for="f-student-id">学籍番号 <span class="req">*</span></label>
         <input type="text" id="f-student-id" placeholder="例: 1234567" inputmode="numeric" oninput="checkInfoForm()">
         <div id="student-id-warning" style="display:none; font-size:11px; color:var(--color-danger); padding:6px 8px; background:var(--color-danger-bg); border-radius:6px; margin-top:4px"></div>
       </div>
       <div class="form-row full">
-        <label class="form-label" for="f-name">お名前（任意）</label>
+        <label class="form-label" for="f-name">お名前 <span class="req">*</span></label>
         <input type="text" id="f-name" placeholder="例: 安藤 嘉" oninput="checkInfoForm()">
       </div>
-      <div class="form-row">
-        <label class="form-label" for="f-weekday">受講している曜日 <span class="req">*</span></label>
-        <select id="f-weekday" onchange="checkInfoForm()">
-          <option value="">選択してください</option>
-          <option value="thursday">木曜</option>
-          <option value="friday">金曜</option>
-        </select>
-      </div>
-      <div class="form-row">
+      <div class="form-row full">
         <label class="form-label" for="f-department">学科 <span class="req">*</span></label>
         <select id="f-department" onchange="checkInfoForm()">
           <option value="">選択してください</option>
