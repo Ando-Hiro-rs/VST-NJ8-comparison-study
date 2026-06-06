@@ -186,9 +186,14 @@ function startVst() {
   };
   show('s-vst');
   vstRunner = new VstRunner(elements, items, {
-   onProgress: (i, n) => {
+ onProgress: (i, n, levelInfo) => {
       document.getElementById('vst-prog-fill').style.width = `${((i + 1) / n) * 100}%`;
-      document.getElementById('vst-prog-label').textContent = `${i + 1} / ${n}`;
+      if (levelInfo) {
+        document.getElementById('vst-prog-label').textContent =
+          `レベル ${levelInfo.level} ・ ${levelInfo.positionInLevel} / ${levelInfo.levelTotal}`;
+      } else {
+        document.getElementById('vst-prog-label').textContent = `${i + 1} / ${n}`;
+      }
     },
     onComplete: (results, quality) => {
       state.vstRawTrials = results;
