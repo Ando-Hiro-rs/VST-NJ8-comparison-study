@@ -294,7 +294,9 @@ respond(clickedPosition) {
     this.results.push(rec);
     this.idx++;
     this.renderCurrent();
-  }
+  　　}
+    }
+
 export function validateVstIntegrity(records) {
   const issues = [];
   for (const r of records) {
