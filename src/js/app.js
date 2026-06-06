@@ -25,6 +25,19 @@ const state = {
 let vstItems = null;
 let vstRunner = null;
 
+// テスト中のリロード・離脱を防ぐ確認ダイアログ
+function beforeUnloadHandler(e) {
+  e.preventDefault();
+  e.returnValue = '';
+  return '';
+}
+function enableUnloadWarning() {
+  window.addEventListener('beforeunload', beforeUnloadHandler);
+}
+function disableUnloadWarning() {
+  window.removeEventListener('beforeunload', beforeUnloadHandler);
+}
+
 function detectBrowserInfo() {
   const ua = navigator.userAgent;
   let deviceType = 'desktop';
@@ -198,7 +211,8 @@ function startVst() {
     timer: document.getElementById('vst-timer'),
     timeup: document.getElementById('vst-timeup'),
   };
-  show('s-vst');
+ show('s-vst');
+  enableUnloadWarning();
   vstRunner = new VstRunner(elements, items, {
  onProgress: (i, n, levelInfo) => {
       document.getElementById('vst-prog-fill').style.width = `${((i + 1) / n) * 100}%`;
@@ -222,6 +236,7 @@ function startVst() {
 }
 
 function finishSession() {
+  disableUnloadWarning();
   addStoredId(state.participant.student_id);
   showResult();
 }
