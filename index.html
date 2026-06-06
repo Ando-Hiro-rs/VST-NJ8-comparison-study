@@ -70,9 +70,10 @@
   <div class="info-section">
     <h3 class="info-section-title">基本情報 <span class="req-label">必須</span></h3>
     <div class="form-grid">
-      <div class="form-row full">
+    <div class="form-row full">
         <label class="form-label" for="f-student-id">学籍番号 <span class="req">*</span></label>
-        <input type="text" id="f-student-id" placeholder="例: 1234567" oninput="checkInfoForm()">
+        <input type="text" id="f-student-id" placeholder="例: 1234567" inputmode="numeric" oninput="checkInfoForm()">
+        <div id="student-id-warning" style="display:none; font-size:11px; color:var(--color-danger); padding:6px 8px; background:var(--color-danger-bg); border-radius:6px; margin-top:4px"></div>
       </div>
       <div class="form-row full">
         <label class="form-label" for="f-name">お名前（任意）</label>
