@@ -240,19 +240,34 @@ export class VstRunner {
       return;
     }
 
-   const item = this.items[this.idx];
-    console.log(`idx=${this.idx}, 問題番号=${this.idx + 1}, level=${item.level}, currentLevel=${this.currentLevel}`);
+ const item = this.items[this.idx];
     // レベルが切り替わったらタイマーをリセット
     if (item.level !== this.currentLevel) {
       if (this.currentLevel !== null) this._recordLevelDuration();
       this._startLevelTimer(item.level);
     }
-
-  if (this.callbacks.onProgress) {
-      this.callbacks.onProgress(this.idx, this.items.length);
+    if (this.callbacks.onProgress) {
+      const levelInfo = this._getLevelPosition();
+      this.callbacks.onProgress(this.idx, this.items.length, levelInfo);
     }
-
     this._showFixationThenQuestion(item);
+  }
+
+  // 今の問題が、自分のレベルの中で何問目か（および総数）を計算する
+  _getLevelPosition() {
+    const currentItem = this.items[this.idx];
+    const level = currentItem.level;
+    // このレベルの問題が、items全体のどこからどこまでか数える
+    let levelStartIdx = this.idx;
+    while (levelStartIdx > 0 && this.items[levelStartIdx - 1].level === level) {
+      levelStartIdx--;
+    }
+    let levelTotal = 0;
+    for (const it of this.items) {
+      if (it.level === level) levelTotal++;
+    }
+    const positionInLevel = this.idx - levelStartIdx + 1;
+    return { level, positionInLevel, levelTotal };
   }
 
   // 注視点(+)を一定時間表示してから問題を表示する
