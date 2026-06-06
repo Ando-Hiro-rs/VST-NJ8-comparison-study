@@ -240,8 +240,8 @@ export class VstRunner {
       return;
     }
 
-    const item = this.items[this.idx];
-
+   const item = this.items[this.idx];
+    console.log(`idx=${this.idx}, 問題番号=${this.idx + 1}, level=${item.level}, currentLevel=${this.currentLevel}`);
     // レベルが切り替わったらタイマーをリセット
     if (item.level !== this.currentLevel) {
       if (this.currentLevel !== null) this._recordLevelDuration();
