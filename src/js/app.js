@@ -8,6 +8,7 @@ import {
 
 const TEST_VERSION = 'VST-NJ8 comparison study v1.0';
 const STORAGE_KEY = 'vstnj8_study_student_ids';
+const PROGRESS_KEY = 'vstnj8_study_progress';
 
 const RESEARCHER_EMAIL = 'ahiro.research1006@gmail.com';
 const RESEARCHER_NAME = '安藤 嘉';
@@ -95,7 +96,39 @@ function getStoredIds() {
     return [];
   }
 }
+// 進行状態を保存する
+function saveProgress(progressData) {
+  try {
+    const record = {
+      participant: state.participant,
+      session: state.session,
+      progress: progressData,
+      saved_at: new Date().toISOString(),
+    };
+    localStorage.setItem(PROGRESS_KEY, JSON.stringify(record));
+  } catch (e) {
+    console.warn('進行状態の保存に失敗しました', e);
+  }
+}
 
+// 進行状態を読み込む（無ければ null）
+function loadProgress() {
+  try {
+    const raw = localStorage.getItem(PROGRESS_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+// 進行状態を削除する
+function clearProgress() {
+  try {
+    localStorage.removeItem(PROGRESS_KEY);
+  } catch (e) {
+    console.warn('進行状態の削除に失敗しました', e);
+  }
+}
 function addStoredId(studentId) {
   try {
     const ids = getStoredIds();
@@ -214,7 +247,7 @@ function startVst() {
  show('s-vst');
   enableUnloadWarning();
   vstRunner = new VstRunner(elements, items, {
- onProgress: (i, n, levelInfo) => {
+    onProgress: (i, n, levelInfo) => {
       document.getElementById('vst-prog-fill').style.width = `${((i + 1) / n) * 100}%`;
       if (levelInfo) {
         document.getElementById('vst-prog-label').textContent =
@@ -222,6 +255,9 @@ function startVst() {
       } else {
         document.getElementById('vst-prog-label').textContent = `${i + 1} / ${n}`;
       }
+    },
+    onSaveProgress: (progressData) => {
+      saveProgress(progressData);
     },
     onComplete: (results, quality) => {
       state.vstRawTrials = results;
