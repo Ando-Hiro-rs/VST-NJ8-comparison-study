@@ -146,13 +146,13 @@ export class VstRunner {
   // レベルのタイマーを開始
   _startLevelTimer(level) {
     this.currentLevel = level;
-    this.levelStartTime = performance.now();
+    this.levelStartTime = Date.now();
     this.levelDeadline = this.levelStartTime + LEVEL_TIME_MS;
     this._updateTimerDisplay();
     if (this.timerIntervalId) clearInterval(this.timerIntervalId);
     this.timerIntervalId = setInterval(() => {
       this._updateTimerDisplay();
-      if (performance.now() >= this.levelDeadline) {
+      if (Date.now() >= this.levelDeadline) {
         this._onLevelTimeout();
       }
     }, 250);
@@ -167,7 +167,7 @@ export class VstRunner {
 
   _updateTimerDisplay() {
     if (!this.el.timer) return;
-    const remainMs = Math.max(0, this.levelDeadline - performance.now());
+    const remainMs = Math.max(0, this.levelDeadline - Date.now());
     const totalSec = Math.ceil(remainMs / 1000);
     const mm = Math.floor(totalSec / 60);
     const ss = totalSec % 60;
@@ -182,7 +182,7 @@ export class VstRunner {
   // 現在のレベルの記録済みの所要時間を保存
   _recordLevelDuration() {
     if (this.currentLevel !== null) {
-      const dur = Math.round(performance.now() - this.levelStartTime);
+      const dur = Math.round(Date.now() - this.levelStartTime);
       this.levelDurations[this.currentLevel] =
         (this.levelDurations[this.currentLevel] || 0) + dur;
     }
