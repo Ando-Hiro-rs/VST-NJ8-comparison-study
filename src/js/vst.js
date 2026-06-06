@@ -269,7 +269,23 @@ export class VstRunner {
     const positionInLevel = this.idx - levelStartIdx + 1;
     return { level, positionInLevel, levelTotal };
   }
-
+// 今の進行状態をまとめてコールバックに渡す（保存用）
+  _saveProgress() {
+    if (!this.callbacks.onSaveProgress) return;
+    const progressData = {
+      idx: this.idx,
+      results: this.results,
+      currentLevel: this.currentLevel,
+      levelStartTime: this.levelStartTime,
+      levelDeadline: this.levelDeadline,
+      levelDurations: this.levelDurations,
+      focusLossCount: this.focusLossCount,
+      focusLossTotalMs: this.focusLossTotalMs,
+      focusLossEvents: this.focusLossEvents,
+      testStartTime: this.testStartTime,
+    };
+    this.callbacks.onSaveProgress(progressData);
+  }
   // 注視点(+)を一定時間表示してから問題を表示する
   _showFixationThenQuestion(item) {
     this.isTransitioning = true;
@@ -299,6 +315,7 @@ export class VstRunner {
     });
     this.isTransitioning = false;
     this.startTime = performance.now();
+    this._saveProgress();
   }
 
 respond(clickedPosition) {
