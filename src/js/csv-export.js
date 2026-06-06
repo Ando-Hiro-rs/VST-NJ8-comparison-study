@@ -22,16 +22,15 @@ export function downloadCSV(filename, csv) {
 
 function participantHeaders() {
   return [
-    'participant_id', 'student_id', 'name', 'weekday', 'department'
+    'participant_id', 'student_id', 'name', 'department'
   ];
 }
 
 function participantValues(p) {
   return [
-    p.id, p.student_id || '', p.name || '', p.weekday || '', p.department || ''
+    p.id, p.student_id || '', p.name || '', p.department || ''
   ];
 }
-
 export function buildVstTrialsCSV(participant, session, trials) {
   const pHeaders = participantHeaders();
   const headers = [
@@ -63,10 +62,9 @@ export function buildSummaryCSV(participant, session, vstResult, browserInfo, qu
   const headers = ['key', 'value'];
   const rows = [headers.join(',')];
   const data = [
-    ['participant_id', participant.id],
+   ['participant_id', participant.id],
     ['student_id', participant.student_id || ''],
     ['name', participant.name || ''],
-    ['weekday', participant.weekday || ''],
     ['department', participant.department || ''],
     ['test_version', session.test_version],
     ['test_datetime', session.start_time],
