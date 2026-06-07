@@ -384,6 +384,7 @@ async function sendToGAS() {
     quality_focus_loss_total_ms: q.focus_loss_total_ms ?? 0,
     quality_total_duration_ms: q.total_duration_ms ?? '',
     quality_total_duration_sec: q.total_duration_ms ? Math.round(q.total_duration_ms / 1000) : '',
+    reload_count: q.reload_count ?? 0,
   };
 
   // レベル別の正答数と所要時間も追加
