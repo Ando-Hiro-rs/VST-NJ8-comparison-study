@@ -9,6 +9,7 @@ import {
 const TEST_VERSION = 'VST-NJ8 comparison study v1.0';
 const STORAGE_KEY = 'vstnj8_study_student_ids';
 const PROGRESS_KEY = 'vstnj8_study_progress';
+const ITEM_ORDER_KEY = 'vstnj8_study_item_order';
 
 const RESEARCHER_EMAIL = 'ahiro.research1006@gmail.com';
 const RESEARCHER_NAME = '安藤 嘉';
@@ -110,7 +111,34 @@ function saveProgress(progressData) {
     console.warn('進行状態の保存に失敗しました', e);
   }
 }
+// 出題順（item_idの配列）を保存する
+function saveItemOrder(items) {
+  try {
+    const order = items.map(it => it.id);
+    localStorage.setItem(ITEM_ORDER_KEY, JSON.stringify(order));
+  } catch (e) {
+    console.warn('出題順の保存に失敗しました', e);
+  }
+}
 
+// 保存された出題順（item_idの配列）を読み込む（無ければ null）
+function loadItemOrder() {
+  try {
+    const raw = localStorage.getItem(ITEM_ORDER_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+// 出題順を削除する
+function clearItemOrder() {
+  try {
+    localStorage.removeItem(ITEM_ORDER_KEY);
+  } catch (e) {
+    console.warn('出題順の削除に失敗しました', e);
+  }
+}
 // 進行状態を読み込む（無ければ null）
 function loadProgress() {
   try {
@@ -237,6 +265,16 @@ function startVst() {
     }
     items.push(...levelItems);
   }
+  for (const lv of levels) {
+    const levelItems = [...byLevel[lv]];
+    for (let i = levelItems.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [levelItems[i], levelItems[j]] = [levelItems[j], levelItems[i]];
+    }
+    items.push(...levelItems);
+  }
+  // 決めた出題順を保存（リロード復元用）
+  saveItemOrder(items);
   const elements = {
     meaning: document.getElementById('vst-meaning'),
     pos: document.getElementById('vst-pos'),
@@ -273,6 +311,8 @@ function startVst() {
 
 function finishSession() {
   disableUnloadWarning();
+  clearProgress();
+  clearItemOrder();
   addStoredId(state.participant.student_id);
   showResult();
 }
@@ -437,6 +477,9 @@ async function shareDataViaApps() {
 }
 
 function restart() {
+  clearProgress();
+  clearItemOrder();
+  disableUnloadWarning();
   Object.assign(state, {
     participant: {}, session: {},
     vstResult: null, vstRawTrials: [],
@@ -472,8 +515,67 @@ state.browserInfo = detectBrowserInfo();
 applyDeviceClass();
 
 loadData().then(() => {
-  show('s-consent');
+  const saved = loadProgress();
+  const savedOrder = loadItemOrder();
+  if (saved && saved.progress && saved.participant && savedOrder) {
+    // リロードで戻ってきた → 出題順と状態を復元してテストを再開
+    resumeFromSaved(saved, savedOrder);
+  } else {
+    show('s-consent');
+  }
 }).catch(err => {
   console.error('データ読み込みに失敗:', err);
   document.body.innerHTML = '<div style="padding:2rem;text-align:center;color:red">データの読み込みに失敗しました。</div>';
 });
+
+// 保存データからテストを復元して再開する
+function resumeFromSaved(saved, savedOrder) {
+  state.participant = saved.participant;
+  state.session = saved.session;
+  // 保存された出題順(item_idの配列)から、元データを使って同じ並びを再構築
+  const itemMap = {};
+  for (const it of vstItems) {
+    itemMap[it.id] = it;
+  }
+  const items = savedOrder.map(id => itemMap[id]).filter(it => it !== undefined);
+  // 念のため、復元した問題数が元と違う場合は復元せず最初から
+  if (items.length !== vstItems.length) {
+    console.warn('出題順の復元に失敗（問題数不一致）。最初から開始します。');
+    clearProgress();
+    clearItemOrder();
+    show('s-consent');
+    return;
+  }
+  const elements = {
+    meaning: document.getElementById('vst-meaning'),
+    pos: document.getElementById('vst-pos'),
+    options: document.getElementById('vst-options'),
+    timer: document.getElementById('vst-timer'),
+    timeup: document.getElementById('vst-timeup'),
+  };
+  show('s-vst');
+  enableUnloadWarning();
+  vstRunner = new VstRunner(elements, items, {
+    onProgress: (i, n, levelInfo) => {
+      document.getElementById('vst-prog-fill').style.width = `${((i + 1) / n) * 100}%`;
+      if (levelInfo) {
+        document.getElementById('vst-prog-label').textContent =
+          `レベル ${levelInfo.level} ・ ${levelInfo.positionInLevel} / ${levelInfo.levelTotal}`;
+      } else {
+        document.getElementById('vst-prog-label').textContent = `${i + 1} / ${n}`;
+      }
+    },
+    onSaveProgress: (progressData) => {
+      saveProgress(progressData);
+    },
+    onComplete: (results, quality) => {
+      state.vstRawTrials = results;
+      state.qualityData = quality;
+      const issues = validateVstIntegrity(results);
+      if (issues.length > 0) console.error('VST整合性エラー:', issues);
+      state.vstResult = scoreVST(results, vstItems);
+      finishSession();
+    },
+  });
+  vstRunner.resume(saved.progress);
+}
