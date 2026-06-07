@@ -265,14 +265,6 @@ function startVst() {
     }
     items.push(...levelItems);
   }
-  for (const lv of levels) {
-    const levelItems = [...byLevel[lv]];
-    for (let i = levelItems.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [levelItems[i], levelItems[j]] = [levelItems[j], levelItems[i]];
-    }
-    items.push(...levelItems);
-  }
   // 決めた出題順を保存（リロード復元用）
   saveItemOrder(items);
   const elements = {
