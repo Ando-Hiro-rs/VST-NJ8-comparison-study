@@ -90,8 +90,8 @@ export class VstRunner {
     this.timerIntervalId = null;
     this.levelDeadline = 0;
     this.isTransitioning = false;
+    this.resumedAfterReload = false; // リロードで再開した直後かどうか
   }
-
   start() {
     this.idx = 0;
     this.results = [];
@@ -105,7 +105,36 @@ export class VstRunner {
     this._attachFocusMonitors();
     this.renderCurrent();
   }
+// 保存データから状態を復元して再開する
+  resume(progress) {
+    this.idx = progress.idx;
+    this.results = progress.results || [];
+    this.currentLevel = progress.currentLevel;
+    this.levelStartTime = progress.levelStartTime;
+    this.levelDeadline = progress.levelDeadline;
+    this.levelDurations = progress.levelDurations || {};
+    this.focusLossCount = progress.focusLossCount || 0;
+    this.focusLossTotalMs = progress.focusLossTotalMs || 0;
+    this.focusLossEvents = progress.focusLossEvents || [];
+    this.testStartTime = progress.testStartTime || Date.now();
+    this.resumedAfterReload = true; // 次に表示する問題はリロード再開分
+    this._attachFocusMonitors();
+    // 保存された締め切り時刻でタイマーを再開する
+    this._resumeLevelTimer();
+    this.renderCurrent();
+  }
 
+  // 保存された levelDeadline を使ってタイマーを再開（締め切り時刻は変えない）
+  _resumeLevelTimer() {
+    this._updateTimerDisplay();
+    if (this.timerIntervalId) clearInterval(this.timerIntervalId);
+    this.timerIntervalId = setInterval(() => {
+      this._updateTimerDisplay();
+      if (Date.now() >= this.levelDeadline) {
+        this._onLevelTimeout();
+      }
+    }, 250);
+  }
   _attachFocusMonitors() {
     this._onVisibilityChange = () => {
       if (document.hidden) this._markBlur();
@@ -313,6 +342,11 @@ export class VstRunner {
       btn.onclick = () => this.respond(c.display_position);
       this.el.options.appendChild(btn);
     });
+    // リロードで再開した最初の問題には注意を表示する
+    if (this.resumedAfterReload && this.el.timeup) {
+      this.el.timeup.style.display = 'block';
+      this.el.timeup.textContent = 'リロードしないで続けて解答してください。';
+    }
     this.isTransitioning = false;
     this.startTime = performance.now();
     this._saveProgress();
@@ -323,11 +357,16 @@ respond(clickedPosition) {
     const rt = Math.round(performance.now() - this.startTime);
     const item = this.items[this.idx];
     const rec = recordVstResponse(item, clickedPosition, rt);
+    // リロードで再開した問題には備考を付け、注意表示を消す
+    if (this.resumedAfterReload) {
+      rec.note = 'リフレッシュしたため、反応時間の検討が必要';
+      this.resumedAfterReload = false;
+      if (this.el.timeup) this.el.timeup.style.display = 'none';
+    }
     this.results.push(rec);
     this.idx++;
     this.renderCurrent();
-  　　}
-    }
+  }
 
 export function validateVstIntegrity(records) {
   const issues = [];
