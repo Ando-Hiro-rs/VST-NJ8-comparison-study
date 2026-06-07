@@ -112,6 +112,7 @@ export function buildSummaryCSV(participant, session, vstResult, browserInfo, qu
       ['quality_focus_loss_total_sec', lossSec],
       ['quality_total_duration_ms', qualityData.total_duration_ms ?? ''],
       ['quality_total_duration_sec', totalSec],
+      ['reload_count', qualityData.reload_count ?? 0],
     );
     if (qualityData.level_durations_ms) {
       for (let lv = 1; lv <= 8; lv++) {
