@@ -91,6 +91,7 @@ export class VstRunner {
     this.levelDeadline = 0;
     this.isTransitioning = false;
     this.resumedAfterReload = false; // リロードで再開した直後かどうか
+    this.reloadCount = 0; // リロード（復元）した回数
   }
   start() {
     this.idx = 0;
@@ -117,6 +118,8 @@ export class VstRunner {
     this.focusLossTotalMs = progress.focusLossTotalMs || 0;
     this.focusLossEvents = progress.focusLossEvents || [];
     this.testStartTime = progress.testStartTime || Date.now();
+    // これまでのリロード回数を引き継ぎ、今回の復元分を+1する
+    this.reloadCount = (progress.reloadCount || 0) + 1;
     this.resumedAfterReload = true; // 次に表示する問題はリロード再開分
     this._attachFocusMonitors();
     // 保存された締め切り時刻でタイマーを再開する
@@ -264,6 +267,7 @@ export class VstRunner {
         focus_loss_events: this.focusLossEvents,
         total_duration_ms: totalDurationMs,
         level_durations_ms: this.levelDurations,
+        reload_count: this.reloadCount,
       };
       this.callbacks.onComplete(this.results, quality);
       return;
@@ -312,6 +316,7 @@ export class VstRunner {
       focusLossTotalMs: this.focusLossTotalMs,
       focusLossEvents: this.focusLossEvents,
       testStartTime: this.testStartTime,
+      reloadCount: this.reloadCount,
     };
     this.callbacks.onSaveProgress(progressData);
   }
