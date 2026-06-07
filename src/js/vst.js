@@ -367,6 +367,7 @@ respond(clickedPosition) {
     this.idx++;
     this.renderCurrent();
   }
+}
 
 export function validateVstIntegrity(records) {
   const issues = [];
