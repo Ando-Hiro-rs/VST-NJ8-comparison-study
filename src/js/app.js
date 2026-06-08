@@ -308,7 +308,10 @@ function finishSession() {
   addStoredId(state.participant.student_id);
   showResult();
 }
-
+// 指定ミリ秒だけ待つ
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 function showResult() {
   show('s-result');
   // 研究版: スコアは受験者に表示しない（裏で計算し、CSVに記録・GASに送信される）
@@ -410,18 +413,37 @@ async function sendToGAS() {
     );
     payload.trials_csv_filename = makeFilename(state.participant, state.session, 'trials');
   }
-// GASへ送信し、返事(成功/失敗)を受け取る
-  const response = await fetch(GAS_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify(payload),
-    redirect: 'follow',
-  });
-  const result = await response.json();
-  if (!result || result.result !== 'success') {
-    throw new Error('GAS returned non-success: ' + JSON.stringify(result));
+// 送信を少しずらす（80人同時送信のピークを分散させるため、0〜2秒のランダム待機）
+  const jitter = Math.floor(Math.random() * 2000);
+  await sleep(jitter);
+
+  // 失敗したら少し待って再試行する（最大3回）
+  const maxAttempts = 3;
+  let lastError = null;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      const response = await fetch(GAS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload),
+        redirect: 'follow',
+      });
+      const result = await response.json();
+      if (!result || result.result !== 'success') {
+        throw new Error('GAS returned non-success: ' + JSON.stringify(result));
+      }
+      return result; // 成功したら終わり
+    } catch (err) {
+      lastError = err;
+      console.warn(`GAS送信 試行${attempt}/${maxAttempts} 失敗:`, err);
+      if (attempt < maxAttempts) {
+        // 再試行前に待つ（回を追うごとに長く: 1秒, 2秒）
+        await sleep(attempt * 1000);
+      }
+    }
   }
-  return result;
+  // 全試行が失敗
+  throw lastError;
 }
 function buildAllCsvBlobs() {
   const blobs = [];
