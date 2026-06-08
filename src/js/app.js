@@ -183,8 +183,8 @@ function submitConsent() {
   try {
     state.session.consent_agreed = true;
     state.session.consent_timestamp = new Date().toISOString();
-    const shareEl = document.getElementById('consent-share');
-    state.session.data_sharing_agreed = shareEl ? shareEl.checked : false;
+    // 送信同意は必須チェックに含まれるため、ここでは常に true
+    state.session.data_sharing_agreed = true;
     show('s-info');
   } catch (err) {
     console.error('同意処理でエラー:', err);
