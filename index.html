@@ -23,16 +23,16 @@
     <ul class="inst-list">
       <li>学籍番号・お名前・学科</li>
       <li>各問題への回答・反応時間 (ミリ秒単位)</li>
-      <li>テスト全体の所要時間・画面の切り替え回数 (データの品質確認のため)</li>
-      <li>テスト実施日時</li>
+      <li>テスト全体の所要時間・画面の切り替え回数・再読み込み回数 (データの品質確認のため)</li>
+      <li>テスト実施日時・受験に使用した端末の種類</li>
     </ul>
     <p class="inst-text" style="margin-top:8px">学籍番号とお名前は、紙版テストとの照合のために収集します。<b>収集したデータは研究目的のみに使用し、研究発表時は個人が特定できない形に匿名化します。</b></p>
 
     <h3 class="inst-section-title">データの取り扱い</h3>
     <ul class="inst-list">
-      <li>取得したデータは研究・教育の目的のみに使用されます</li>
-      <li>結果はあなたのブラウザ上でCSVファイルとしてダウンロードできます</li>
-      <li>サーバーへの自動送信は行いません (受験データはあなたのブラウザ内のみで処理されます)</li>
+      <li>取得したデータは研究目的のみに使用されます</li>
+      <li>テスト終了後、回答データは研究者の管理するサーバーへ自動的に送信・保存されます</li>
+      <li>送信されたデータは研究者のみがアクセスでき、第三者には公開されません</li>
       <li>研究発表時は個人が特定できない形に匿名化して使用します</li>
     </ul>
 
@@ -47,15 +47,11 @@
     </label>
     <label class="consent-row required">
       <input type="checkbox" id="consent-2" onchange="checkConsentForm()">
-      <span>研究目的でのデータ利用に同意します <em>(必須)</em></span>
+      <span>研究目的でのデータの利用・送信に同意します <em>(必須)</em></span>
     </label>
     <label class="consent-row required">
       <input type="checkbox" id="consent-3" onchange="checkConsentForm()">
       <span>静かな環境で集中して受験できる状態です <em>(必須)</em></span>
-    </label>
-    <label class="consent-row optional">
-      <input type="checkbox" id="consent-share">
-      <span>テスト終了後、結果データを研究者に送信することに同意します <em>(任意)</em><br><span class="consent-detail">※ 送信は結果画面で改めて選択できます。同意していなくてもテストは受験できます。</span></span>
     </label>
   </div>
 
@@ -101,17 +97,20 @@
   <div class="instruction-card">
     <h3 class="inst-section-title">テスト内容</h3>
     <p class="inst-text">日本語の意味が画面に表示されます。<b>その意味に対応する英単語を、表示される4つの選択肢から選んでください</b>。</p>
-
     <h3 class="inst-section-title">出題範囲</h3>
-  <p class="inst-text">新JACET8000の各頻度レベル (1,000語ごと) から 20 問ずつ、<b>計 8 レベル × 20 問 = 160 問</b>を出題します。やさしい単語から難しい単語まで幅広く含まれ、3PL IRTモデルにより精密に語彙サイズを推定します。</p>
-
+    <p class="inst-text">やさしい単語から難しい単語まで、<b>8つのレベル × 各20問 = 計160問</b>を、レベル1から順に出題します。</p>
+    <h3 class="inst-section-title">制限時間</h3>
+    <p class="inst-text"><b>各レベルの解答時間は3分30秒です。</b>時間が来ると、そのレベルの残りの問題は「未回答」として、自動的に次のレベルに進みます。一度進むと前のレベルには戻れません。</p>
     <h3 class="inst-section-title">大切なポイント</h3>
     <ul class="inst-list">
-    <li>このテストは <b>解答時間を語彙サイズの評価には使用しません</b>。各レベル3分30秒で答えてください（なお、回答時間や画面の切り替えはデータの品質確認のために記録され、時間内に次のレベルに進まなければ、次のレベルに進み、そのレベルは「未回答」となります。）</li>
-      <li><b>4つの中から最も近いと思うものを選んでください</b></li>
-      <li>すべての問題に必ず回答してください (スキップ機能はありません)</li>
+      <li>各問題の前に、画面の中央に「<b>＋</b>」が一瞬表示されます。そこを見て、次に出る単語を待ってください</li>
+      <li>分からない単語があっても、<b>4つの中から最も近いと思うものを選んでください</b></li>
+      <li>解答の速さは語彙サイズの評価には影響しません。落ち着いて答えてください</li>
+      <li>テスト中は、ブラウザの再読み込み（リロード）をしないでください</li>
     </ul>
-
+    <h3 class="inst-section-title">所要時間</h3>
+    <p class="inst-text">全体で約30分です（3分30秒 × 8レベル）。途中で休憩はできません。</p>
+  </div>
     <h3 class="inst-section-title">所要時間</h3>
     <p class="inst-text">約30分です。途中で休憩はできないので、ご注意ください。</p>
   </div>
