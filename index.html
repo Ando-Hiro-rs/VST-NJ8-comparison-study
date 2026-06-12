@@ -17,16 +17,15 @@
 
   <div class="instruction-card">
     <h3 class="inst-section-title">このテストについて</h3>
-    <p class="inst-text">本システムは日本人英語学習者の語彙サイズを測定する<b>研究目的のWebアプリケーション</b>です。受験データは研究・教育の改善のために使用されます。</p>
-
+    <p class="inst-text">本システムは日本人英語学習者の語彙サイズを測定する<b>研究目的のWebアプリケーション</b>です。受験データは研究の目的のみに使用されます。</p>
     <h3 class="inst-section-title">収集するデータ</h3>
     <ul class="inst-list">
       <li>学籍番号・お名前・学科</li>
       <li>各問題への回答・反応時間 (ミリ秒単位)</li>
       <li>テスト全体の所要時間・画面の切り替え回数・再読み込み回数 (データの品質確認のため)</li>
-      <li>テスト実施日時・受験に使用した端末の種類</li>
+      <li>テスト実施日時・受験に使用した端末やブラウザの情報（種類・画面サイズなど）</li>
     </ul>
-    <p class="inst-text" style="margin-top:8px">学籍番号とお名前は、紙版テストとの照合のために収集します。<b>収集したデータは研究目的のみに使用し、研究発表時は個人が特定できない形に匿名化します。</b></p>
+    <p class="inst-text" style="margin-top:8px">学籍番号とお名前は、紙版テストとの照合のために収集します。</p>
 
     <h3 class="inst-section-title">データの取り扱い</h3>
     <ul class="inst-list">
@@ -37,9 +36,10 @@
     </ul>
 
     <h3 class="inst-section-title">受験の任意性</h3>
-    <p class="inst-text">受験はいつでも中断できます。中断した場合、これまでの回答データは保存されません。</p>
+    <p class="inst-text">この研究への参加は任意です。<b>参加しない場合や途中で中断した場合でも、成績などに不利益が生じることは一切ありません。</b>途中で中断した場合、回答データが研究者に送信されることはありません。</p>
   </div>
-
+　　<h3 class="inst-section-title">研究実施者</h3>
+    <p class="inst-text">安藤 嘉（北海道教育大学大学院 教職大学院）<br>本研究について質問がある場合は、テスト実施時に監督者へ直接お尋ねください。</p>
   <div class="consent-checks">
     <label class="consent-row required">
       <input type="checkbox" id="consent-1" onchange="checkConsentForm()">
@@ -51,7 +51,7 @@
     </label>
     <label class="consent-row required">
       <input type="checkbox" id="consent-3" onchange="checkConsentForm()">
-      <span>静かな環境で集中して受験できる状態です <em>(必須)</em></span>
+      <span>辞書・インターネット検索・他の人への相談などに頼らず、自分の力だけで回答します <em>(必須)</em></span>
     </label>
   </div>
 
