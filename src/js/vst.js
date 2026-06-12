@@ -92,6 +92,7 @@ export class VstRunner {
     this.isTransitioning = false;
     this.resumedAfterReload = false; // リロードで再開した直後かどうか
     this.reloadCount = 0; // リロード（復元）した回数
+    this.fixationTimeoutId = null; // 注視点の表示予約
   }
   start() {
     this.idx = 0;
@@ -223,6 +224,11 @@ export class VstRunner {
   // 時間切れ: 現在レベルの残り問題を未回答(不正解)として記録し、次レベルへ
   _onLevelTimeout() {
     this._stopLevelTimer();
+    // 注視点の表示待ちが残っていたら取り消す（古い問題が表示されるのを防ぐ）
+    if (this.fixationTimeoutId) {
+      clearTimeout(this.fixationTimeoutId);
+      this.fixationTimeoutId = null;
+    }
     this._recordLevelDuration();
     const timedOutLevel = this.currentLevel;
     // 現在のレベルに属する未回答問題をすべて未回答として記録
@@ -329,7 +335,8 @@ export class VstRunner {
     this.el.meaning.textContent = '+';
     this.el.meaning.classList.add('vst-fixation');
 
-    setTimeout(() => {
+    this.fixationTimeoutId = setTimeout(() => {
+      this.fixationTimeoutId = null;
       // 注視点が終わったら問題を表示
       this.el.meaning.classList.remove('vst-fixation');
       this._showQuestion(item);
