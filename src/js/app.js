@@ -275,6 +275,7 @@ function startVst() {
     timeup: document.getElementById('vst-timeup'),
     questionArea: document.getElementById('vst-question-area'),
     wait: document.getElementById('vst-wait'),
+    waitTitle: document.getElementById('vst-wait-title'),
     waitMsg: document.getElementById('vst-wait-msg'),
     nextBtn: document.getElementById('vst-next-btn'),
   };
@@ -574,6 +575,11 @@ function resumeFromSaved(saved, savedOrder) {
     options: document.getElementById('vst-options'),
     timer: document.getElementById('vst-timer'),
     timeup: document.getElementById('vst-timeup'),
+    questionArea: document.getElementById('vst-question-area'),
+    wait: document.getElementById('vst-wait'),
+    waitTitle: document.getElementById('vst-wait-title'),
+    waitMsg: document.getElementById('vst-wait-msg'),
+    nextBtn: document.getElementById('vst-next-btn'),
   };
   show('s-vst');
   enableUnloadWarning();
