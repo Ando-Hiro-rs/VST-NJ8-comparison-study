@@ -37,9 +37,10 @@
 
     <h3 class="inst-section-title">受験の任意性</h3>
     <p class="inst-text">この研究への参加は任意です。<b>参加しない場合や途中で中断した場合でも、成績などに不利益が生じることは一切ありません。</b>途中で中断した場合、回答データが研究者に送信されることはありません。</p>
-  </div>
-　　<h3 class="inst-section-title">研究実施者</h3>
+    <h3 class="inst-section-title">研究実施者</h3>
     <p class="inst-text">安藤 嘉（北海道教育大学大学院 教職大学院）<br>本研究について質問がある場合は、テスト実施時に監督者へ直接お尋ねください。</p>
+  </div>
+  
   <div class="consent-checks">
     <label class="consent-row required">
       <input type="checkbox" id="consent-1" onchange="checkConsentForm()">
@@ -125,10 +126,20 @@
     <span class="progress-label" id="vst-prog-label">0 / 160</span>
   </div>
   <div class="vst-timeup" id="vst-timeup" style="display:none"></div>
-  <p class="vst-prompt">この日本語の意味の英単語は?</p>
-  <div class="vst-meaning" id="vst-meaning">—</div>
-  <p class="vst-pos-lbl" id="vst-pos">noun</p>
-  <div class="vst-options" id="vst-options"></div>
+
+  <div class="vst-question-area" id="vst-question-area">
+    <p class="vst-prompt">この日本語の意味の英単語は?</p>
+    <div class="vst-meaning" id="vst-meaning">—</div>
+    <p class="vst-pos-lbl" id="vst-pos">noun</p>
+    <div class="vst-options" id="vst-options"></div>
+  </div>
+
+  <div class="vst-wait" id="vst-wait" style="display:none">
+    <div class="vst-wait-icon">⏳</div>
+    <div class="vst-wait-title" id="vst-wait-title">このレベルは終了しました</div>
+    <div class="vst-wait-msg" id="vst-wait-msg">残り時間（0:00）が経過するまでお待ちください</div>
+    <button class="btn" id="vst-next-btn" onclick="goNextLevel()" style="display:none">次のレベルに進む →</button>
+  </div>
 </section>
 
 <section id="s-result" class="screen">
