@@ -93,6 +93,7 @@ export class VstRunner {
     this.resumedAfterReload = false; // リロードで再開した直後かどうか
     this.reloadCount = 0; // リロード（復元）した回数
     this.fixationTimeoutId = null; // 注視点の表示予約
+    this.isWaiting = false; // レベル間の待機画面を表示中か
   }
   start() {
     this.idx = 0;
@@ -134,7 +135,10 @@ export class VstRunner {
     if (this.timerIntervalId) clearInterval(this.timerIntervalId);
     this.timerIntervalId = setInterval(() => {
       this._updateTimerDisplay();
-      if (Date.now() >= this.levelDeadline) {
+      if (this.isWaiting) {
+        // 待機中：残り時間表示を更新。0になってもタイムアウト処理は呼ばない
+        this._updateWaitDisplay();
+      } else if (Date.now() >= this.levelDeadline) {
         this._onLevelTimeout();
       }
     }, 250);
@@ -262,24 +266,10 @@ export class VstRunner {
 
   renderCurrent() {
     if (this.idx >= this.items.length) {
-      this._stopLevelTimer();
-      this._recordLevelDuration();
-      this._markFocus();
-      this._detachFocusMonitors();
-      const totalDurationMs = Math.round(performance.now() - this.testStartTime);
-      const quality = {
-        focus_loss_count: this.focusLossCount,
-        focus_loss_total_ms: this.focusLossTotalMs,
-        focus_loss_events: this.focusLossEvents,
-        total_duration_ms: totalDurationMs,
-        level_durations_ms: this.levelDurations,
-        reload_count: this.reloadCount,
-      };
-      this.callbacks.onComplete(this.results, quality);
+      this._finishTest();
       return;
     }
-
- const item = this.items[this.idx];
+    const item = this.items[this.idx];
     // レベルが切り替わったらタイマーをリセット
     if (item.level !== this.currentLevel) {
       if (this.currentLevel !== null) this._recordLevelDuration();
@@ -290,6 +280,24 @@ export class VstRunner {
       this.callbacks.onProgress(this.idx, this.items.length, levelInfo);
     }
     this._showFixationThenQuestion(item);
+  }
+
+  // テスト完了処理
+  _finishTest() {
+    this._stopLevelTimer();
+    this._recordLevelDuration();
+    this._markFocus();
+    this._detachFocusMonitors();
+    const totalDurationMs = Math.round(performance.now() - this.testStartTime);
+    const quality = {
+      focus_loss_count: this.focusLossCount,
+      focus_loss_total_ms: this.focusLossTotalMs,
+      focus_loss_events: this.focusLossEvents,
+      total_duration_ms: totalDurationMs,
+      level_durations_ms: this.levelDurations,
+      reload_count: this.reloadCount,
+    };
+    this.callbacks.onComplete(this.results, quality);
   }
 
   // 今の問題が、自分のレベルの中で何問目か（および総数）を計算する
@@ -377,9 +385,75 @@ respond(clickedPosition) {
     }
     this.results.push(rec);
     this.idx++;
-    this.renderCurrent();
+// レベル完答後、待機画面に入る（タイマーは動かしたまま）
+  _enterWaiting() {
+    this.isWaiting = true;
+    this.isTransitioning = true; // 問題のクリックを無効化
+    // 問題エリアを隠し、待機エリアを表示
+    if (this.el.questionArea) this.el.questionArea.style.display = 'none';
+    if (this.el.wait) this.el.wait.style.display = 'flex';
+    if (this.el.nextBtn) this.el.nextBtn.style.display = 'none';
+    // 進行状態を保存（待機中もリロードで復元できるように・第5段階で本格対応）
+    this._saveProgress();
+    this._updateWaitDisplay();
   }
-}
+
+  // 待機画面の残り時間表示を更新する（タイマーのintervalから呼ばれる）
+  _updateWaitDisplay() {
+    if (!this.isWaiting) return;
+    const remainMs = Math.max(0, this.levelDeadline - Date.now());
+    if (remainMs > 0) {
+      // まだ時間が残っている → カウントダウン表示
+      const totalSec = Math.ceil(remainMs / 1000);
+      const mm = Math.floor(totalSec / 60);
+      const ss = totalSec % 60;
+      if (this.el.waitMsg) {
+        this.el.waitMsg.classList.remove('ready');
+        this.el.waitMsg.textContent =
+          `残り時間（${mm}:${String(ss).padStart(2, '0')}）が経過するまでお待ちください`;
+      }
+      if (this.el.nextBtn) this.el.nextBtn.style.display = 'none';
+    } else {
+      // 時間が来た → ボタンを出す
+      if (this.el.waitMsg) {
+        this.el.waitMsg.classList.add('ready');
+        this.el.waitMsg.textContent = '監督者の指示に従い、次のレベルに進んでください。';
+      }
+      if (this.el.nextBtn) this.el.nextBtn.style.display = '';
+    }
+  }
+
+  // 「次のレベルに進む」ボタンが押されたとき
+  goNextLevel() {
+    if (!this.isWaiting) return;
+    // 待機中の経過時間をこのレベルの所要時間として記録
+    this._recordLevelDuration();
+    this.isWaiting = false;
+    // 待機エリアを隠し、問題エリアを戻す
+    if (this.el.wait) this.el.wait.style.display = 'none';
+    if (this.el.questionArea) this.el.questionArea.style.display = 'flex';
+    if (this.el.nextBtn) this.el.nextBtn.style.display = 'none';
+    if (this.idx >= this.items.length) {
+      // 最後のレベルだった → テスト終了
+      this._finishTest();
+    } else {
+      // 次のレベルへ。renderCurrentがレベル切り替わりを検知してタイマーを開始する
+      this.renderCurrent();
+    }
+  }
+    // 今答えた問題で、このレベルを解き終えたか（次が別レベル or 問題終了）を判定
+    const finishedLevel =
+      this.idx >= this.items.length ||
+      this.items[this.idx].level !== item.level;
+
+    if (finishedLevel) {
+      // レベルを完答 → 待機画面へ（タイマーは止めない）
+      this._enterWaiting();
+    } else {
+      // まだ同じレベルの問題が残っている → 次の問題へ
+      this.renderCurrent();
+    }
+  }
 
 export function validateVstIntegrity(records) {
   const issues = [];
