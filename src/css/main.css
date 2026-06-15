@@ -1228,3 +1228,47 @@ footer a:hover { text-decoration: underline; }
   color: var(--color-danger);
   border: 0.5px solid var(--color-danger);
 }
+/* レベル間の待機画面 */
+.vst-question-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.vst-wait {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  max-width: 480px;
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+}
+
+.vst-wait-icon {
+  font-size: 40px;
+  line-height: 1;
+}
+
+.vst-wait-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.vst-wait-msg {
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.6;
+}
+
+.vst-wait-msg.ready {
+  color: var(--color-success);
+  font-weight: 600;
+}
