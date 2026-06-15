@@ -1,6 +1,6 @@
 const LEVEL_TIME_MS = 3 * 60 * 1000 + 30 * 1000; // 各レベル3分30秒 = 210000ms
 const WARNING_MS = 30 * 1000; // 残り30秒で警告色
-const TIMEUP_MESSAGE_MS = 2500; // 「時間です」表示の長さ
+const TIMEUP_MESSAGE_MS = 2500; // 「時間です」表示の長さ（現在は未使用）
 const FIXATION_MS = 1000; // 注視点(+)の表示時間 = 1秒
 
 function shuffle(arr) {
@@ -95,6 +95,7 @@ export class VstRunner {
     this.fixationTimeoutId = null; // 注視点の表示予約
     this.isWaiting = false; // レベル間の待機画面を表示中か
   }
+
   start() {
     this.idx = 0;
     this.results = [];
@@ -108,7 +109,8 @@ export class VstRunner {
     this._attachFocusMonitors();
     this.renderCurrent();
   }
-// 保存データから状態を復元して再開する
+
+  // 保存データから状態を復元して再開する
   resume(progress) {
     this.idx = progress.idx;
     this.results = progress.results || [];
@@ -123,10 +125,17 @@ export class VstRunner {
     // これまでのリロード回数を引き継ぎ、今回の復元分を+1する
     this.reloadCount = (progress.reloadCount || 0) + 1;
     this.resumedAfterReload = true; // 次に表示する問題はリロード再開分
+    this.isWaiting = !!progress.isWaiting; // 待機中だったかを復元
     this._attachFocusMonitors();
     // 保存された締め切り時刻でタイマーを再開する
     this._resumeLevelTimer();
-    this.renderCurrent();
+    if (this.isWaiting) {
+      // 待機中にリロードされた場合は、待機画面を復元する
+      this.resumedAfterReload = false; // 待機中は問題を表示しないのでフラグは不要
+      this._enterWaiting(progress.waitTimedOut);
+    } else {
+      this.renderCurrent();
+    }
   }
 
   // 保存された levelDeadline を使ってタイマーを再開（締め切り時刻は変えない）
@@ -136,13 +145,13 @@ export class VstRunner {
     this.timerIntervalId = setInterval(() => {
       this._updateTimerDisplay();
       if (this.isWaiting) {
-        // 待機中：残り時間表示を更新。0になってもタイムアウト処理は呼ばない
         this._updateWaitDisplay();
       } else if (Date.now() >= this.levelDeadline) {
         this._onLevelTimeout();
       }
     }, 250);
   }
+
   _attachFocusMonitors() {
     this._onVisibilityChange = () => {
       if (document.hidden) this._markBlur();
@@ -189,7 +198,9 @@ export class VstRunner {
     if (this.timerIntervalId) clearInterval(this.timerIntervalId);
     this.timerIntervalId = setInterval(() => {
       this._updateTimerDisplay();
-      if (Date.now() >= this.levelDeadline) {
+      if (this.isWaiting) {
+        this._updateWaitDisplay();
+      } else if (Date.now() >= this.levelDeadline) {
         this._onLevelTimeout();
       }
     }, 250);
@@ -225,7 +236,7 @@ export class VstRunner {
     }
   }
 
-  // 時間切れ: 現在レベルの残り問題を未回答(不正解)として記録し、次レベルへ
+  // 時間切れ: 現在レベルの残り問題を未回答(不正解)として記録し、待機画面へ
   _onLevelTimeout() {
     this._stopLevelTimer();
     // 注視点の表示待ちが残っていたら取り消す（古い問題が表示されるのを防ぐ）
@@ -233,6 +244,8 @@ export class VstRunner {
       clearTimeout(this.fixationTimeoutId);
       this.fixationTimeoutId = null;
     }
+    // リロード再開の注意フラグが残っていたら下ろす
+    this.resumedAfterReload = false;
     this._recordLevelDuration();
     const timedOutLevel = this.currentLevel;
     // 現在のレベルに属する未回答問題をすべて未回答として記録
@@ -243,25 +256,8 @@ export class VstRunner {
     if (this.callbacks.onProgress) {
       this.callbacks.onProgress(this.idx, this.items.length);
     }
-    this._showTimeupMessage(() => {
-      this.renderCurrent();
-    });
-  }
-
-  _showTimeupMessage(done) {
-    this.isTransitioning = true;
-    if (this.el.options) this.el.options.innerHTML = '';
-    if (this.el.meaning) this.el.meaning.textContent = '';
-    if (this.el.pos) this.el.pos.textContent = '';
-    if (this.el.timeup) {
-      this.el.timeup.style.display = 'block';
-      this.el.timeup.textContent = '時間です。次のレベルに進みます。';
-    }
-    setTimeout(() => {
-      if (this.el.timeup) this.el.timeup.style.display = 'none';
-      this.isTransitioning = false;
-      done();
-    }, TIMEUP_MESSAGE_MS);
+    // 時間切れでも待機画面へ（残り時間は0なのでボタンがすぐ出る）
+    this._enterWaiting(true);
   }
 
   renderCurrent() {
@@ -304,7 +300,6 @@ export class VstRunner {
   _getLevelPosition() {
     const currentItem = this.items[this.idx];
     const level = currentItem.level;
-    // このレベルの問題が、items全体のどこからどこまでか数える
     let levelStartIdx = this.idx;
     while (levelStartIdx > 0 && this.items[levelStartIdx - 1].level === level) {
       levelStartIdx--;
@@ -316,7 +311,8 @@ export class VstRunner {
     const positionInLevel = this.idx - levelStartIdx + 1;
     return { level, positionInLevel, levelTotal };
   }
-// 今の進行状態をまとめてコールバックに渡す（保存用）
+
+  // 今の進行状態をまとめてコールバックに渡す（保存用）
   _saveProgress() {
     if (!this.callbacks.onSaveProgress) return;
     const progressData = {
@@ -331,21 +327,21 @@ export class VstRunner {
       focusLossEvents: this.focusLossEvents,
       testStartTime: this.testStartTime,
       reloadCount: this.reloadCount,
+      isWaiting: this.isWaiting,
+      waitTimedOut: this._waitTimedOut || false,
     };
     this.callbacks.onSaveProgress(progressData);
   }
+
   // 注視点(+)を一定時間表示してから問題を表示する
   _showFixationThenQuestion(item) {
     this.isTransitioning = true;
-    // 注視点表示中は意味・品詞・選択肢を隠し、中央に「+」を出す
     this.el.pos.textContent = '';
     this.el.options.innerHTML = '';
     this.el.meaning.textContent = '+';
     this.el.meaning.classList.add('vst-fixation');
-
     this.fixationTimeoutId = setTimeout(() => {
       this.fixationTimeoutId = null;
-      // 注視点が終わったら問題を表示
       this.el.meaning.classList.remove('vst-fixation');
       this._showQuestion(item);
     }, FIXATION_MS);
@@ -372,7 +368,7 @@ export class VstRunner {
     this._saveProgress();
   }
 
-respond(clickedPosition) {
+  respond(clickedPosition) {
     if (this.isTransitioning) return; // 遷移中のクリックは無視
     const rt = Math.round(performance.now() - this.startTime);
     const item = this.items[this.idx];
@@ -385,15 +381,37 @@ respond(clickedPosition) {
     }
     this.results.push(rec);
     this.idx++;
-// レベル完答後、待機画面に入る（タイマーは動かしたまま）
-  _enterWaiting() {
+    // 今答えた問題で、このレベルを解き終えたか（次が別レベル or 問題終了）を判定
+    const finishedLevel =
+      this.idx >= this.items.length ||
+      this.items[this.idx].level !== item.level;
+    if (finishedLevel) {
+      // レベルを完答 → 待機画面へ（タイマーは止めない）
+      this._enterWaiting(false);
+    } else {
+      // まだ同じレベルの問題が残っている → 次の問題へ
+      this.renderCurrent();
+    }
+  }
+
+  // レベル終了後、待機画面に入る（タイマーは動かしたまま）
+  _enterWaiting(timedOut = false) {
     this.isWaiting = true;
+    this._waitTimedOut = timedOut;
     this.isTransitioning = true; // 問題のクリックを無効化
+    // 待機画面のタイトルを状況に合わせて設定
+    if (this.el.waitTitle) {
+      this.el.waitTitle.textContent = timedOut
+        ? '時間切れです。このレベルは終了しました'
+        : 'このレベルは終了しました';
+    }
     // 問題エリアを隠し、待機エリアを表示
     if (this.el.questionArea) this.el.questionArea.style.display = 'none';
     if (this.el.wait) this.el.wait.style.display = 'flex';
     if (this.el.nextBtn) this.el.nextBtn.style.display = 'none';
-    // 進行状態を保存（待機中もリロードで復元できるように・第5段階で本格対応）
+    // 念のため時間切れメッセージ要素は隠す
+    if (this.el.timeup) this.el.timeup.style.display = 'none';
+    // 進行状態を保存
     this._saveProgress();
     this._updateWaitDisplay();
   }
@@ -426,9 +444,10 @@ respond(clickedPosition) {
   // 「次のレベルに進む」ボタンが押されたとき
   goNextLevel() {
     if (!this.isWaiting) return;
-    // 待機中の経過時間をこのレベルの所要時間として記録
-    this._recordLevelDuration();
+    const remainMs = this.levelDeadline - Date.now();
+    if (remainMs > 0) return; // 時間がまだ来ていなければ進ませない（保険）
     this.isWaiting = false;
+    this._waitTimedOut = false;
     // 待機エリアを隠し、問題エリアを戻す
     if (this.el.wait) this.el.wait.style.display = 'none';
     if (this.el.questionArea) this.el.questionArea.style.display = 'flex';
@@ -441,19 +460,7 @@ respond(clickedPosition) {
       this.renderCurrent();
     }
   }
-    // 今答えた問題で、このレベルを解き終えたか（次が別レベル or 問題終了）を判定
-    const finishedLevel =
-      this.idx >= this.items.length ||
-      this.items[this.idx].level !== item.level;
-
-    if (finishedLevel) {
-      // レベルを完答 → 待機画面へ（タイマーは止めない）
-      this._enterWaiting();
-    } else {
-      // まだ同じレベルの問題が残っている → 次の問題へ
-      this.renderCurrent();
-    }
-  }
+}
 
 export function validateVstIntegrity(records) {
   const issues = [];
