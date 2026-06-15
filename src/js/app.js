@@ -357,7 +357,24 @@ async function autoSendToGAS() {
     if (restartBtn) restartBtn.style.display = '';
   }
 }
-
+// 各問題の見出しキーを「L{level}_{レベル内連番2桁}_{意味}」形式で作る
+function buildItemColumnKeys() {
+  // vstItems を id 順（正規順）に並べる
+  const sorted = [...vstItems].sort((a, b) => a.id - b.id);
+  // レベルごとの連番を振るためのカウンタ
+  const levelCounter = {};
+  return sorted.map(item => {
+    const lv = item.level;
+    levelCounter[lv] = (levelCounter[lv] || 0) + 1;
+    const seq = String(levelCounter[lv]).padStart(2, '0');
+    // 意味は前後の空白を除去（見出しを整える）
+    const meaning = (item.meaning_ja || '').trim();
+    return {
+      id: item.id,
+      key: `L${lv}_${seq}_${meaning}`,
+    };
+  });
+}
 // GAS(Googleスプレッドシート)へサマリーデータを自動送信する
 async function sendToGAS() {
   // 送信するデータを1つのオブジェクトにまとめる（サマリーCSVと同じ内容）
@@ -366,7 +383,29 @@ async function sendToGAS() {
   const b = state.browserInfo || {};
   const p = state.participant;
   const s = state.session;
-
+// 受験者の回答を item_id で引けるようにする（resultsは出題順なので）
+  const trials = state.vstRawTrials || [];
+  const byItemId = {};
+  for (const t of trials) {
+    byItemId[t.item_id] = t;
+  }
+  // 各問題の見出しキー（正規順）
+  const itemKeys = buildItemColumnKeys();
+  // 正誤（正解1/不正解0/未回答0）と 位置番号（0〜3、未回答は空）を正規順で作る
+  const correctByItem = {};   // メインシート用
+  const positionByItem = {};  // 2枚目シート用
+  for (const { id, key } of itemKeys) {
+    const t = byItemId[id];
+    if (t && t.response_position !== '' && t.response_position !== null && t.response_position !== undefined) {
+      // 回答あり
+      correctByItem[key] = t.is_correct ? 1 : 0;
+      positionByItem[key] = t.response_position;
+    } else {
+      // 未回答（時間切れ等）
+      correctByItem[key] = 0;
+      positionByItem[key] = '';
+    }
+  }
   const payload = {
     participant_id: p.id || '',
     student_id: p.student_id || '',
@@ -409,6 +448,10 @@ async function sendToGAS() {
       payload[`level_${lv}_duration_sec`] = (ms !== undefined) ? Math.round(ms / 1000) : '';
     }
   }
+  // 各問題の正誤（正解1/不正解0/未回答0）をメインシートに追加（level_8_duration_sec の後）
+  for (const { key } of itemKeys) {
+    payload[key] = correctByItem[key];
+  }
 // summaryとtrialsのCSVの中身も送る（GAS側でドライブに保存しリンク化する）
   payload.summary_csv_content = buildSummaryCSV(
     state.participant, state.session, state.vstResult, state.browserInfo, state.qualityData
@@ -419,7 +462,16 @@ async function sendToGAS() {
       state.participant, state.session, state.vstRawTrials
     );
     payload.trials_csv_filename = makeFilename(state.participant, state.session, 'trials');
+    
   }
+  // 2枚目のシート（回答位置）用のデータを別途添付
+  payload.position_sheet = {
+    participant_id: p.id || '',
+    student_id: p.student_id || '',
+    name: p.name || '',
+    test_datetime: s.start_time || '',
+    positions: positionByItem,
+  };
 // 送信を少しずらす（80人同時送信のピークを分散させるため、0〜2秒のランダム待機）
   const jitter = Math.floor(Math.random() * 2000);
   await sleep(jitter);
