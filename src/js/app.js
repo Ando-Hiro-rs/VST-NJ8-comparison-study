@@ -273,6 +273,10 @@ function startVst() {
     options: document.getElementById('vst-options'),
     timer: document.getElementById('vst-timer'),
     timeup: document.getElementById('vst-timeup'),
+    questionArea: document.getElementById('vst-question-area'),
+    wait: document.getElementById('vst-wait'),
+    waitMsg: document.getElementById('vst-wait-msg'),
+    nextBtn: document.getElementById('vst-next-btn'),
   };
  show('s-vst');
   enableUnloadWarning();
@@ -300,7 +304,9 @@ function startVst() {
   });
   vstRunner.start();
 }
-
+function goNextLevel() {
+  if (vstRunner) vstRunner.goNextLevel();
+}
 function finishSession() {
   disableUnloadWarning();
   clearProgress();
@@ -520,6 +526,7 @@ window.submitConsent = submitConsent;
 window.checkInfoForm = checkInfoForm;
 window.submitInfo = submitInfo;
 window.startVst = startVst;
+window.goNextLevel = goNextLevel;
 window.exportVstTrials = exportVstTrials;
 window.exportSummary = exportSummary;
 window.sendDataByEmail = sendDataByEmail;
