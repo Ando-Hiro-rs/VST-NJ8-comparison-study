@@ -245,7 +245,13 @@ function submitInfo() {
   };
   show('s-vst-instructions');
 }
-
+// 説明画面のチェックボックスでボタンの有効/無効を切り替える
+function checkVstStart() {
+  const chk = document.getElementById('vst-understand');
+  const btn = document.getElementById('vst-start-btn');
+  if (!chk || !btn) return;
+  btn.disabled = !chk.checked;
+}
 function startVst() {
   // レベル(1〜8)ごとに問題を分類
   const byLevel = {};
@@ -572,6 +578,10 @@ function restart() {
   const btn = document.getElementById('info-btn');
   if (btn) btn.disabled = true;
   show('s-consent');
+  const understandChk = document.getElementById('vst-understand');
+  if (understandChk) understandChk.checked = false;
+  const vstStartBtn = document.getElementById('vst-start-btn');
+  if (vstStartBtn) vstStartBtn.disabled = true;
 }
 
 window.checkConsentForm = checkConsentForm;
@@ -579,6 +589,7 @@ window.submitConsent = submitConsent;
 window.checkInfoForm = checkInfoForm;
 window.submitInfo = submitInfo;
 window.startVst = startVst;
+window.checkVstStart = checkVstStart;
 window.goNextLevel = goNextLevel;
 window.exportVstTrials = exportVstTrials;
 window.exportSummary = exportSummary;
