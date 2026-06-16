@@ -113,7 +113,11 @@
     <h3 class="inst-section-title">所要時間</h3>
     <p class="inst-text">全体で約30分です（3分30秒 × 8レベル）。途中で休憩はできません。</p>
   </div>
-  <button class="btn" onclick="startVst()">準備ができたら開始 →</button>
+  <label class="consent-row required" style="max-width:560px; margin-top:4px">
+    <input type="checkbox" id="vst-understand" onchange="checkVstStart()">
+    <span>上記の注意事項を読み、理解しました</span>
+  </label>
+  <button class="btn" id="vst-start-btn" onclick="startVst()" disabled>監督者の指示で開始 →</button>
 </section>
 
 <section id="s-vst" class="screen">
