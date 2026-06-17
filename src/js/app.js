@@ -448,6 +448,12 @@ async function sendToGAS() {
       payload[`vst_level_${lv}_correct`] = v.correct_by_level[`level_${lv}`] ?? '';
     }
   }
+  // レベル別の推定語彙サイズも追加
+  if (v.vocab_size_by_level) {
+    for (let lv = 1; lv <= 8; lv++) {
+      payload[`vst_level_${lv}_vocab`] = v.vocab_size_by_level[`level_${lv}`] ?? '';
+    }
+  }
   if (q.level_durations_ms) {
     for (let lv = 1; lv <= 8; lv++) {
       const ms = q.level_durations_ms[lv];
