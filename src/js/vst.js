@@ -256,8 +256,13 @@ export class VstRunner {
     if (this.callbacks.onProgress) {
       this.callbacks.onProgress(this.idx, this.items.length);
     }
-    // 時間切れでも待機画面へ（残り時間は0なのでボタンがすぐ出る）
-    this._enterWaiting(true);
+    if (this.idx >= this.items.length) {
+      // 最後のレベルで時間切れ → 待機せず、すぐテスト終了
+      this._finishTest();
+    } else {
+      // 最後でないレベルで時間切れ → 待機画面へ（残り時間0なのでボタンがすぐ出る）
+      this._enterWaiting(true);
+    }
   }
 
   renderCurrent() {
@@ -386,8 +391,13 @@ export class VstRunner {
       this.idx >= this.items.length ||
       this.items[this.idx].level !== item.level;
     if (finishedLevel) {
-      // レベルを完答 → 待機画面へ（タイマーは止めない）
-      this._enterWaiting(false);
+      if (this.idx >= this.items.length) {
+        // 最後のレベルを解き終えた → 待機せず、すぐテスト終了
+        this._finishTest();
+      } else {
+        // 最後でないレベルを完答 → 待機画面へ（タイマーは止めない）
+        this._enterWaiting(false);
+      }
     } else {
       // まだ同じレベルの問題が残っている → 次の問題へ
       this.renderCurrent();
