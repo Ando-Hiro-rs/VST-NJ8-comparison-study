@@ -46,7 +46,11 @@ export function estimateVocabSize(theta) {
   let total = 0;
   for (let lv = 1; lv <= 8; lv++) {
     const p = LEVEL_PARAMS[lv];
-    const est = Math.round(probCorrect(theta, p.a, p.b, p.c) * 1000);
+    // 公式Open Scoring Sheetと同じ式: c + (1-c)/(1+exp(-1.7a(θ-b))) * 1000
+    // （Excelの演算子優先順位により、cは1000倍されない）
+    const est = Math.round(
+      p.c + (1 - p.c) / (1 + Math.exp(-1.7 * p.a * (theta - p.b))) * 1000
+    );
     perLevel[`level_${lv}`] = est;
     total += est;
   }
