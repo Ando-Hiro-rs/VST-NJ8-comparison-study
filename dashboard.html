@@ -3,105 +3,722 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VST-NJ8 研究データ管理ダッシュボード</title>
-<link rel="stylesheet" href="./src/css/main.css">
-<link rel="stylesheet" href="./src/css/dashboard.css">
+<title>VST-NJ8 研究データ ダッシュボード</title>
+<style>
+  :root {
+    --bg: #f3f6f7;
+    --panel: #ffffff;
+    --ink: #1c2b32;
+    --ink-soft: #54666e;
+    --ink-faint: #8499a1;
+    --line: #dde8eb;
+    --line-soft: #eaf1f3;
+    --teal: #0e7c8c;
+    --teal-deep: #0b3d52;
+    --teal-soft: #e6f3f5;
+    --green: #1f7a52;
+    --green-soft: #e4f3eb;
+    --amber: #b6802a;
+    --amber-soft: #faf1de;
+    --red: #b4423a;
+    --red-soft: #fbece9;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 1px 3px rgba(11,61,82,0.06), 0 6px 18px rgba(11,61,82,0.05);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 28px 24px 80px; }
+
+  /* header */
+  header.top { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; }
+  .brand h1 { font-size: 21px; font-weight: 650; color: var(--teal-deep); letter-spacing: -0.01em; }
+  .brand p { font-size: 12.5px; color: var(--ink-faint); margin-top: 2px; }
+  .top-actions { display: flex; gap: 10px; align-items: center; }
+  .btn {
+    font: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer;
+    border: 1px solid var(--line); background: var(--panel); color: var(--ink-soft);
+    padding: 8px 14px; border-radius: var(--radius-sm); transition: all .15s;
+  }
+  .btn:hover { border-color: #c2d6db; background: #fafcfc; }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  .btn-primary { background: var(--teal); color: #fff; border-color: var(--teal); }
+  .btn-primary:hover { background: #0c6a78; border-color: #0c6a78; }
+
+  /* dropzone */
+  .drop {
+    border: 1.5px dashed #b6cdd3; border-radius: var(--radius);
+    background: linear-gradient(180deg, #fbfdfd, #f5fafb);
+    padding: 44px 24px; text-align: center; transition: all .18s; cursor: pointer;
+  }
+  .drop.hover { border-color: var(--teal); background: var(--teal-soft); transform: translateY(-1px); }
+  .drop .icon { font-size: 34px; margin-bottom: 10px; }
+  .drop h2 { font-size: 16px; font-weight: 600; color: var(--teal-deep); margin-bottom: 4px; }
+  .drop p { font-size: 12.5px; color: var(--ink-faint); }
+  .drop .hint { margin-top: 10px; font-size: 11.5px; color: var(--ink-faint); }
+  .drop strong { color: var(--teal); }
+
+  .files-note { font-size: 12px; color: var(--ink-soft); margin-top: 12px; text-align: center; }
+  .files-note span { color: var(--teal-deep); font-weight: 600; }
+
+  /* sections */
+  .section { margin-top: 30px; }
+  .section-head { display: flex; align-items: center; gap: 9px; margin-bottom: 13px; }
+  .section-head .bar { width: 3px; height: 17px; background: var(--teal); border-radius: 2px; }
+  .section-head h3 { font-size: 14.5px; font-weight: 650; color: var(--teal-deep); }
+  .section-head .sub { font-size: 11.5px; color: var(--ink-faint); margin-left: 2px; }
+
+  /* stat cards */
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 13px; }
+  .stat {
+    background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 15px 16px; box-shadow: var(--shadow);
+  }
+  .stat .label { font-size: 11px; color: var(--ink-faint); font-weight: 600; letter-spacing: .02em; text-transform: uppercase; }
+  .stat .value { font-size: 27px; font-weight: 680; color: var(--teal-deep); margin-top: 3px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .stat .unit { font-size: 13px; font-weight: 500; color: var(--ink-faint); margin-left: 2px; }
+  .stat .meta { font-size: 11px; color: var(--ink-faint); margin-top: 4px; }
+
+  /* quality */
+  .q-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 13px; margin-bottom: 16px; }
+  .q-card { border-radius: var(--radius); padding: 14px 16px; border: 1px solid; box-shadow: var(--shadow); }
+  .q-card .n { font-size: 26px; font-weight: 680; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .q-card .t { font-size: 12px; font-weight: 600; margin-top: 2px; }
+  .q-card .d { font-size: 11px; margin-top: 3px; opacity: .85; }
+  .q-ok   { background: var(--green-soft); border-color: #b9ddc8; color: var(--green); }
+  .q-warn { background: var(--amber-soft); border-color: #ecd6a8; color: var(--amber); }
+  .q-bad  { background: var(--red-soft); border-color: #ecc4bf; color: var(--red); }
+
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+  .panel-pad { padding: 18px; }
+
+  /* histogram */
+  .hist { display: flex; align-items: flex-end; gap: 6px; height: 180px; padding: 8px 4px 0; }
+  .hist .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; justify-content: flex-end; }
+  .hist .bar { width: 100%; background: linear-gradient(180deg, #15909f, var(--teal)); border-radius: 4px 4px 0 0; min-height: 2px; transition: opacity .15s; position: relative; }
+  .hist .bar:hover { opacity: .8; }
+  .hist .bar .cnt { position: absolute; top: -17px; left: 0; right: 0; text-align: center; font-size: 10.5px; font-weight: 600; color: var(--ink-soft); }
+  .hist .xlabel { font-size: 9.5px; color: var(--ink-faint); text-align: center; line-height: 1.25; white-space: nowrap; }
+  .hist-axis { font-size: 11px; color: var(--ink-faint); margin-top: 8px; text-align: center; }
+
+  /* level bars */
+  .lvl-row { display: flex; align-items: center; gap: 12px; padding: 5px 0; }
+  .lvl-name { min-width: 56px; font-size: 12px; color: var(--ink-soft); font-weight: 600; }
+  .lvl-track { flex: 1; height: 18px; background: var(--line-soft); border-radius: 5px; overflow: hidden; }
+  .lvl-fill { height: 100%; background: linear-gradient(90deg, var(--teal), #16a0b2); border-radius: 5px; display: flex; align-items: center; justify-content: flex-end; padding-right: 7px; }
+  .lvl-fill span { font-size: 10.5px; color: #fff; font-weight: 600; }
+  .lvl-val { min-width: 86px; text-align: right; font-size: 11.5px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+
+  /* table */
+  .table-tools { display: flex; gap: 10px; align-items: center; margin-bottom: 11px; flex-wrap: wrap; }
+  .search-input { font: inherit; font-size: 13px; padding: 7px 12px; border: 1px solid var(--line); border-radius: var(--radius-sm); min-width: 210px; color: var(--ink); }
+  .search-input:focus { outline: none; border-color: var(--teal); }
+  .filter-chip { font: inherit; font-size: 11.5px; font-weight: 600; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--line); background: var(--panel); color: var(--ink-soft); cursor: pointer; transition: all .15s; }
+  .filter-chip:hover { border-color: #c2d6db; }
+  .filter-chip.active { background: var(--teal-deep); color: #fff; border-color: var(--teal-deep); }
+  .tbl-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  thead th { text-align: left; font-weight: 600; color: var(--ink-soft); padding: 10px 12px; border-bottom: 2px solid var(--line); white-space: nowrap; cursor: pointer; user-select: none; position: sticky; top: 0; background: var(--panel); }
+  thead th:hover { color: var(--teal); }
+  thead th .arrow { font-size: 9px; opacity: .5; margin-left: 3px; }
+  tbody td { padding: 9px 12px; border-bottom: 1px solid var(--line-soft); white-space: nowrap; color: var(--ink); font-variant-numeric: tabular-nums; }
+  tbody tr:hover { background: #fafcfc; }
+  tbody tr.flagged-warn { background: var(--amber-soft); }
+  tbody tr.flagged-warn:hover { background: #f6e9cf; }
+  tbody tr.flagged-bad { background: var(--red-soft); }
+  tbody tr.flagged-bad:hover { background: #f6ddd8; }
+  .tag { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; }
+  .tag-ok { background: var(--green-soft); color: var(--green); }
+  .tag-warn { background: #f3e2bb; color: var(--amber); }
+  .tag-bad { background: #f3cdc7; color: var(--red); }
+  .flags-cell { display: flex; gap: 4px; flex-wrap: wrap; }
+
+  .empty { text-align: center; color: var(--ink-faint); padding: 40px; font-size: 13px; }
+  footer.foot { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 11px; color: var(--ink-faint); text-align: center; }
+  .hidden { display: none !important; }
+
+  details.help { margin-top: 14px; font-size: 12px; }
+  details.help summary { cursor: pointer; color: var(--teal); font-weight: 600; }
+  details.help div { margin-top: 8px; color: var(--ink-soft); line-height: 1.7; padding: 10px 14px; background: var(--teal-soft); border-radius: var(--radius-sm); }
+  details.help code { background: #fff; padding: 1px 5px; border-radius: 3px; font-size: 11px; color: var(--teal-deep); }
+</style>
 </head>
 <body>
+<div class="wrap">
 
-<div class="dashboard-container">
-
-<section id="d-auth" class="d-screen active">
-  <div class="auth-card">
-    <h1>🔒 研究者ダッシュボード</h1>
-    <p class="sub">アクセスにはパスワードが必要です。</p>
-    <input type="password" id="auth-pw" placeholder="パスワード" onkeypress="if(event.key==='Enter') checkAuth()">
-    <button class="btn" onclick="checkAuth()">アクセス</button>
-    <p class="auth-note">※ パスワードはローカルでのみ照合され、外部に送信されません</p>
-  </div>
-</section>
-
-<section id="d-main" class="d-screen">
-  <header class="d-header">
-    <div>
-      <h1>📊 VST-NJ8 研究データ管理</h1>
-      <p class="d-subtitle">受験者データの集約・分析・エクスポート</p>
+  <header class="top">
+    <div class="brand">
+      <h1>VST-NJ8 研究データ ダッシュボード</h1>
+      <p>サマリーCSVをドラッグ&ドロップすると、品質チェックと集計を表示します</p>
     </div>
-    <div class="d-header-actions">
-      <a href="./" class="btn-outline">テスト画面へ →</a>
-      <button class="btn-outline" onclick="logout()">ログアウト</button>
+    <div class="top-actions">
+      <button class="btn" id="btn-sample">サンプルで試す</button>
+      <button class="btn" id="btn-clear" disabled>クリア</button>
     </div>
   </header>
 
-  <section class="d-upload-section">
-    <h2>📥 CSVファイルのアップロード</h2>
-    <div class="upload-zone" id="upload-zone">
-      <input type="file" id="file-input" accept=".csv" multiple style="display:none">
-      <div class="upload-prompt">
-        <div class="upload-icon">📁</div>
-        <p><b>クリックしてファイルを選択</b> または <b>ここにドラッグ&ドロップ</b></p>
-        <p class="upload-hint">VST-NJ8 のサマリーCSVを複数まとめて選択できます</p>
+  <!-- dropzone -->
+  <div id="dropzone" class="drop">
+    <div class="icon">📂</div>
+    <h2>サマリーCSV をここにドロップ</h2>
+    <p>クリックしてファイルを選んでもOK。複数ファイルをまとめて読み込めます。</p>
+    <div class="hint">スプレッドシートから書き出した <strong>全員ぶんのCSV</strong> でも、<strong>1人ずつの個別CSV</strong> でも対応します</div>
+    <input type="file" id="file-input" accept=".csv,text/csv" multiple class="hidden">
+  </div>
+  <div id="files-note" class="files-note hidden"></div>
+
+  <details class="help">
+    <summary>このダッシュボードについて / 品質フラグの基準</summary>
+    <div id="help-body">
+      読み込んだデータはこのブラウザ内だけで処理され、どこにも送信されません。<br>
+      品質フラグの初期基準：<br>
+      ・<b>所要時間が短い</b>：全体の所要時間が <code>10分未満</code>（適当に回答した可能性）<br>
+      ・<b>離脱あり</b>：テスト中の画面・アプリ切り替えが <code>1回以上</code><br>
+      ・<b>リロードあり</b>：再読み込みが <code>1回以上</code><br>
+      これらはあくまで「要確認」の目安です。除外の判断は、内容を見て行ってください。
+    </div>
+  </details>
+
+  <!-- results -->
+  <div id="results" class="hidden">
+
+    <!-- 1. overall summary -->
+    <div class="section">
+      <div class="section-head"><div class="bar"></div><h3>全体サマリー</h3><span class="sub" id="sum-sub"></span></div>
+      <div class="stat-grid" id="stat-grid"></div>
+    </div>
+
+    <!-- 2. quality (the star) -->
+    <div class="section">
+      <div class="section-head"><div class="bar"></div><h3>データ品質チェック</h3><span class="sub">要確認の受験者を自動で抽出</span></div>
+      <div class="q-summary" id="q-summary"></div>
+      <div class="panel panel-pad">
+        <div id="q-detail"></div>
       </div>
     </div>
-    <div id="upload-status" class="upload-status"></div>
-  </section>
 
-  <section class="d-stats-section">
-    <h2>📈 集計サマリー</h2>
-    <div class="stats-grid" id="stats-grid">
-      <div class="stat-box"><div class="stat-num" id="stat-n">0</div><div class="stat-label">受験者数</div></div>
-      <div class="stat-box"><div class="stat-num" id="stat-vocab-mean">—</div><div class="stat-label">語彙サイズ平均</div></div>
-      <div class="stat-box"><div class="stat-num" id="stat-theta-mean">—</div><div class="stat-label">θ 平均</div></div>
-      <div class="stat-box"><div class="stat-num" id="stat-acc-mean">—</div><div class="stat-label">正答率平均</div></div>
-    </div>
-    <div id="descriptive-stats" class="descriptive-stats"></div>
-  </section>
-
-  <section class="d-charts-section">
-    <h2>📊 可視化</h2>
-    <div class="charts-grid">
-      <div class="chart-card">
-        <h3>推定語彙サイズ ヒストグラム</h3>
-        <canvas id="chart-vocab-hist" width="400" height="240"></canvas>
-      </div>
-      <div class="chart-card">
-        <h3>IRT θ ヒストグラム</h3>
-        <canvas id="chart-theta-hist" width="400" height="240"></canvas>
+    <!-- 3. vocab distribution -->
+    <div class="section">
+      <div class="section-head"><div class="bar"></div><h3>推定語彙サイズの分布</h3><span class="sub" id="vocab-sub"></span></div>
+      <div class="panel panel-pad">
+        <div class="hist" id="histogram"></div>
+        <div class="hist-axis">推定語彙サイズ（語）</div>
       </div>
     </div>
-  </section>
 
-  <section class="d-table-section">
-    <h2>👥 受験者一覧</h2>
-    <div class="table-controls">
-      <input type="text" id="filter-input" placeholder="🔍 IDで検索..." oninput="applyFilter()">
-      <label class="check-label">
-        <input type="checkbox" id="filter-outliers" onchange="applyFilter()">
-        <span>要確認データのみ表示</span>
-      </label>
-      <button class="btn-outline" onclick="exportMergedCSV()">📊 集約CSVをダウンロード</button>
-      <button class="btn-outline" onclick="clearAllData()">🗑 全データ削除</button>
+    <!-- 3b. level accuracy -->
+    <div class="section">
+      <div class="section-head"><div class="bar"></div><h3>レベル別 平均正答率</h3><span class="sub">どのレベルが難しいか（全受験者の平均）</span></div>
+      <div class="panel panel-pad" id="level-panel"></div>
     </div>
-    <div class="table-wrapper">
-      <table id="participants-table">
-        <thead>
-          <tr>
-            <th>ID</th><th>年齢</th><th>性別</th>
-            <th>正答率</th><th>語彙サイズ</th><th>θ</th><th>SE</th>
-            <th>受験日時</th><th>状態</th>
-          </tr>
-        </thead>
-        <tbody id="participants-tbody"></tbody>
-      </table>
+
+    <!-- 4. table -->
+    <div class="section">
+      <div class="section-head"><div class="bar"></div><h3>受験者一覧</h3><span class="sub">列見出しをクリックで並べ替え</span></div>
+      <div class="table-tools">
+        <input type="text" class="search-input" id="search" placeholder="学籍番号・氏名・学科で検索…">
+        <button class="filter-chip active" data-filter="all">すべて</button>
+        <button class="filter-chip" data-filter="flagged">要確認のみ</button>
+        <button class="filter-chip" data-filter="clean">問題なしのみ</button>
+        <span style="flex:1"></span>
+        <span id="row-count" style="font-size:11.5px;color:var(--ink-faint)"></span>
+      </div>
+      <div class="panel">
+        <div class="tbl-scroll">
+          <table id="data-table">
+            <thead id="thead"></thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+      </div>
     </div>
-  </section>
 
-</section>
+  </div>
 
+  <footer class="foot">
+    VST-NJ8 比較研究 / 研究データ ダッシュボード &nbsp;·&nbsp; データはブラウザ内でのみ処理されます
+  </footer>
 </div>
 
-<div id="toast" class="toast">読み込みました</div>
+<script>
+// ============================ 状態 ============================
+const state = {
+  rows: [],          // 正規化済みの受験者データ
+  sortKey: null,
+  sortDir: 1,
+  filter: 'all',
+  search: '',
+};
 
-<script type="module" src="./src/js/dashboard.js"></script>
+// 品質フラグの基準（必要なら数値を変えるだけ）
+const THRESHOLDS = {
+  shortDurationSec: 600,   // 10分未満で「所要時間が短い」
+  focusLossWarn: 1,        // 1回以上の離脱で警告
+  reloadWarn: 1,           // 1回以上のリロードで警告
+};
+
+// ============================ CSV パース ============================
+// 簡易CSVパーサ（カンマ・ダブルクオート・改行に対応）
+function parseCSV(text) {
+  text = text.replace(/^\uFEFF/, ''); // BOM除去
+  const rows = [];
+  let row = [], field = '', inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i], next = text[i+1];
+    if (inQuotes) {
+      if (ch === '"' && next === '"') { field += '"'; i++; }
+      else if (ch === '"') { inQuotes = false; }
+      else { field += ch; }
+    } else {
+      if (ch === '"') { inQuotes = true; }
+      else if (ch === ',') { row.push(field); field = ''; }
+      else if (ch === '\r') { /* skip */ }
+      else if (ch === '\n') { row.push(field); rows.push(row); row = []; field = ''; }
+      else { field += ch; }
+    }
+  }
+  if (field.length > 0 || row.length > 0) { row.push(field); rows.push(row); }
+  return rows.filter(r => r.length && !(r.length === 1 && r[0].trim() === ''));
+}
+
+// CSVの中身を受験者オブジェクトの配列に変換する。
+// 2つの形式に対応:
+//  (A) key,value の縦型（個別サマリーCSV: 1人分） → 1件
+//  (B) 1行目が見出しで、各行が1人（スプレッドシート書き出し） → 複数件
+function csvToRecords(text) {
+  const rows = parseCSV(text);
+  if (rows.length === 0) return [];
+  const header = rows[0].map(h => h.trim());
+  // 縦型(key,value)判定: 2列で、1行目が key/value 系
+  const isKeyValue = header.length === 2 &&
+    /^key$/i.test(header[0]) && /^value$/i.test(header[1]);
+  if (isKeyValue) {
+    const obj = {};
+    for (let i = 1; i < rows.length; i++) {
+      const k = (rows[i][0] || '').trim();
+      const v = (rows[i][1] !== undefined ? rows[i][1] : '').trim();
+      if (k) obj[k] = v;
+    }
+    return [obj];
+  }
+  // 横型: 各行が1人
+  const records = [];
+  for (let i = 1; i < rows.length; i++) {
+    const r = rows[i];
+    if (r.every(c => (c || '').trim() === '')) continue;
+    const obj = {};
+    header.forEach((h, idx) => { obj[h] = (r[idx] !== undefined ? r[idx] : '').trim(); });
+    records.push(obj);
+  }
+  return records;
+}
+
+// 列名のゆらぎを吸収して値を取り出す
+function pick(obj, keys, def='') {
+  for (const k of keys) {
+    if (obj[k] !== undefined && obj[k] !== '') return obj[k];
+  }
+  return def;
+}
+function num(v) {
+  if (v === '' || v === undefined || v === null) return null;
+  const n = Number(String(v).replace(/,/g, ''));
+  return isFinite(n) ? n : null;
+}
+
+// 受験者1人を正規化（研究版の列名 + 旧版のゆらぎも吸収）
+function normalize(obj) {
+  const durationSec = num(pick(obj, ['quality_total_duration_sec'])) ??
+                      (num(pick(obj, ['quality_total_duration_ms'])) !== null ? Math.round(num(pick(obj,['quality_total_duration_ms']))/1000) : null);
+  const rec = {
+    student_id: pick(obj, ['student_id','participant_id','id']),
+    name: pick(obj, ['name'], '—'),
+    department: pick(obj, ['department','major'], '—'),
+    device: pick(obj, ['device_type'], '—'),
+    datetime: pick(obj, ['test_datetime','datetime']),
+    theta: num(pick(obj, ['vst_irt_theta'])),
+    vocab: num(pick(obj, ['vst_estimated_vocab_size','vst_estimated_words'])),
+    rawScore: num(pick(obj, ['vst_raw_score'])),
+    totalItems: num(pick(obj, ['vst_total_items'])) ?? 160,
+    accuracy: num(pick(obj, ['vst_accuracy_percent'])),
+    se: num(pick(obj, ['vst_standard_error'])),
+    durationSec: durationSec,
+    focusLoss: num(pick(obj, ['quality_focus_loss_count'])) ?? 0,
+    reloadCount: num(pick(obj, ['reload_count'])) ?? 0,
+    levelCorrect: [],
+    _raw: obj,
+  };
+  for (let lv = 1; lv <= 8; lv++) {
+    rec.levelCorrect.push(num(pick(obj, [`vst_level_${lv}_correct`])));
+  }
+  // 品質フラグ
+  rec.flags = [];
+  if (rec.durationSec !== null && rec.durationSec < THRESHOLDS.shortDurationSec) rec.flags.push({ type:'bad', label:'所要時間が短い' });
+  if (rec.focusLoss >= THRESHOLDS.focusLossWarn) rec.flags.push({ type:'warn', label:`離脱 ${rec.focusLoss}回` });
+  if (rec.reloadCount >= THRESHOLDS.reloadWarn) rec.flags.push({ type:'warn', label:`リロード ${rec.reloadCount}回` });
+  rec.level = rec.flags.some(f=>f.type==='bad') ? 'bad' : (rec.flags.length ? 'warn' : 'ok');
+  return rec;
+}
+
+// 学籍番号で重複排除（同じ人を複数CSVで読んだら最新の受験を優先）
+function mergeRows(newRows) {
+  const map = new Map();
+  for (const r of state.rows) map.set(keyOf(r), r);
+  for (const r of newRows) {
+    const k = keyOf(r);
+    const prev = map.get(k);
+    if (!prev) { map.set(k, r); continue; }
+    // datetimeが新しい方を残す
+    const a = Date.parse(prev.datetime||'') || 0;
+    const b = Date.parse(r.datetime||'') || 0;
+    map.set(k, b >= a ? r : prev);
+  }
+  state.rows = [...map.values()];
+}
+function keyOf(r) { return (r.student_id||'') + '|' + (r.name||''); }
+
+// ============================ 集計 ============================
+function fmt(n, digits=0) {
+  if (n === null || n === undefined || !isFinite(n)) return '—';
+  return n.toLocaleString('ja-JP', { minimumFractionDigits: digits, maximumFractionDigits: digits });
+}
+function median(arr) {
+  const a = arr.filter(x=>x!==null && isFinite(x)).slice().sort((x,y)=>x-y);
+  if (!a.length) return null;
+  const m = Math.floor(a.length/2);
+  return a.length % 2 ? a[m] : (a[m-1]+a[m])/2;
+}
+function mean(arr) {
+  const a = arr.filter(x=>x!==null && isFinite(x));
+  if (!a.length) return null;
+  return a.reduce((s,x)=>s+x,0)/a.length;
+}
+
+function render() {
+  if (state.rows.length === 0) {
+    document.getElementById('results').classList.add('hidden');
+    return;
+  }
+  document.getElementById('results').classList.remove('hidden');
+  renderSummary();
+  renderQuality();
+  renderHistogram();
+  renderLevels();
+  renderTable();
+}
+
+function renderSummary() {
+  const rows = state.rows;
+  const n = rows.length;
+  const byDept = {};
+  const byDevice = {};
+  rows.forEach(r => {
+    byDept[r.department] = (byDept[r.department]||0)+1;
+    byDevice[r.device] = (byDevice[r.device]||0)+1;
+  });
+  const vocabs = rows.map(r=>r.vocab);
+  const durs = rows.map(r=>r.durationSec);
+  const flaggedN = rows.filter(r=>r.level!=='ok').length;
+
+  document.getElementById('sum-sub').textContent = `読み込み済み ${n} 名`;
+
+  const deptStr = Object.entries(byDept).map(([k,v])=>`${k} ${v}`).join(' / ');
+  const devStr = Object.entries(byDevice).map(([k,v])=>`${k} ${v}`).join(' / ');
+
+  const cards = [
+    { label:'受験者数', value: fmt(n), unit:'名', meta: devStr || '&nbsp;' },
+    { label:'語彙サイズ 平均', value: fmt(mean(vocabs)), unit:'語', meta:`中央値 ${fmt(median(vocabs))} 語` },
+    { label:'語彙サイズ 範囲', value: vocabs.some(v=>v!==null) ? `${fmt(Math.min(...vocabs.filter(v=>v!==null)))}–${fmt(Math.max(...vocabs.filter(v=>v!==null)))}` : '—', unit:'語', meta:'最小–最大' },
+    { label:'平均所要時間', value: fmt(mean(durs)!==null ? Math.round(mean(durs)/60*10)/10 : null, 1), unit:'分', meta: durs.some(d=>d!==null)? `${fmt(Math.round(Math.min(...durs.filter(d=>d!==null))/60*10)/10,1)}–${fmt(Math.round(Math.max(...durs.filter(d=>d!==null))/60*10)/10,1)} 分` : '&nbsp;' },
+    { label:'要確認', value: fmt(flaggedN), unit:'名', meta: n? `全体の ${Math.round(flaggedN/n*100)}%` : '&nbsp;' },
+    { label:'学科内訳', value: Object.keys(byDept).length, unit:'種', meta: deptStr || '&nbsp;' },
+  ];
+  document.getElementById('stat-grid').innerHTML = cards.map(c => `
+    <div class="stat">
+      <div class="label">${c.label}</div>
+      <div class="value">${c.value}<span class="unit">${c.unit||''}</span></div>
+      <div class="meta">${c.meta||'&nbsp;'}</div>
+    </div>`).join('');
+}
+
+function renderQuality() {
+  const rows = state.rows;
+  const n = rows.length;
+  const clean = rows.filter(r=>r.level==='ok').length;
+  const warn = rows.filter(r=>r.level==='warn').length;
+  const bad = rows.filter(r=>r.level==='bad').length;
+  const shortN = rows.filter(r=>r.durationSec!==null && r.durationSec < THRESHOLDS.shortDurationSec).length;
+  const focusN = rows.filter(r=>r.focusLoss >= THRESHOLDS.focusLossWarn).length;
+  const reloadN = rows.filter(r=>r.reloadCount >= THRESHOLDS.reloadWarn).length;
+
+  document.getElementById('q-summary').innerHTML = `
+    <div class="q-card q-ok"><div class="n">${clean}</div><div class="t">問題なし</div><div class="d">フラグなし</div></div>
+    <div class="q-card q-warn"><div class="n">${warn}</div><div class="t">要確認（軽）</div><div class="d">離脱・リロードあり</div></div>
+    <div class="q-card q-bad"><div class="n">${bad}</div><div class="t">要確認（重）</div><div class="d">所要時間が短い等</div></div>
+  `;
+
+  if (warn + bad === 0) {
+    document.getElementById('q-detail').innerHTML = `<div class="empty">フラグの立った受験者はいません。データは良好です。</div>`;
+    return;
+  }
+  // 内訳 + 該当者リスト
+  const flagged = rows.filter(r=>r.level!=='ok').sort((a,b)=> (a.level==='bad'?0:1)-(b.level==='bad'?0:1) );
+  let html = `
+    <div style="display:flex;gap:18px;flex-wrap:wrap;margin-bottom:14px;font-size:12px;color:var(--ink-soft)">
+      <span>⏱ 所要時間が短い：<b>${shortN}</b> 名</span>
+      <span>👁 離脱あり：<b>${focusN}</b> 名</span>
+      <span>🔄 リロードあり：<b>${reloadN}</b> 名</span>
+    </div>
+    <table style="font-size:12.5px"><thead><tr>
+      <th style="cursor:default">学籍番号</th><th style="cursor:default">氏名</th>
+      <th style="cursor:default">所要時間</th><th style="cursor:default">離脱</th>
+      <th style="cursor:default">リロード</th><th style="cursor:default">フラグ</th>
+    </tr></thead><tbody>`;
+  flagged.forEach(r => {
+    const cls = r.level==='bad' ? 'flagged-bad' : 'flagged-warn';
+    html += `<tr class="${cls}">
+      <td>${esc(r.student_id)}</td><td>${esc(r.name)}</td>
+      <td>${r.durationSec!==null ? (Math.round(r.durationSec/60*10)/10)+' 分' : '—'}</td>
+      <td>${r.focusLoss}</td><td>${r.reloadCount}</td>
+      <td class="flags-cell">${r.flags.map(f=>`<span class="tag tag-${f.type}">${esc(f.label)}</span>`).join('')}</td>
+    </tr>`;
+  });
+  html += `</tbody></table>`;
+  document.getElementById('q-detail').innerHTML = html;
+}
+
+function renderHistogram() {
+  const vocabs = state.rows.map(r=>r.vocab).filter(v=>v!==null && isFinite(v));
+  const el = document.getElementById('histogram');
+  if (vocabs.length === 0) { el.innerHTML = `<div class="empty">語彙サイズのデータがありません</div>`; return; }
+  document.getElementById('vocab-sub').textContent = `n=${vocabs.length}`;
+  // ビン: 0..8000 を 8区切り（1000語ごと）
+  const binSize = 1000, binCount = 8;
+  const bins = new Array(binCount).fill(0);
+  vocabs.forEach(v => {
+    let idx = Math.floor(v / binSize);
+    if (idx >= binCount) idx = binCount - 1;
+    if (idx < 0) idx = 0;
+    bins[idx]++;
+  });
+  const maxBin = Math.max(...bins, 1);
+  el.innerHTML = bins.map((c, i) => {
+    const h = c === 0 ? 0 : (c / maxBin) * 100;
+    const lo = i*binSize, hi = (i+1)*binSize;
+    return `<div class="bar-col">
+      <div class="bar" style="height:${h}%" title="${lo}-${hi}語: ${c}名">${c>0?`<span class="cnt">${c}</span>`:''}</div>
+      <div class="xlabel">${(lo/1000)}–${(hi/1000)}k</div>
+    </div>`;
+  }).join('');
+}
+
+function renderLevels() {
+  const rows = state.rows;
+  const panel = document.getElementById('level-panel');
+  // 各レベルの平均正答数（/20）
+  const avgs = [];
+  for (let lv = 0; lv < 8; lv++) {
+    const vals = rows.map(r=>r.levelCorrect[lv]).filter(v=>v!==null && isFinite(v));
+    avgs.push(vals.length ? mean(vals) : null);
+  }
+  if (avgs.every(a=>a===null)) { panel.innerHTML = `<div class="empty">レベル別正答数のデータがありません</div>`; return; }
+  panel.innerHTML = avgs.map((a, i) => {
+    const pct = a===null ? 0 : (a/20)*100;
+    return `<div class="lvl-row">
+      <div class="lvl-name">レベル${i+1}</div>
+      <div class="lvl-track"><div class="lvl-fill" style="width:${Math.max(pct,6)}%"><span>${pct.toFixed(0)}%</span></div></div>
+      <div class="lvl-val">${a===null?'—':a.toFixed(1)} / 20 問</div>
+    </div>`;
+  }).join('');
+}
+
+// ============================ テーブル ============================
+const COLS = [
+  { key:'student_id', label:'学籍番号', type:'str' },
+  { key:'name', label:'氏名', type:'str' },
+  { key:'department', label:'学科', type:'str' },
+  { key:'device', label:'端末', type:'str' },
+  { key:'vocab', label:'語彙サイズ', type:'num', unit:'語' },
+  { key:'theta', label:'θ', type:'num' },
+  { key:'rawScore', label:'正答数', type:'num' },
+  { key:'durationSec', label:'所要時間', type:'dur' },
+  { key:'focusLoss', label:'離脱', type:'num' },
+  { key:'reloadCount', label:'リロード', type:'num' },
+  { key:'_flags', label:'品質', type:'flags' },
+];
+
+function renderTable() {
+  const thead = document.getElementById('thead');
+  thead.innerHTML = '<tr>' + COLS.map(c => {
+    let arrow = '';
+    if (state.sortKey === c.key) arrow = `<span class="arrow">${state.sortDir>0?'▲':'▼'}</span>`;
+    return `<th data-key="${c.key}">${c.label}${arrow}</th>`;
+  }).join('') + '</tr>';
+  thead.querySelectorAll('th').forEach(th => {
+    th.onclick = () => {
+      const k = th.dataset.key;
+      if (k === '_flags') return;
+      if (state.sortKey === k) state.sortDir *= -1;
+      else { state.sortKey = k; state.sortDir = 1; }
+      renderTable();
+    };
+  });
+
+  let rows = state.rows.slice();
+  // filter
+  if (state.filter === 'flagged') rows = rows.filter(r=>r.level!=='ok');
+  else if (state.filter === 'clean') rows = rows.filter(r=>r.level==='ok');
+  // search
+  if (state.search) {
+    const q = state.search.toLowerCase();
+    rows = rows.filter(r => (r.student_id+' '+r.name+' '+r.department).toLowerCase().includes(q));
+  }
+  // sort
+  if (state.sortKey) {
+    const col = COLS.find(c=>c.key===state.sortKey);
+    rows.sort((a,b) => {
+      let va = a[state.sortKey], vb = b[state.sortKey];
+      if (col.type === 'num' || col.type === 'dur') {
+        va = va===null?-Infinity:va; vb = vb===null?-Infinity:vb;
+        return (va-vb)*state.sortDir;
+      }
+      return String(va||'').localeCompare(String(vb||''), 'ja')*state.sortDir;
+    });
+  }
+
+  const tbody = document.getElementById('tbody');
+  if (rows.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="${COLS.length}" class="empty">該当する受験者がいません</td></tr>`;
+  } else {
+    tbody.innerHTML = rows.map(r => {
+      const cls = r.level==='bad' ? 'flagged-bad' : (r.level==='warn' ? 'flagged-warn' : '');
+      return `<tr class="${cls}">` + COLS.map(c => {
+        if (c.key === '_flags') {
+          if (r.level === 'ok') return `<td><span class="tag tag-ok">OK</span></td>`;
+          return `<td class="flags-cell">${r.flags.map(f=>`<span class="tag tag-${f.type}">${esc(f.label)}</span>`).join('')}</td>`;
+        }
+        let v = r[c.key];
+        if (c.type === 'dur') v = v===null?'—':(Math.round(v/60*10)/10)+' 分';
+        else if (c.type === 'num') v = v===null?'—':(c.unit==='語'?fmt(v):v);
+        else v = esc(v||'—');
+        return `<td>${v}</td>`;
+      }).join('') + '</tr>';
+    }).join('');
+  }
+  document.getElementById('row-count').textContent = `${rows.length} / ${state.rows.length} 名を表示`;
+}
+
+function esc(s){ return String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+// ============================ ファイル読み込み ============================
+async function handleFiles(fileList) {
+  const files = [...fileList].filter(f => /\.csv$/i.test(f.name) || f.type==='text/csv');
+  if (files.length === 0) { alert('CSVファイルを読み込んでください。'); return; }
+  let added = 0;
+  for (const f of files) {
+    try {
+      const text = await f.text();
+      const records = csvToRecords(text);
+      const normalized = records.map(normalize).filter(r => r.student_id || r.vocab !== null);
+      mergeRows(normalized);
+      added += normalized.length;
+    } catch (e) {
+      console.error('読み込み失敗:', f.name, e);
+      alert(`「${f.name}」の読み込みに失敗しました。`);
+    }
+  }
+  document.getElementById('btn-clear').disabled = state.rows.length === 0;
+  showFilesNote(files.length, added);
+  render();
+}
+function showFilesNote(fileCount, added) {
+  const note = document.getElementById('files-note');
+  note.classList.remove('hidden');
+  note.innerHTML = `<span>${fileCount}</span> ファイルを読み込み、<span>${state.rows.length}</span> 名ぶんのデータを表示中`;
+}
+
+// ============================ サンプルデータ ============================
+function loadSample() {
+  const depts = ['英米文化','日本文化','その他'];
+  const devices = ['mobile','mobile','mobile','desktop'];
+  const rows = [];
+  for (let i = 0; i < 34; i++) {
+    const theta = +(Math.random()*4 - 1.5).toFixed(1);
+    // θ から擬似的に語彙サイズ・正答数を作る
+    const vocab = Math.max(400, Math.min(7900, Math.round(3500 + theta*1100 + (Math.random()*600-300))));
+    const raw = Math.max(20, Math.min(155, Math.round(80 + theta*22 + (Math.random()*16-8))));
+    const dur = Math.round(900 + Math.random()*900); // 15-30分
+    const obj = {
+      student_id: String(1230000 + i*137).slice(0,7),
+      name: `受験者${String(i+1).padStart(2,'0')}`,
+      department: depts[Math.floor(Math.random()*depts.length)],
+      device_type: devices[Math.floor(Math.random()*devices.length)],
+      test_datetime: new Date(Date.now()-i*3600e3).toISOString(),
+      vst_irt_theta: theta,
+      vst_estimated_vocab_size: vocab,
+      vst_raw_score: raw,
+      vst_total_items: 160,
+      vst_accuracy_percent: +(raw/160*100).toFixed(1),
+      vst_standard_error: +(0.2+Math.random()*0.1).toFixed(3),
+      quality_total_duration_sec: dur,
+      quality_focus_loss_count: 0,
+      reload_count: 0,
+    };
+    for (let lv=1; lv<=8; lv++) {
+      obj[`vst_level_${lv}_correct`] = Math.max(0, Math.min(20, Math.round((raw/160*20) + (Math.random()*8-4))));
+    }
+    rows.push(obj);
+  }
+  // 品質問題のある人を数名仕込む
+  rows[3].quality_total_duration_sec = 240;            // 4分（短すぎ）
+  rows[7].quality_focus_loss_count = 2;                // 離脱2回
+  rows[12].reload_count = 1;                           // リロード
+  rows[18].quality_total_duration_sec = 320; rows[18].quality_focus_loss_count = 1;
+
+  state.rows = [];
+  mergeRows(rows.map(normalize));
+  document.getElementById('btn-clear').disabled = false;
+  document.getElementById('files-note').classList.remove('hidden');
+  document.getElementById('files-note').innerHTML = `<span>サンプルデータ</span>（34名・うち数名に品質フラグ）を表示中`;
+  render();
+}
+
+// ============================ イベント ============================
+const dz = document.getElementById('dropzone');
+const fileInput = document.getElementById('file-input');
+dz.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', e => handleFiles(e.target.files));
+['dragenter','dragover'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add('hover'); }));
+['dragleave','drop'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); if(ev==='dragleave' && dz.contains(e.relatedTarget)) return; dz.classList.remove('hover'); }));
+dz.addEventListener('drop', e => { handleFiles(e.dataTransfer.files); });
+// ページ全体へのドロップも受ける
+window.addEventListener('dragover', e => e.preventDefault());
+window.addEventListener('drop', e => { e.preventDefault(); if (!dz.contains(e.target)) handleFiles(e.dataTransfer.files); });
+
+document.getElementById('btn-sample').addEventListener('click', loadSample);
+document.getElementById('btn-clear').addEventListener('click', () => {
+  state.rows = []; state.sortKey = null; state.search=''; state.filter='all';
+  document.getElementById('search').value = '';
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.toggle('active', c.dataset.filter==='all'));
+  document.getElementById('btn-clear').disabled = true;
+  document.getElementById('files-note').classList.add('hidden');
+  render();
+});
+document.getElementById('search').addEventListener('input', e => { state.search = e.target.value; renderTable(); });
+document.querySelectorAll('.filter-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    state.filter = chip.dataset.filter;
+    renderTable();
+  });
+});
+</script>
 </body>
 </html>
